@@ -1,5 +1,4 @@
 require("telescope").load_extension('command_center')
-require('config_picker')
 
 local command_center = require("command_center")
 
