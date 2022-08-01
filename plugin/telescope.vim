@@ -1,0 +1,1 @@
+autocmd User TelescopePreviewerLoaded setlocal wrap
