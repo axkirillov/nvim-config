@@ -70,7 +70,8 @@ require'lspconfig'.intelephense.setup {
 				'pcre',
 				'date',
 				'json',
-				'ctype'
+				'ctype',
+				'SimpleXML',
 			}
 		}
 	}
