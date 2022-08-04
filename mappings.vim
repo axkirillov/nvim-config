@@ -28,3 +28,6 @@ nmap <F2> "=localtime()<C-M>p
 
 "open diagnostic in a float window
 nmap <leader>dof :lua vim.diagnostic.open_float()<CR>
+
+"close current buffer
+nmap bd :bd<CR>

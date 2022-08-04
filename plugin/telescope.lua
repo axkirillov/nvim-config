@@ -30,8 +30,6 @@ require "telescope".setup {
 }
 
 require('telescope').load_extension('fzf')
-require('telescope').load_extension('changed_files')
-require('telescope').load_extension('conflicts')
 
 local ns = { noremap = true, silent = true }
 vim.keymap.set("n", "<C-p>", ":Telescope command_center<CR>", ns)

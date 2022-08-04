@@ -9,10 +9,7 @@ return require('packer').startup(function(use)
 	-- packer itself
 	use 'wbthomason/packer.nvim'
 
-	use {
-		'nvim-treesitter/nvim-treesitter',
-		run = ':TSUpdate'
-	}
+	use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
 
 	use {'nvim-lua/plenary.nvim'}
 
@@ -20,24 +17,13 @@ return require('packer').startup(function(use)
 
 	use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
-	-- my changed files picker
-	use { "axkirillov/telescope-changed-files"}
-	-- my conflicts files picker
-	use { "axkirillov/telescope-conflicts"}
-
 	-- install and configure language servers
 	use { "neovim/nvim-lspconfig" }
 	use { "williamboman/mason.nvim" }
 	use { "williamboman/mason-lspconfig.nvim" }
 
 	-- nice command pallete
-	use {
-		"gfeiyou/command-center.nvim",
-		requires = { "nvim-telescope/telescope.nvim" }
-	}
-
-	-- merge conflicts the correct way
-	use {"whiteinge/diffconflicts"}
+	use { "gfeiyou/command-center.nvim", requires = { "nvim-telescope/telescope.nvim" } }
 
 	-- github integration
 	use {'pwntester/octo.nvim'}
@@ -45,23 +31,14 @@ return require('packer').startup(function(use)
 	-- best status line
 	use {'nvim-lualine/lualine.nvim'}
 
-	-- completion
-	--use { 'jayli/vim-easycomplete' }
-
 	-- debug
 	use 'mfussenegger/nvim-dap'
 	use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
 
-	-- snippets (required for easycomplete)
-	use { 'SirVer/ultisnips' }
-
 	-- nice looking menus
 	use {'stevearc/dressing.nvim'}
 
-	use {
-		'ldelossa/gh.nvim',
-		requires = { { 'ldelossa/litee.nvim' } }
-	}
+	use { 'ldelossa/gh.nvim', requires = { { 'ldelossa/litee.nvim' } } }
 
 	use { 'ibhagwan/fzf-lua' }
 
@@ -81,7 +58,6 @@ return require('packer').startup(function(use)
 	-- better quickfix
 	use {'kevinhwang91/nvim-bqf'}
 
-	-- for fish scripts
 	use {'dag/vim-fish'}
 
 	use 'voldikss/vim-floaterm'
@@ -93,6 +69,7 @@ return require('packer').startup(function(use)
 	use 'puremourning/vimspector'
 
 	-- vnoremap <unique> <Leader>== :call PhpAlignAssigns()<CR>
+	-- ^^^ the only reason I have this
 	use 'adoy/vim-php-refactoring-toolbox'
 
 	use {
@@ -120,14 +97,15 @@ return require('packer').startup(function(use)
 	use 'L3MON4D3/LuaSnip'
 	use 'saadparwaiz1/cmp_luasnip'
 
-	use({
-		"kylechui/nvim-surround",
-		config = function()
-			require("nvim-surround").setup({
-				-- Configuration here, or leave empty to use defaults
-			})
-		end
-	})
+	use "kylechui/nvim-surround"
+
+	use 'jose-elias-alvarez/null-ls.nvim'
+
+	use 'samoshkin/vim-mergetool'
+
+	use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
+
+	use { "folke/trouble.nvim", requires = "kyazdani42/nvim-web-devicons", }
 
 	use {
 		"ThePrimeagen/refactoring.nvim",
@@ -136,12 +114,6 @@ return require('packer').startup(function(use)
 			{"nvim-treesitter/nvim-treesitter"}
 		}
 	}
-
-	use 'jose-elias-alvarez/null-ls.nvim'
-
-	use 'samoshkin/vim-mergetool'
-
-	use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
 
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
