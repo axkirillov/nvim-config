@@ -107,14 +107,6 @@ return require('packer').startup(function(use)
 
 	use { "folke/trouble.nvim", requires = "kyazdani42/nvim-web-devicons", }
 
-	use {
-		"ThePrimeagen/refactoring.nvim",
-		requires = {
-			{"nvim-lua/plenary.nvim"},
-			{"nvim-treesitter/nvim-treesitter"}
-		}
-	}
-
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
 	if packer_bootstrap then
