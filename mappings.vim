@@ -30,4 +30,4 @@ nmap <F2> "=localtime()<C-M>p
 nmap <leader>dof :lua vim.diagnostic.open_float()<CR>
 
 "close current buffer
-nmap bd :bd<CR>
+nmap <leader>bd :bd<CR>
