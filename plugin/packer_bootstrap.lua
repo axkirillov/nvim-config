@@ -110,6 +110,9 @@ return require('packer').startup(function(use)
 	-- swapping function variables and other text objects
 	use 'mizlan/iswap.nvim'
 
+	-- status ui for lsp
+	use 'j-hui/fidget.nvim'
+
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
 	if packer_bootstrap then
