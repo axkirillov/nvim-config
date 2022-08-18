@@ -107,6 +107,9 @@ return require('packer').startup(function(use)
 
 	use { "folke/trouble.nvim", requires = "kyazdani42/nvim-web-devicons", }
 
+	-- swapping function variables and other text objects
+	use 'mizlan/iswap.nvim'
+
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
 	if packer_bootstrap then
