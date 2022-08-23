@@ -113,6 +113,9 @@ return require('packer').startup(function(use)
 	-- status ui for lsp
 	use 'j-hui/fidget.nvim'
 
+	-- for plugin development
+	use "folke/lua-dev.nvim"
+
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
 	if packer_bootstrap then
