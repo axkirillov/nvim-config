@@ -26,11 +26,11 @@ syntax on
 filetype plugin indent on
 
 "mappings
-source $NVIM_CONFIG/mappings.vim
+runtime mappings.vim"
 "autocommands
-source $NVIM_CONFIG/autocommands.vim
+runtime autocommands.vim
 "commands
-source $NVIM_CONFIG/commands.vim
+runtime commands.vim
 
 lua require('dressing').setup()
 lua require('nvim-surround').setup()
