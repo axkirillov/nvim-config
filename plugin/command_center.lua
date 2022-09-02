@@ -9,11 +9,11 @@ command_center.add({
 	},
 	{
 		description = "Edit init.vim",
-		cmd = "<CMD>:e $CONFIG/nvim/init.vim<CR>",
+		cmd = "<CMD>e $CONFIG/nvim/init.vim<CR>",
 	},
 	{
 		description = "Source init.vim and reload configs",
-		cmd = "<CMD>:source $CONFIG/nvim/init.vim<CR>",
+		cmd = "<CMD>source $CONFIG/nvim/init.vim<CR>",
 	},
 	{
 		description = "Find in configs",
@@ -21,14 +21,14 @@ command_center.add({
 	},
 	{
 		description = "Delete all buffers",
-		cmd = "<CMD>:%bd|e#<CR>",
+		cmd = "<CMD>%bd|e#<CR>",
 	},
 	{
 		description = "Pick git branch",
-		cmd = "<CMD>:Telescope git_branches<CR>",
+		cmd = "<CMD>Telescope git_branches<CR>",
 	},
 	{
 		description = "List files with conflicts",
-		cmd = "<CMD>:Easypick conflicts<CR>",
+		cmd = "<CMD>Easypick conflicts<CR>",
 	},
 })
