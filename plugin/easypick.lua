@@ -16,7 +16,7 @@ easypick.setup({
 		},
 		{
 			name = "config_files",
-			command = "fd -i -t=f --search-path=" ..  vim.fn.expand('$NVCFG'),
+			command = "fd -i -t=f --search-path=" ..  vim.fn.expand('$NVIM_CONFIG'),
 			previewer = easypick.previewers.default()
 		}
 	}
