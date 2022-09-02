@@ -17,6 +17,7 @@ set scrolloff=10
 set backspace=start
 set awa
 set background=dark
+set clipboard=unnamedplus
 
 "competion menu options to work nicely with autocomplete
 set completeopt=menu,menuone,noselect
