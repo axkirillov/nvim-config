@@ -5,7 +5,7 @@ require "telescope".setup {
 			i = {
 				["<C-j>"] = actions.move_selection_next,
 				["<C-k>"] = actions.move_selection_previous,
-				["<esc>"] = actions.close
+				["<esc>"] = actions.close,
 			}
 		},
 		preview = {
@@ -36,3 +36,4 @@ vim.keymap.set("n", "<C-p>", ":Telescope command_center<CR>", ns)
 vim.keymap.set("n", "<leader>f", ":Telescope find_files<CR>", ns)
 vim.keymap.set("n", "<leader>b", ":Telescope buffers<CR>", ns)
 vim.keymap.set("n", "<leader>t", ":Telescope<CR>", ns)
+vim.keymap.set("n", "<leader>lg", ":Telescope live_grep<CR>", ns)
