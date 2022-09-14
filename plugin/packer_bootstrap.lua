@@ -22,12 +22,6 @@ return require('packer').startup(function(use)
 	use { "williamboman/mason.nvim" }
 	use { "williamboman/mason-lspconfig.nvim" }
 
-	-- nice command pallete
-	use { "gfeiyou/command-center.nvim", requires = { "nvim-telescope/telescope.nvim" } }
-
-	-- github integration
-	use {'pwntester/octo.nvim'}
-
 	-- best status line
 	use {'nvim-lualine/lualine.nvim'}
 
