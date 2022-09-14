@@ -21,14 +21,3 @@ easypick.setup({
 		}
 	}
 })
-
---local easypick_test = require("easypick_test")
---
---easypick_test.setup({
---	pickers = {
---		{
---			name = "ls",
---			command = "ls",
---		},
---	}
---})
