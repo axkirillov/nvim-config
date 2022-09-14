@@ -2,6 +2,15 @@ local easypick = require("easypick")
 
 local base_branch = vim.g.base_branch or "develop"
 
+
+local list = [[
+<< EOF
+:Easypick changed_files
+:Easypick conflicts
+:Easypick config_files
+EOF
+]]
+
 easypick.setup({
 	pickers = {
 		{
@@ -18,6 +27,11 @@ easypick.setup({
 			name = "config_files",
 			command = "fd -i -t=f --search-path=" ..  vim.fn.expand('$NVIM_CONFIG'),
 			previewer = easypick.previewers.default()
+		},
+		{
+			name = "command_palette",
+			command = "cat " .. list,
+			action = easypick.actions.run_nvim_command
 		}
 	}
 })
