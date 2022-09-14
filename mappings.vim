@@ -1,4 +1,4 @@
-let mapleader = "-"
+map <space> <leader>
 
 " disable arrow navigation
 noremap <Up> <Nop>
