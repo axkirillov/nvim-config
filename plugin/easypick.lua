@@ -31,7 +31,8 @@ easypick.setup({
 		{
 			name = "command_palette",
 			command = "cat " .. list,
-			action = easypick.actions.run_nvim_command
+			action = easypick.actions.run_nvim_command,
+			opts = require('telescope.themes').get_dropdown({})
 		}
 	}
 })
