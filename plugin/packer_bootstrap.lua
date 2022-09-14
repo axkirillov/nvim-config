@@ -83,7 +83,7 @@ return require('packer').startup(function(use)
 
 	use 'lewis6991/gitsigns.nvim'
 
-	use {'axkirillov/easypick.nvim', requires = 'nvim-telescope/telescope.nvim'}
+	use {'axkirillov/easypick.nvim', branch = 'test', requires = 'nvim-telescope/telescope.nvim'}
 
 	use 'tpope/vim-fugitive'
 
