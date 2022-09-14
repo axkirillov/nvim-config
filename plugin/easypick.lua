@@ -36,3 +36,6 @@ easypick.setup({
 		}
 	}
 })
+
+local ns = { noremap = true, silent = true }
+vim.keymap.set("n", "<C-p>", ":Easypick command_palette<CR>", ns)

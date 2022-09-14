@@ -33,7 +33,6 @@ require('telescope').load_extension('fzf')
 require'telescope'.load_extension('make')
 
 local ns = { noremap = true, silent = true }
-vim.keymap.set("n", "<C-p>", ":Telescope command_center<CR>", ns)
 vim.keymap.set("n", "<leader>f", ":Telescope find_files<CR>", ns)
 vim.keymap.set("n", "<leader>b", ":Telescope buffers<CR>", ns)
 vim.keymap.set("n", "<leader>t", ":Telescope<CR>", ns)
