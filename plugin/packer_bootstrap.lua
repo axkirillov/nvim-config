@@ -11,8 +11,6 @@ return require('packer').startup(function(use)
 
 	use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
 
-	use {'nvim-lua/plenary.nvim'}
-
 	use {'nvim-telescope/telescope.nvim'}
 
 	use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
