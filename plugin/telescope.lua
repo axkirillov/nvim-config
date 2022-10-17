@@ -30,7 +30,6 @@ require "telescope".setup {
 }
 
 require('telescope').load_extension('fzf')
-require'telescope'.load_extension('make')
 
 local ns = { noremap = true, silent = true }
 vim.keymap.set("n", "<leader>f", ":Telescope find_files<CR>", ns)
