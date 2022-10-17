@@ -27,7 +27,7 @@ syntax on
 filetype plugin indent on
 
 "mappings
-runtime mappings.vim"
+runtime mappings.vim
 "autocommands
 runtime autocommands.vim
 "commands
