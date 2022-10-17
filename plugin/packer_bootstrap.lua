@@ -117,6 +117,8 @@ return require('packer').startup(function(use)
 		require("toggleterm").setup()
 	end}
 
+	use 'famiu/bufdelete.nvim'
+
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
 	if packer_bootstrap then
