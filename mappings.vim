@@ -28,3 +28,6 @@ nmap <F2> "=localtime()<C-M>p
 
 "open diagnostic in a float window
 nmap <leader>dof :lua vim.diagnostic.open_float()<CR>
+
+"open inks with crtl-leftclick
+tmap <C-LeftMouse> <LeftMouse>gx
