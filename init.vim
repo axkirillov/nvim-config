@@ -22,7 +22,8 @@ set clipboard=unnamedplus
 "competion menu options to work nicely with autocomplete
 set completeopt=menu,menuone,noselect
 
-autocmd vimenter * ++nested colorscheme gruvbox
+colorscheme nord
+
 syntax on
 filetype plugin indent on
 
