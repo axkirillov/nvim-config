@@ -73,7 +73,7 @@ return require('packer').startup(function(use)
 
 	use {"junegunn/fzf.vim", requires = {"junegunn/fzf"}, run = function() vim.fn["fzf#install"]() end}
 
-	use 'lewis6991/gitsigns.nvim'
+	-- causing too many problems use 'lewis6991/gitsigns.nvim'
 
 	use {'axkirillov/easypick.nvim', branch = 'test', requires = 'nvim-telescope/telescope.nvim'}
 
