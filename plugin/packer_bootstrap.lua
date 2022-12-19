@@ -56,8 +56,6 @@ return require('packer').startup(function(use)
 
 	use 'AndrewRadev/splitjoin.vim'
 
-	use 'morhetz/gruvbox'
-
 	use 'puremourning/vimspector'
 
 	-- vnoremap <unique> <Leader>== :call PhpAlignAssigns()<CR>
