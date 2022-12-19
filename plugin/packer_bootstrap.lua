@@ -64,12 +64,13 @@ return require('packer').startup(function(use)
 	-- ^^^ the only reason I have this
 	use 'adoy/vim-php-refactoring-toolbox'
 
-	use {
-		'phpactor/phpactor',
-		branch = 'master',
-		ft = 'php',
-		run = 'composer install --no-dev -o',
-	}
+	-- cannot use with php < 8.0
+	-- use {
+	-- 	'phpactor/phpactor',
+	-- 	branch = 'master',
+	-- 	ft = 'php',
+	-- 	run = 'composer install --no-dev -o',
+	-- }
 
 	use {"junegunn/fzf.vim", requires = {"junegunn/fzf"}, run = function() vim.fn["fzf#install"]() end}
 
