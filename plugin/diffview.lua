@@ -29,18 +29,11 @@ require("diffview").setup({
 		log_options = {   -- See ':h diffview-config-log_options'
 			git = {
 				single_file = {
-					max_count = 512,
-					follow = true,
+					diff_merges = "combined",
 				},
 				multi_file = {
-					max_count = 128,
+					diff_merges = "first-parent",
 				},
-			},
-			single_file = {
-				diff_merges = "combined",
-			},
-			multi_file = {
-				diff_merges = "first-parent",
 			},
 		},
 		win_config = {    -- See ':h diffview-config-win_config'
