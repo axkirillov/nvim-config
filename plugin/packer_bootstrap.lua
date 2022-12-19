@@ -30,8 +30,6 @@ return require('packer').startup(function(use)
 	-- nice looking menus
 	use {'stevearc/dressing.nvim'}
 
-	use { 'ldelossa/gh.nvim', requires = { { 'ldelossa/litee.nvim' } } }
-
 	use { 'ibhagwan/fzf-lua' }
 
 	-- Unless you are still migrating, remove the deprecated commands from v1.x
