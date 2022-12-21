@@ -32,18 +32,24 @@ return require('packer').startup(function(use)
 
 	use { 'ibhagwan/fzf-lua' }
 
-	-- Unless you are still migrating, remove the deprecated commands from v1.x
-	vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
-
 	use {
-		"nvim-neo-tree/neo-tree.nvim",
-		branch = "v2.x",
+		'nvim-tree/nvim-tree.lua',
 		requires = {
-			"nvim-lua/plenary.nvim",
-			"kyazdani42/nvim-web-devicons", -- not strictly required, but recommended
-			"MunifTanjim/nui.nvim",
-		}
+			'nvim-tree/nvim-web-devicons', -- optional, for file icons
+		},
 	}
+	---- Unless you are still migrating, remove the deprecated commands from v1.x
+	--vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
+
+	--use {
+	--	"nvim-neo-tree/neo-tree.nvim",
+	--	branch = "v2.x",
+	--	requires = {
+	--		"nvim-lua/plenary.nvim",
+	--		"kyazdani42/nvim-web-devicons", -- not strictly required, but recommended
+	--		"MunifTanjim/nui.nvim",
+	--	}
+	--}
 
 	-- better quickfix
 	use {'kevinhwang91/nvim-bqf'}
