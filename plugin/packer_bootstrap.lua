@@ -120,7 +120,8 @@ return require('packer').startup(function(use)
 
 	use 'LoricAndre/OneTerm.nvim'
 
-	use 'shaunsingh/nord.nvim'
+	-- use 'shaunsingh/nord.nvim'
+	use 'folke/tokyonight.nvim'
 
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins

@@ -22,7 +22,7 @@ set clipboard=unnamedplus
 "competion menu options to work nicely with autocomplete
 set completeopt=menu,menuone,noselect
 
-colorscheme nord
+colorscheme tokyonight
 
 syntax on
 filetype plugin indent on
