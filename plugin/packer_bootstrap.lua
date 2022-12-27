@@ -20,9 +20,6 @@ return require('packer').startup(function(use)
 	use { "williamboman/mason.nvim" }
 	use { "williamboman/mason-lspconfig.nvim" }
 
-	-- best status line
-	use {'nvim-lualine/lualine.nvim'}
-
 	-- debug
 	use 'mfussenegger/nvim-dap'
 	use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
@@ -38,18 +35,6 @@ return require('packer').startup(function(use)
 			'nvim-tree/nvim-web-devicons', -- optional, for file icons
 		},
 	}
-	---- Unless you are still migrating, remove the deprecated commands from v1.x
-	--vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
-
-	--use {
-	--	"nvim-neo-tree/neo-tree.nvim",
-	--	branch = "v2.x",
-	--	requires = {
-	--		"nvim-lua/plenary.nvim",
-	--		"kyazdani42/nvim-web-devicons", -- not strictly required, but recommended
-	--		"MunifTanjim/nui.nvim",
-	--	}
-	--}
 
 	-- better quickfix
 	use {'kevinhwang91/nvim-bqf'}
@@ -58,13 +43,7 @@ return require('packer').startup(function(use)
 
 	use 'voldikss/vim-floaterm'
 
-	use 'AndrewRadev/splitjoin.vim'
-
 	use 'puremourning/vimspector'
-
-	-- vnoremap <unique> <Leader>== :call PhpAlignAssigns()<CR>
-	-- ^^^ the only reason I have this
-	use 'adoy/vim-php-refactoring-toolbox'
 
 	-- cannot use with php < 8.0
 	-- use {
@@ -75,9 +54,6 @@ return require('packer').startup(function(use)
 	-- }
 
 	use {"junegunn/fzf.vim", requires = {"junegunn/fzf"}, run = function() vim.fn["fzf#install"]() end}
-
-	-- causing too many problems
-	-- use 'lewis6991/gitsigns.nvim'
 
 	use {'axkirillov/easypick.nvim', branch = 'test', requires = 'nvim-telescope/telescope.nvim'}
 
@@ -93,18 +69,9 @@ return require('packer').startup(function(use)
 	use 'L3MON4D3/LuaSnip'
 	use 'saadparwaiz1/cmp_luasnip'
 
-	use "kylechui/nvim-surround"
-
-	use 'jose-elias-alvarez/null-ls.nvim'
-
 	use 'samoshkin/vim-mergetool'
 
-	use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
-
 	use { "folke/trouble.nvim", requires = "kyazdani42/nvim-web-devicons", }
-
-	-- swapping function variables and other text objects
-	use 'mizlan/iswap.nvim'
 
 	-- status ui for lsp
 	use 'j-hui/fidget.nvim'
@@ -116,11 +83,8 @@ return require('packer').startup(function(use)
 		require("toggleterm").setup()
 	end}
 
-	use 'famiu/bufdelete.nvim'
-
 	use 'LoricAndre/OneTerm.nvim'
 
-	-- use 'shaunsingh/nord.nvim'
 	use 'folke/tokyonight.nvim'
 
 	-- Automatically set up your configuration after cloning packer.nvim
