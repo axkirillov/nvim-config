@@ -84,3 +84,7 @@ require'lspconfig'.gopls.setup {
       debounce_text_changes = 150,
     },
 }
+
+require'lspconfig'.tsserver.setup{
+    on_attach = on_attach,
+}
