@@ -75,11 +75,6 @@ return require('packer').startup(function(use)
 	-- for plugin development
 	use "folke/lua-dev.nvim"
 
-	use {"akinsho/toggleterm.nvim", tag = '*', config = function()
-		require("toggleterm").setup()
-	end}
-
-	use 'LoricAndre/OneTerm.nvim'
 	use { "catppuccin/nvim", as = "catppuccin" }
 
 
