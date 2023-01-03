@@ -84,8 +84,8 @@ return require('packer').startup(function(use)
 	end}
 
 	use 'LoricAndre/OneTerm.nvim'
+	use { "catppuccin/nvim", as = "catppuccin" }
 
-	use 'folke/tokyonight.nvim'
 
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins

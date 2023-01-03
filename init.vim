@@ -22,7 +22,7 @@ set clipboard=unnamedplus
 "competion menu options to work nicely with autocomplete
 set completeopt=menu,menuone,noselect
 
-colorscheme tokyonight
+colorscheme catppuccin-macchiato " catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
 
 syntax on
 filetype plugin indent on
