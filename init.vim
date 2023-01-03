@@ -35,4 +35,3 @@ runtime autocommands.vim
 runtime commands.vim
 
 lua require('dressing').setup()
-lua require('nvim-surround').setup()
