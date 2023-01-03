@@ -49,14 +49,6 @@ return require('packer').startup(function(use)
 
 	use 'puremourning/vimspector'
 
-	-- cannot use with php < 8.0
-	-- use {
-	-- 	'phpactor/phpactor',
-	-- 	branch = 'master',
-	-- 	ft = 'php',
-	-- 	run = 'composer install --no-dev -o',
-	-- }
-
 	use {"junegunn/fzf.vim", requires = {"junegunn/fzf"}, run = function() vim.fn["fzf#install"]() end}
 
 	use {'axkirillov/easypick.nvim', branch = 'test', requires = 'nvim-telescope/telescope.nvim'}
