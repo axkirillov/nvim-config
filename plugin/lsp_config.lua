@@ -39,10 +39,6 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protoc
 
 require'lspconfig'.sumneko_lua.setup {
     on_attach = on_attach,
-    flags = {
-      -- This will be the default in neovim 0.7+
-      debounce_text_changes = 150,
-    },
     settings = {
         Lua = {
             diagnostics = {
@@ -55,10 +51,6 @@ require'lspconfig'.sumneko_lua.setup {
 require'lspconfig'.intelephense.setup {
 	capabilities = capabilities,
 	on_attach = on_attach,
-	flags = {
-		-- This will be the default in neovim 0.7+
-		debounce_text_changes = 150,
-	},
 	settings = {
 		intelephense = {
 			-- possible values: stubs.txt
@@ -79,10 +71,6 @@ require'lspconfig'.intelephense.setup {
 
 require'lspconfig'.gopls.setup {
     on_attach = on_attach,
-    flags = {
-      -- This will be the default in neovim 0.7+
-      debounce_text_changes = 150,
-    },
 }
 
 require'lspconfig'.tsserver.setup{
