@@ -84,9 +84,6 @@ return require('packer').startup(function(use)
 	use({
 		'ckolkey/ts-node-action',
 		requires = { 'nvim-treesitter' },
-		config = function() -- Optional
-			require("ts-node-action").setup({})
-		end
 	})
 
 	-- Automatically set up your configuration after cloning packer.nvim
