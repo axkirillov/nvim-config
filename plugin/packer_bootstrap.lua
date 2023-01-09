@@ -77,7 +77,17 @@ return require('packer').startup(function(use)
 
 	use { "catppuccin/nvim", as = "catppuccin" }
 
+	-- close buffers gracefully
 	use "moll/vim-bbye"
+
+	-- useful treesitter actions (multiline / join lists, swap case)
+	use({
+		'ckolkey/ts-node-action',
+		requires = { 'nvim-treesitter' },
+		config = function() -- Optional
+			require("ts-node-action").setup({})
+		end
+	})
 
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
