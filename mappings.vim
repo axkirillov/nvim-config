@@ -31,3 +31,6 @@ nmap <leader>dof :lua vim.diagnostic.open_float()<CR>
 
 "find the last link in terminal buffer
 tnoremap <c-o> <c-\><c-n>?http<cr>
+
+" close quickfix
+map <C-c> :ccl<cr>
