@@ -7,4 +7,4 @@ nnoremap <silent> <F1> :FloatermToggle<CR>
 tnoremap <silent> <F1> <C-\><C-n>:FloatermToggle<CR>
 
 "lazygit
-map <leader>g :FloatermNew lazygit<cr>
+map <C-g> :FloatermNew lazygit<cr>
