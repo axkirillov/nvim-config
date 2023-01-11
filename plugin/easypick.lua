@@ -11,7 +11,7 @@ grep -wv Makefile
 easypick.setup({
 	pickers = {
 		{
-			name = "changed_files",
+			name = "changed files",
 			command = "git diff --name-only $(git merge-base HEAD " .. base_branch .. " )",
 			previewer = easypick.previewers.branch_diff({base_branch = base_branch})
 		},
@@ -21,14 +21,20 @@ easypick.setup({
 			previewer = easypick.previewers.file_diff(),
 		},
 		{
-			name = "config_files",
+			name = "config files",
 			command = "fd -i -t=f --search-path=" ..  vim.fn.expand('$NVIM_CONFIG'),
 			previewer = easypick.previewers.default()
 		},
 		{
-			name = "make_targets",
+			name = "make targets",
 			command = list_make_targets,
 			action = easypick.actions.nvim_command("FloatermNew make"),
+			opts = require('telescope.themes').get_dropdown({})
+		},
+		{
+			name = "merge tool",
+			command = "echo MergetoolToggle",
+			action = easypick.actions.nvim_command(),
 			opts = require('telescope.themes').get_dropdown({})
 		}
 	}
