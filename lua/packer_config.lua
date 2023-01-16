@@ -109,6 +109,8 @@ return function(use)
 	-- Diffview
 	use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
 
+	use 'ggandor/leap.nvim'
+
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
 	if packer_bootstrap then
