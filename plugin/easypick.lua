@@ -28,7 +28,13 @@ easypick.setup({
 		{
 			name = "make targets",
 			command = list_make_targets,
-			action = easypick.actions.nvim_command("FloatermNew make"),
+			action = easypick.actions.nvim_command("FloatermNew --autoclose=0 make"),
+			opts = require('telescope.themes').get_dropdown({})
+		},
+		{
+			name = "just",
+			command = "just --summary | tr ' ' '\n'",
+			action = easypick.actions.nvim_command("FloatermNew --autoclose=0 just"),
 			opts = require('telescope.themes').get_dropdown({})
 		},
 		{
@@ -43,3 +49,4 @@ easypick.setup({
 local ns = { noremap = true, silent = true }
 vim.keymap.set("n", "<C-p>", ":Easypick<CR>", ns)
 vim.keymap.set("n", "<leader>m", ":Easypick make_targets<CR>", ns)
+vim.keymap.set("n", "<leader>j", ":Easypick just<CR>", ns)
