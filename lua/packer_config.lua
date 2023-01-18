@@ -111,6 +111,9 @@ return function(use)
 
 	use 'ggandor/leap.nvim'
 
+	-- Justfile syntax highlighting
+	use 'NoahTheDuke/vim-just'
+
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
 	if packer_bootstrap then
