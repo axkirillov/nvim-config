@@ -27,7 +27,7 @@ map <leader>cf :!mkdir -p "$(dirname <cfile>)"<CR> :e <cfile><CR>
 nmap <F2> "=localtime()<C-M>p
 
 "open diagnostic in a float window
-nmap <leader>dof :lua vim.diagnostic.open_float()<CR>
+nmap <leader>df :lua vim.diagnostic.open_float()<CR>
 
 "find the last link in terminal buffer
 tnoremap <c-o> <c-\><c-n>?http<cr>
