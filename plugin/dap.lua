@@ -2,7 +2,7 @@ local dap = require('dap')
 
 dap.adapters.php = {
 	type = 'executable',
-	command = 'node',
+	command = 'php-debug-adapter',
 }
 
 dap.configurations.php = {
@@ -10,7 +10,10 @@ dap.configurations.php = {
 		type = 'php',
 		request = 'launch',
 		name = 'Listen for Xdebug',
-		port = 9000
+		port = 9003,
+		pathMappings = {
+			["/myposter"] = "${workspaceFolder}"
+		}
 	}
 }
 
@@ -19,7 +22,7 @@ dap.adapters.delve = {
 	port = '${port}',
 	executable = {
 		command = 'dlv',
-		args = {'dap', '-l', '127.0.0.1:${port}'},
+		args = { 'dap', '-l', '127.0.0.1:${port}' },
 	}
 }
 
@@ -39,3 +42,6 @@ dap.configurations.go = {
 		}
 	},
 }
+
+vim.api.nvim_create_user_command('Continue', ":lua require('dap').continue()", {})
+vim.api.nvim_create_user_command('Breakpoint', ":lua require('dap').toggle_breakpoint()", {})
