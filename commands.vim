@@ -31,3 +31,5 @@ endfunction
 
 command AddPHPStrictTypes :call AddPHPStrictTypesFunc()
 
+command W :w
+
