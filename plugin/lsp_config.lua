@@ -72,6 +72,7 @@ require 'lspconfig'.intelephense.setup {
 				'json',
 				'ctype',
 				'SimpleXML',
+				'Reflection',
 			}
 		}
 	}
