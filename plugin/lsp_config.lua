@@ -1,3 +1,9 @@
+-- NEODEV
+-- IMPORTANT: make sure to setup neodev BEFORE lspconfig
+require("neodev").setup({
+  -- add any options here, or leave empty to use the default settings
+})
+
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 local opts = { noremap = true, silent = true }
@@ -36,12 +42,15 @@ end
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-require 'lspconfig'.sumneko_lua.setup {
+require 'lspconfig'.lua_ls.setup {
 	on_attach = on_attach,
 	settings = {
 		Lua = {
 			diagnostics = {
 				globals = { 'vim' }
+			},
+			completion = {
+				callSnippet = "Replace"
 			}
 		}
 	}
