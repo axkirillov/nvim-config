@@ -132,6 +132,8 @@ return function(use)
 		end,
 	})
 
+	use 'echasnovski/mini.bracketed'
+
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
 	if packer_bootstrap then
