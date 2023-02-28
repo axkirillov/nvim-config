@@ -33,4 +33,7 @@ command AddPHPStrictTypes :call AddPHPStrictTypesFunc()
 
 command W :w
 
+" close all buffers but this one
+command CloseAllButThisOne :%bd|e#
+
 command LspLines :lua require("lsp_lines").toggle()
