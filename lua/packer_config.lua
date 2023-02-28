@@ -7,10 +7,10 @@ return function(use)
 	use {
 		'nvim-telescope/telescope.nvim', tag = '0.1.0',
 		-- or                            , branch = '0.1.x',
-		requires = { {'nvim-lua/plenary.nvim'} }
+		requires = { { 'nvim-lua/plenary.nvim' } }
 	}
 
-	use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+	use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
 	-- install and configure language servers
 	use { "neovim/nvim-lspconfig" }
@@ -19,10 +19,10 @@ return function(use)
 
 	-- debug
 	use 'mfussenegger/nvim-dap'
-	use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
+	use { "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } }
 
 	-- nice looking menus
-	use {'stevearc/dressing.nvim'}
+	use { 'stevearc/dressing.nvim' }
 
 	use { 'ibhagwan/fzf-lua' }
 
@@ -34,17 +34,17 @@ return function(use)
 	}
 
 	-- better quickfix
-	use {'kevinhwang91/nvim-bqf'}
+	use { 'kevinhwang91/nvim-bqf' }
 
-	use {'dag/vim-fish'}
+	use { 'dag/vim-fish' }
 
 	use 'voldikss/vim-floaterm'
 
 	use 'puremourning/vimspector'
 
-	use {"junegunn/fzf.vim", requires = {"junegunn/fzf"}, run = function() vim.fn["fzf#install"]() end}
+	use { "junegunn/fzf.vim", requires = { "junegunn/fzf" }, run = function() vim.fn["fzf#install"]() end }
 
-	use {'axkirillov/easypick.nvim', branch = 'test', requires = 'nvim-telescope/telescope.nvim'}
+	use { 'axkirillov/easypick.nvim', branch = 'test', requires = 'nvim-telescope/telescope.nvim' }
 
 	use 'tpope/vim-fugitive'
 
@@ -119,7 +119,7 @@ return function(use)
 		'Wansmer/treesj',
 		requires = { 'nvim-treesitter' },
 		config = function()
-			require('treesj').setup({--[[ your config ]]})
+			require('treesj').setup({ --[[ your config ]] })
 		end,
 	})
 
