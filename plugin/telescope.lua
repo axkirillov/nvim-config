@@ -2,11 +2,16 @@ local actions = require("telescope.actions")
 require "telescope".setup {
 	defaults = {
 		mappings = {
+			n = {
+				['<c-d>'] = require('telescope.actions').delete_buffer
+			}, -- n
 			i = {
 				["<C-j>"] = actions.move_selection_next,
 				["<C-k>"] = actions.move_selection_previous,
 				["<esc>"] = actions.close,
+				['<c-d>'] = require('telescope.actions').delete_buffer
 			}
+
 		},
 		preview = {
 			treesitter = false
@@ -20,7 +25,7 @@ require "telescope".setup {
 
 	pickers = {
 		find_files = {
-			find_command = { "fd", "--type", "f", "--strip-cwd-prefix", "-E", ".git", "-H"},
+			find_command = { "fd", "--type", "f", "--strip-cwd-prefix", "-E", ".git", "-H" },
 		},
 		git_branches = {
 			theme = "dropdown",
@@ -37,7 +42,7 @@ vim.keymap.set("n", "<leader>b", ":Telescope buffers<CR>", ns)
 vim.keymap.set("n", "<leader>t", ":Telescope<CR>", ns)
 vim.keymap.set("n", "<leader>lg", ":Telescope live_grep<CR>", ns)
 vim.keymap.set("n", "<leader>g", ":Telescope git_status<CR>", ns)
-local symbols = function ()
-	require'telescope.builtin'.lsp_document_symbols(require('telescope.themes').get_dropdown({previewer=false}))
+local symbols = function()
+	require 'telescope.builtin'.lsp_document_symbols(require('telescope.themes').get_dropdown({ previewer = false }))
 end
 vim.keymap.set("n", "<leader>s", symbols, ns)
