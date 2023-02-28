@@ -33,3 +33,4 @@ command AddPHPStrictTypes :call AddPHPStrictTypesFunc()
 
 command W :w
 
+command LspLines :lua require("lsp_lines").toggle()
