@@ -33,3 +33,5 @@ runtime mappings.vim
 runtime autocommands.vim
 "commands
 runtime commands.vim
+
+lua require("plugins")
