@@ -133,6 +133,7 @@ return function(use)
 	})
 
 	use 'echasnovski/mini.bracketed'
+
 	use(
 		{
 			"aaronhallaert/ts-advanced-git-search.nvim",
@@ -146,6 +147,8 @@ return function(use)
 			},
 		}
 	)
+
+	use 'towolf/vim-helm'
 
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
