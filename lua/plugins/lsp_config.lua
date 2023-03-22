@@ -1,7 +1,7 @@
 -- NEODEV
 -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
 require("neodev").setup({
-  -- add any options here, or leave empty to use the default settings
+	-- add any options here, or leave empty to use the default settings
 })
 
 -- Mappings.
@@ -38,6 +38,7 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, bufopts)
 	vim.keymap.set('n', 'gr', telescope_builtin.lsp_references, bufopts)
 	--vim.keymap.set('n', '<space>fm', vim.lsp.buf.format, bufopts)
+	vim.keymap.set('n', '=', vim.lsp.buf.format, bufopts)
 end
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -89,5 +90,3 @@ require 'lspconfig'.tsserver.setup {
 require 'lspconfig'.terraformls.setup {
 	on_attach = on_attach
 }
-
-vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
