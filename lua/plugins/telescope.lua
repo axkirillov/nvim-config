@@ -9,7 +9,7 @@ require "telescope".setup {
 				["<C-j>"] = actions.move_selection_next,
 				["<C-k>"] = actions.move_selection_previous,
 				["<esc>"] = actions.close,
-				['<c-d>'] = require('telescope.actions').delete_buffer
+				['<c-x>'] = require('telescope.actions').delete_buffer
 			}
 
 		},
