@@ -34,5 +34,7 @@ runtime autocommands.vim
 "commands
 runtime commands.vim
 
+lua require("lazy_bootstrap")
+lua require("lazy").setup("plugins_lazy")
 lua require("plugins")
 lua require("mappings")
