@@ -33,10 +33,10 @@ imap <silent><script><expr> <C-F> copilot#Accept("\<CR>")
 let g:copilot_no_tab_map = v:true
 
 "more comfortable movement
-nmap H ^
-nmap L $
-nmap J }
-nmap K {
+map H ^
+map L $
+map J }
+map K {
 
 "give a new home to J
 noremap M J
