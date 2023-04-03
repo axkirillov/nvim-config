@@ -18,7 +18,7 @@ return {
 			cursor_behavior = 'hold',
 			-- Notify about possible problems or not
 			notify = true,
-			langs = langs,
+			langs = {},
 			-- Use `dot` for repeat action
 			dot_repeat = true,
 		})
