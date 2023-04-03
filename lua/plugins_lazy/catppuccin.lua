@@ -3,7 +3,7 @@ return {
 	name = "catppuccin",
 	opts = {
 		integrations = {
-			nvimtree = true,
+			cmp = true,
 			telescope = true,
 			treesitter = true,
 		},

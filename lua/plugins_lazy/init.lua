@@ -3,7 +3,7 @@ return {
 	{ "williamboman/mason.nvim" },
 	{ "williamboman/mason-lspconfig.nvim" },
 	'mfussenegger/nvim-dap',
-	{ "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap" } },
+	{ "rcarriga/nvim-dap-ui",  dependencies = { "mfussenegger/nvim-dap" } },
 
 	-- nice looking menus
 	{ 'stevearc/dressing.nvim' },
@@ -25,11 +25,8 @@ return {
 	'voldikss/vim-floaterm',
 
 	'puremourning/vimspector',
-
-	{ "junegunn/fzf.vim", dependencies = { "junegunn/fzf" }, build = function() vim.fn["fzf#install"]() end },
-
-	{ 'axkirillov/easypick.nvim', branch = 'test', dependencies = 'nvim-telescope/telescope.nvim' },
-
+	{ "junegunn/fzf.vim",         dependencies = { "junegunn/fzf" }, build = function() vim.fn["fzf#install"]() end },
+	{ 'axkirillov/easypick.nvim', branch = 'test',                   dependencies = 'nvim-telescope/telescope.nvim' },
 	'tpope/vim-fugitive',
 
 	-- completion
@@ -53,7 +50,7 @@ return {
 	-- for plugin development
 	"folke/lua-dev.nvim",
 
-	{ "catppuccin/nvim", as = "catppuccin" },
+	{ "catppuccin/nvim",    as = "catppuccin" },
 
 	-- close buffers gracefully
 	"moll/vim-bbye",
@@ -113,5 +110,26 @@ return {
 			-- to show diff splits and open commits in browser
 			"tpope/vim-fugitive",
 		},
+	},
+
+	'towolf/vim-helm',
+
+	'github/copilot.vim',
+
+	{
+		"folke/noice.nvim",
+		config = function()
+			require("noice").setup({
+				-- add any options here
+			})
+		end,
+		dependencies = {
+			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+			"MunifTanjim/nui.nvim",
+			-- OPTIONAL:
+			--   `nvim-notify` is only needed, if you want to use the notification view.
+			--   If not available, we use `mini` as the fallback
+			"rcarriga/nvim-notify",
+		}
 	},
 }

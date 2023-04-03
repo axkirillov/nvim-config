@@ -34,7 +34,7 @@ runtime autocommands.vim
 runtime commands.vim
 
 lua require("lazy_bootstrap")
-lua require("lazy").setup("plugins_lazy")
+lua require("lazy").setup("plugins_lazy", {change_detection = { enabled = true, notify = false} })
 lua require("plugins")
 lua require("mappings")
 
