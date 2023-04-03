@@ -38,3 +38,6 @@ nmap H ^
 nmap L $
 nmap J }
 nmap K {
+
+"give a new home to J
+noremap M J
