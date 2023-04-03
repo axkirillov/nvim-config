@@ -22,7 +22,6 @@ set clipboard=unnamedplus
 "competion menu options to work nicely with autocomplete
 set completeopt=menu,menuone,noselect
 
-colorscheme catppuccin-macchiato " catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
 
 syntax on
 filetype plugin indent on
@@ -38,3 +37,5 @@ lua require("lazy_bootstrap")
 lua require("lazy").setup("plugins_lazy")
 lua require("plugins")
 lua require("mappings")
+
+colorscheme catppuccin-macchiato " catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha

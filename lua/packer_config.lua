@@ -68,7 +68,7 @@ return function(use)
 	-- for plugin development
 	use "folke/lua-dev.nvim"
 
-	use { "catppuccin/nvim", as = "catppuccin" }
+	use { "catppuccin/nvim", name = "catppuccin" }
 
 	-- close buffers gracefully
 	use "moll/vim-bbye"
