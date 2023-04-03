@@ -1,6 +1,6 @@
 map <space> <leader>
 
-" disable arrow navigation
+"disable arrow navigation
 noremap <Up> <Nop>
 noremap <Down> <Nop>
 noremap <Left> <Nop>
@@ -25,11 +25,10 @@ nmap <F2> "=localtime()<C-M>p
 "open diagnostic in a float window
 nmap <leader>df :lua vim.diagnostic.open_float()<CR>
 
-" close quickfix
+"close quickfix
 map <C-c> :ccl<cr>
 
-
-" copilot accept suggestion
+"copilot accept suggestion
 imap <silent><script><expr> <C-F> copilot#Accept("\<CR>")
 let g:copilot_no_tab_map = v:true
 
