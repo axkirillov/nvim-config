@@ -6,10 +6,6 @@ noremap <Down> <Nop>
 noremap <Left> <Nop>
 noremap <Right> <Nop>
 
-" remap paragraph  navigation
-noremap <C-b> {
-noremap <C-d> }
-
 "to exit terminal mode
 tnoremap <C-e> <C-\><C-n>
 
