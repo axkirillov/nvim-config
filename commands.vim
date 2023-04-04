@@ -31,7 +31,9 @@ endfunction
 
 command AddPHPStrictTypes :call AddPHPStrictTypesFunc()
 
+" frequent typos
 command W :w
+command Q :q
 
 " close all buffers but this one
 command CloseAllButThisOne :%bd|e#
