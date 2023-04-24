@@ -1,1 +1,1 @@
-return 'voldikss/vim-floaterm'
+return { "neovim/nvim-lspconfig" }

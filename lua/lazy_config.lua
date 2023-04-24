@@ -4,6 +4,6 @@ return {
 		notify = false,
 	},
 	defaults = {
-		lazy = true, -- should plugins be lazy-loaded?
+		lazy = false, -- should plugins be lazy-loaded?
 	},
 }

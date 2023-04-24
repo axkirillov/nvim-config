@@ -1,8 +1,12 @@
 return {
 	{ "neovim/nvim-lspconfig" },
+
 	{ "williamboman/mason.nvim" },
+
 	{ "williamboman/mason-lspconfig.nvim" },
+
 	'mfussenegger/nvim-dap',
+
 	{ "rcarriga/nvim-dap-ui",  dependencies = { "mfussenegger/nvim-dap" } },
 
 	-- nice looking menus
@@ -43,14 +47,6 @@ return {
 
 	{ "folke/trouble.nvim", dependencies = "nvim-tree/nvim-web-devicons", },
 
-	-- status ui for lsp
-	'j-hui/fidget.nvim',
-
-	-- for plugin development
-	"folke/lua-dev.nvim",
-
-	{ "catppuccin/nvim",    as = "catppuccin" },
-
 	-- close buffers gracefully
 	"moll/vim-bbye",
 
@@ -76,18 +72,8 @@ return {
 	-- Diffview
 	{ 'sindrets/diffview.nvim', dependencies = 'nvim-lua/plenary.nvim' },
 
-	'ggandor/leap.nvim',
-
 	-- Justfile syntax highlighting
 	'NoahTheDuke/vim-just',
-
-	{
-		'Wansmer/treesj',
-		dependencies = { 'nvim-treesitter' },
-		config = function()
-			require('treesj').setup({ --[[ your config ]] })
-		end,
-	},
 
 	"folke/neodev.nvim",
 
@@ -99,17 +85,18 @@ return {
 	},
 
 	'echasnovski/mini.bracketed',
-	{
-		"aaronhallaert/ts-advanced-git-search.nvim",
-		config = function()
-			require("telescope").load_extension("advanced_git_search")
-		end,
-		dependencies = {
-			"nvim-telescope/telescope.nvim",
-			-- to show diff splits and open commits in browser
-			"tpope/vim-fugitive",
-		},
-	},
+
+--	{
+--		"aaronhallaert/ts-advanced-git-search.nvim",
+--		config = function()
+--			require("telescope").load_extension("advanced_git_search")
+--		end,
+--		dependencies = {
+--			"nvim-telescope/telescope.nvim",
+--			-- to show diff splits and open commits in browser
+--			"tpope/vim-fugitive",
+--		},
+--	},
 
 	'towolf/vim-helm',
 
@@ -131,4 +118,12 @@ return {
 			"rcarriga/nvim-notify",
 		}
 	},
+
+	{
+		'axkirillov/hbac.nvim',
+		config = function ()
+			require("hbac").setup()
+		end,
+		branch = "test"
+	}
 }

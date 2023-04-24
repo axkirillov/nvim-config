@@ -4,8 +4,8 @@ return {
 	opts = {
 		integrations = {
 			cmp = true,
-			telescope = true,
 			treesitter = true,
+--			telescope = true,
 		},
 	}
 }

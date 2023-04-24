@@ -43,5 +43,9 @@ dap.configurations.go = {
 	},
 }
 
-vim.api.nvim_create_user_command('Continue', ":lua require('dap').continue()", {})
-vim.api.nvim_create_user_command('Breakpoint', ":lua require('dap').toggle_breakpoint()", {})
+
+vim.keymap.set("n", "<F5>", function() dap.continue() end, { noremap = true })
+vim.keymap.set("n", "<F9>", function() dap.toggle_breakpoint() end, { noremap = true })
+vim.keymap.set("n", "<F10>", function() dap.step_over() end, { noremap = true })
+vim.keymap.set("n", "<F11>", function() dap.step_into() end, { noremap = true })
+vim.keymap.set("n", "<F12>", function() dap.step_out() end, { noremap = true })
