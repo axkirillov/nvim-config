@@ -45,8 +45,6 @@ return {
 
 	'samoshkin/vim-mergetool',
 
-	{ "folke/trouble.nvim", dependencies = "nvim-tree/nvim-web-devicons", },
-
 	-- close buffers gracefully
 	"moll/vim-bbye",
 
