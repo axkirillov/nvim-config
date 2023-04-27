@@ -31,32 +31,30 @@ local config = {
 		max_lines = 10000, -- How many lines of git status results to process. Anything after this will be dropped.
 		-- Anything before this will be used. The last items to be processed are the untracked files.
 	},
-	hide_root_node = false,          -- Hide the root node.
+	hide_root_node = false,         -- Hide the root node.
 	retain_hidden_root_indent = false, -- IF the root node is hidden, keep the indentation anyhow.
 	-- This is needed if you use expanders because they render in the indent.
-	log_level = "info",              -- "trace", "debug", "info", "warn", "error", "fatal"
-	log_to_file = false,             -- true, false, "/path/to/file.log", use :NeoTreeLogs to show the file
+	log_level = "info",             -- "trace", "debug", "info", "warn", "error", "fatal"
+	log_to_file = false,            -- true, false, "/path/to/file.log", use :NeoTreeLogs to show the file
 	open_files_in_last_window = true, -- false = open files in top left window
-	popup_border_style = "NC",       -- "double", "none", "rounded", "shadow", "single" or "solid"
-	resize_timer_interval = 500,     -- in ms, needed for containers to redraw right aligned and faded content
+	popup_border_style = "NC",      -- "double", "none", "rounded", "shadow", "single" or "solid"
+	resize_timer_interval = 500,    -- in ms, needed for containers to redraw right aligned and faded content
 	-- set to -1 to disable the resize timer entirely
 	--                           -- NOTE: this will speed up to 50 ms for 1 second following a resize
 	sort_case_insensitive = false, -- used when sorting files and directories in the tree
-	sort_function = nil,         -- uses a custom function for sorting files and directories in the tree
+	sort_function = nil,        -- uses a custom function for sorting files and directories in the tree
 	use_popups_for_input = true, -- If false, inputs will use vim.ui.input() instead of custom floats.
 	use_default_mappings = true,
 	-- source_selector provides clickable tabs to switch between sources.
 	source_selector = {
-		winbar = false,                    -- toggle to show selector on winbar
-		statusline = false,                -- toggle to show selector on statusline
+		winbar = false,                  -- toggle to show selector on winbar
+		statusline = false,              -- toggle to show selector on statusline
 		show_scrolled_off_parent_node = false, -- this will replace the tabs with the parent path
 		-- of the top visible node when scrolled down.
-		tab_labels = {
-		                                   -- falls back to source_name if nil
-			filesystem = "  Files ",
-			buffers = "  Buffers ",
-			git_status = "  Git ",
-			diagnostics = " 裂Diagnostics ",
+		sources = {
+			{ source = "filesystem" },
+			{ source = "buffers" },
+			{ source = "git_status" },
 		},
 		content_layout = "start", -- only with `tabs_layout` = "equal", "focus"
 		--                start  : |/ 裡 bufname     \/...
@@ -69,9 +67,9 @@ local config = {
 		--             equal  : |/    a    \/    b    \/    c    \|
 		--             active : |/  focused tab    \/  b  \/  c  \|
 		truncation_character = "…", -- character to use when truncating the tab label
-		tabs_min_width = nil,   -- nil | int: if int padding is added based on `content_layout`
-		tabs_max_width = nil,   -- this will truncate text even if `text_trunc_to_fit = false`
-		padding = 0,            -- can be int or table
+		tabs_min_width = nil, -- nil | int: if int padding is added based on `content_layout`
+		tabs_max_width = nil, -- this will truncate text even if `text_trunc_to_fit = false`
+		padding = 0,          -- can be int or table
 		-- padding = { left = 2, right = 0 },
 		-- separator = "▕", -- can be string or table, see below
 		separator = { left = "▏", right = "▕" },
@@ -288,14 +286,14 @@ local config = {
 	},
 	nesting_rules = {},
 	window = {
-	                           -- see https://github.com/MunifTanjim/nui.nvim/tree/main/lua/nui/popup for
+		-- see https://github.com/MunifTanjim/nui.nvim/tree/main/lua/nui/popup for
 		-- possible options. These can also be functions that return these options.
-		position = "left",     -- left, right, top, bottom, float, current
-		width = 40,            -- applies to left and right positions
-		height = 15,           -- applies to top and bottom positions
+		position = "left",   -- left, right, top, bottom, float, current
+		width = 40,          -- applies to left and right positions
+		height = 15,         -- applies to top and bottom positions
 		auto_expand_width = false, -- expand the window when file exceeds the window width. does not work with position = "float"
 		popup = {
-		                       -- settings that apply to float position only
+			-- settings that apply to float position only
 			size = {
 				height = "80%",
 				width = "50%",
@@ -383,9 +381,9 @@ local config = {
 		--         The first field in each component is the name of the function to call.
 		--         The rest of the fields are passed to the function as the "config" argument.
 		filtered_items = {
-			visible = false,                 -- when true, they will just be displayed differently than normal items
+			visible = false,              -- when true, they will just be displayed differently than normal items
 			force_visible_in_empty_folder = false, -- when true, hidden files will be shown if the root folder is otherwise empty
-			show_hidden_count = true,        -- when true, the number of hidden items in each folder will be shown as the last entry
+			show_hidden_count = true,     -- when true, the number of hidden items in each folder will be shown as the last entry
 			hide_dotfiles = true,
 			hide_gitignored = true,
 			hide_hidden = true, -- only works on Windows for hidden files/directories
@@ -442,9 +440,9 @@ local config = {
 		--  end
 		--  return args
 		--end,
-		group_empty_dirs = false,           -- when true, empty folders will be grouped together
-		search_limit = 50,                  -- max number of search results when using filters
-		follow_current_file = true,         -- This will find and focus the file in the active buffer every time
+		group_empty_dirs = false,         -- when true, empty folders will be grouped together
+		search_limit = 50,                -- max number of search results when using filters
+		follow_current_file = true,       -- This will find and focus the file in the active buffer every time
 		-- the current file is changed while the tree is open.
 		hijack_netrw_behavior = "open_default", -- netrw disabled, opening a directory opens neo-tree
 		-- in whatever position is specified in window.position
