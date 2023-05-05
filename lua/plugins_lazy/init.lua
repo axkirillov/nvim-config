@@ -27,7 +27,6 @@ return {
 	{ 'dag/vim-fish' },
 
 	'voldikss/vim-floaterm',
-
 	{ "junegunn/fzf.vim",         dependencies = { "junegunn/fzf" }, build = function() vim.fn["fzf#install"]() end },
 	{ 'axkirillov/easypick.nvim', branch = 'test',                   dependencies = 'nvim-telescope/telescope.nvim' },
 	'tpope/vim-fugitive',
@@ -39,8 +38,14 @@ return {
 	'hrsh7th/cmp-cmdline',
 	'hrsh7th/nvim-cmp',
 
-	'L3MON4D3/LuaSnip',
-	"rafamadriz/friendly-snippets",
+	{
+		"L3MON4D3/LuaSnip",
+		dependencies = { "rafamadriz/friendly-snippets" },
+		config = function()
+			require("luasnip/loaders/from_vscode").load()
+		end,
+	},
+
 	'saadparwaiz1/cmp_luasnip',
 
 	'samoshkin/vim-mergetool',
@@ -107,7 +112,7 @@ return {
 
 	{
 		'axkirillov/hbac.nvim',
-		config = function ()
+		config = function()
 			require("hbac").setup()
 		end,
 		branch = "test"
