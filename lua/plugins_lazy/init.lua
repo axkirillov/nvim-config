@@ -38,6 +38,15 @@ return {
 	'hrsh7th/cmp-cmdline',
 	'hrsh7th/nvim-cmp',
 
+	{
+		"L3MON4D3/LuaSnip",
+		config = function()
+			require("luasnip/loaders/from_vscode").load()
+		end,
+	},
+
+	'saadparwaiz1/cmp_luasnip',
+
 	'samoshkin/vim-mergetool',
 
 	-- close buffers gracefully
