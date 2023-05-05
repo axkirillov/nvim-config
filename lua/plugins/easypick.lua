@@ -8,16 +8,6 @@ awk -F':' '/^[a-zA-Z0-9][^$#\/\t=]*:([^=]|$)/ {split($1,A,/ /);for(i in A)print 
 grep -wv Makefile
 ]]
 
-local command_palette = [[
-<< EOF
-Easypick changed files
-Easypick conflicts
-MergetoolToggle
-Easypick make
-Easypick just
-EOF
-]]
-
 easypick.setup({
 	pickers = {
 		{
@@ -42,16 +32,8 @@ easypick.setup({
 			action = easypick.actions.nvim_command("FloatermNew --autoclose=0 just"),
 			opts = require('telescope.themes').get_dropdown({})
 		},
-		{
-			name = "command pallete",
-			command = "cat" .. command_palette,
-			action = easypick.actions.nvim_command(),
-			opts = require('telescope.themes').get_dropdown({})
-		}
 	}
 })
 
 local ns = { noremap = true, silent = true }
 vim.keymap.set("n", "<C-p>", ":Easypick<CR>", ns)
-vim.keymap.set("n", "<leader>m", ":Easypick make_targets<CR>", ns)
-vim.keymap.set("n", "<leader>j", ":Easypick just<CR>", ns)
