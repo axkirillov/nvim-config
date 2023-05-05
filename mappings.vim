@@ -29,7 +29,7 @@ nmap <leader>df :lua vim.diagnostic.open_float()<CR>
 map <C-c> :ccl<cr>
 
 "copilot accept suggestion
-imap <silent><script><expr> <C-F> copilot#Accept("\<CR>")
+imap <silent><script><expr> <M-l> copilot#Accept("\<CR>")
 let g:copilot_no_tab_map = v:true
 
 "more comfortable movement
