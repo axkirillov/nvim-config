@@ -38,7 +38,7 @@ require('telescope').load_extension('fzf')
 
 local ns = { noremap = true, silent = true }
 vim.keymap.set("n", "<leader>f", ":Telescope find_files<CR>", ns)
-vim.keymap.set("n", "<leader>b", ":Telescope buffers<CR>", ns)
+vim.keymap.set("n", "<leader>b", ":Hbac telescope<CR>", ns)
 vim.keymap.set("n", "<leader>t", ":Telescope<CR>", ns)
 vim.keymap.set("n", "<leader>lg", ":Telescope live_grep<CR>", ns)
 vim.keymap.set("n", "<leader>g", ":Telescope git_status<CR>", ns)
