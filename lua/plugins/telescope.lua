@@ -3,13 +3,9 @@ require "telescope".setup {
 	defaults = {
 		mappings = {
 			n = {
-				['<c-d>'] = require('telescope.actions').delete_buffer
-			}, -- n
+			},
 			i = {
-				["<C-j>"] = actions.move_selection_next,
-				["<C-k>"] = actions.move_selection_previous,
 				["<esc>"] = actions.close,
-				['<c-x>'] = require('telescope.actions').delete_buffer
 			}
 
 		},
