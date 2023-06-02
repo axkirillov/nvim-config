@@ -40,3 +40,9 @@ map K {
 
 "give a new home to J
 noremap M J
+
+"lazygit
+map <silent> <C-g> :!tmux split-window -Z "lazygit"<cr>
+
+"popup terminal
+map <silent> <F1> :!tmux popup -E -w 160 -h 40 -d $(pwd)<cr>
