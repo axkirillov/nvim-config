@@ -6,6 +6,7 @@ require "telescope".setup {
 			},
 			i = {
 				["<esc>"] = actions.close,
+				["<C-j>"] = actions.select_default,
 			}
 
 		},
