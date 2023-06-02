@@ -26,7 +26,7 @@ nmap <F2> "=localtime()<C-M>p
 nmap <leader>df :lua vim.diagnostic.open_float()<CR>
 
 "close quickfix
-map <C-c> :ccl<cr>
+map <silent> <C-c> :ccl<cr>
 
 "copilot accept suggestion
 imap <silent><script><expr> <M-l> copilot#Accept("\<CR>")
