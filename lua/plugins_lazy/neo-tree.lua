@@ -309,12 +309,9 @@ local config = {
 			nowait = true,
 		},
 		mappings = {
-			["<space>"] = {
-				"toggle_node",
-				nowait = false, -- disable `nowait` if you have existing combos starting with this char that you want to use
-			},
+			["<space>"] = "none",
 			["<2-LeftMouse>"] = "open",
-			["<cr>"] = "open",
+			["<C-j>"] = "open",
 			["<esc>"] = "revert_preview",
 			["P"] = { "toggle_preview", config = { use_float = true } },
 			["S"] = "open_split",
