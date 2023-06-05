@@ -46,3 +46,6 @@ map <silent> <C-g> :!tmux split-window -Z "lazygit"<cr>
 
 "popup terminal
 map <silent> <F1> :!tmux popup -E -w 160 -h 40 -d $(pwd)<cr>
+
+"gb to open git blame (requires fugitive)
+nnoremap <silent> gb :Gblame<CR>
