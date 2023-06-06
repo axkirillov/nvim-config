@@ -1,5 +1,6 @@
 {
   "LuaSnip": { "branch": "master", "commit": "51ebb4b6637290e1b8e0fb0d6f38b605d3c24940" },
+  "agrolens.nvim": { "branch": "main", "commit": "a2f15094a2b7e7bc79184de8edc13034116d8d47" },
   "catppuccin": { "branch": "main", "commit": "c9cc5a997f1dae3f35b4bdd62f35958fee363ab4" },
   "cmp-buffer": { "branch": "main", "commit": "3022dbc9166796b644a841a02de8dd1cc1d311fa" },
   "cmp-cmdline": { "branch": "main", "commit": "5af1bb7d722ef8a96658f01d6eb219c4cf746b32" },
