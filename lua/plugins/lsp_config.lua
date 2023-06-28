@@ -1,3 +1,6 @@
+require("mason").setup()
+require("mason-lspconfig").setup()
+
 -- NEODEV
 -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
 require("neodev").setup({
@@ -88,5 +91,9 @@ require 'lspconfig'.tsserver.setup {
 }
 
 require 'lspconfig'.terraformls.setup {
+	on_attach = on_attach
+}
+
+require'lspconfig'.vuels.setup{
 	on_attach = on_attach
 }
