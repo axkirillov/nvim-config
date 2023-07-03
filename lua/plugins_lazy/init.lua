@@ -111,6 +111,6 @@ return {
 		config = function()
 			require("hbac").setup()
 		end,
-		branch = "test"
+		branch = "develop"
 	}
 }
