@@ -98,3 +98,7 @@ require 'lspconfig'.volar.setup {
 	filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json' },
 	on_attach = on_attach,
 }
+
+require 'lspconfig'.omnisharp.setup {
+	on_attach = on_attach,
+}
