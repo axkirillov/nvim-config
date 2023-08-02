@@ -99,6 +99,17 @@ require 'lspconfig'.volar.setup {
 	on_attach = on_attach,
 }
 
+local pid = vim.fn.getpid()
+local omnisharp = os.getenv('HOME') .. '/.local/share/nvim/mason/packages/omnisharp/omnisharp'
+local root_pattern = require('lspconfig.util').root_pattern
 require 'lspconfig'.omnisharp.setup {
-	on_attach = on_attach,
+	on_attach    = on_attach,
+	capabilities = capabilities,
+	cmd          = { omnisharp, "--languageserver", "--hostPID", tostring(pid) },
+	root_dir     = function(path)
+		-- Make sure an sln doesn't already exist before trying to use nearest csproj
+		return root_pattern('*.sln')(path) or root_pattern('*.csproj')(path)
+	end,
+	useModernNet = false
+
 }
