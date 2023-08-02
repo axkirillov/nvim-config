@@ -20,7 +20,7 @@ vnoremap <leader>y "+y
 map <leader>cf :!mkdir -p "$(dirname <cfile>)"<CR> :e <cfile><CR>
 
 "paste unix timestamp
-nmap <F2> "=localtime()<C-M>p
+nmap <silent> <F2> "= substitute(system('gdate +%s%3N'), '\n\+$', '', '')<cr>p
 
 "open diagnostic in a float window
 nmap <leader>df :lua vim.diagnostic.open_float()<CR>
