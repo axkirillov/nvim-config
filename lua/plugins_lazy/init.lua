@@ -1,7 +1,7 @@
 return {
-    "williamboman/mason.nvim",
-    "williamboman/mason-lspconfig.nvim",
-    "neovim/nvim-lspconfig",
+	"williamboman/mason.nvim",
+	"williamboman/mason-lspconfig.nvim",
+	"neovim/nvim-lspconfig",
 
 	'mfussenegger/nvim-dap',
 
@@ -23,7 +23,6 @@ return {
 	{ 'kevinhwang91/nvim-bqf' },
 
 	{ 'dag/vim-fish' },
-
 	{ "junegunn/fzf.vim",         dependencies = { "junegunn/fzf" }, build = function() vim.fn["fzf#install"]() end },
 	{ 'axkirillov/easypick.nvim', branch = 'test',                   dependencies = 'nvim-telescope/telescope.nvim' },
 	'tpope/vim-fugitive',
@@ -112,5 +111,8 @@ return {
 			require("hbac").setup()
 		end,
 		branch = "develop"
-	}
+	},
+
+	-- open git files in browser
+	'tpope/vim-rhubarb',
 }
