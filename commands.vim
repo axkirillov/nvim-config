@@ -41,3 +41,5 @@ command Qa :qa
 command CloseAllButThisOne :%bd|e#
 
 command LspLines :lua require("lsp_lines").toggle()
+
+command OpenLineInGithub .GBrowse
