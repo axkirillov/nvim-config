@@ -77,6 +77,7 @@ require 'lspconfig'.intelephense.setup {
 				'ctype',
 				'SimpleXML',
 				'Reflection',
+				'exif',
 			}
 		}
 	}
