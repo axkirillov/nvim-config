@@ -1,7 +1,6 @@
 return {
 	"williamboman/mason.nvim",
 	"williamboman/mason-lspconfig.nvim",
-	"neovim/nvim-lspconfig",
 
 	-- nice looking menus
 	{ 'stevearc/dressing.nvim' },
