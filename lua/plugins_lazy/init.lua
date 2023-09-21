@@ -18,7 +18,13 @@ return {
 	{ 'kevinhwang91/nvim-bqf' },
 
 	{ 'dag/vim-fish' },
-	{ "junegunn/fzf.vim",     dependencies = { "junegunn/fzf" }, build = function() vim.fn["fzf#install"]() end },
+
+	{
+		"junegunn/fzf.vim",
+		dependencies = { "junegunn/fzf" },
+		build = function() vim.fn["fzf#install"]() end,
+	},
+
 	'tpope/vim-fugitive',
 
 	-- completion
@@ -35,19 +41,6 @@ return {
 	{
 		'ckolkey/ts-node-action',
 		dependencies = { 'nvim-treesitter' },
-	},
-
-	-- Unless you are still migrating, remove the deprecated commands from v1.x
-	--vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
-
-	{
-		"nvim-neo-tree/neo-tree.nvim",
-		branch = "v2.x",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-			"MunifTanjim/nui.nvim",
-		}
 	},
 
 	-- Diffview
