@@ -23,7 +23,7 @@ return {
 	{ 'kevinhwang91/nvim-bqf' },
 
 	{ 'dag/vim-fish' },
-	{ "junegunn/fzf.vim",         dependencies = { "junegunn/fzf" }, build = function() vim.fn["fzf#install"]() end },
+	{ "junegunn/fzf.vim",     dependencies = { "junegunn/fzf" }, build = function() vim.fn["fzf#install"]() end },
 	'tpope/vim-fugitive',
 
 	-- completion
