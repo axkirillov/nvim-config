@@ -1,5 +1,4 @@
 require("plugins.cmp")
-require("plugins.easypick")
 require("plugins.lsp_config")
 require("plugins.lsp_lines")
 require("plugins.mini_bracketed")

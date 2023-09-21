@@ -24,7 +24,6 @@ return {
 
 	{ 'dag/vim-fish' },
 	{ "junegunn/fzf.vim",         dependencies = { "junegunn/fzf" }, build = function() vim.fn["fzf#install"]() end },
-	{ 'axkirillov/easypick.nvim', branch = 'test',                   dependencies = 'nvim-telescope/telescope.nvim' },
 	'tpope/vim-fugitive',
 
 	-- completion
