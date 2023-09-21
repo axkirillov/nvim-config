@@ -1,5 +1,4 @@
 {
-  "ChatGPT.nvim": { "branch": "main", "commit": "62443c9eb261e641d20af143357b157e3f542bb5" },
   "LuaSnip": { "branch": "master", "commit": "8efa4e402a24df6a4713a2ec653147c49e8f73de" },
   "agrolens.nvim": { "branch": "main", "commit": "a2f15094a2b7e7bc79184de8edc13034116d8d47" },
   "catppuccin": { "branch": "main", "commit": "85e93601e0f0b48aa2c6bbfae4d0e9d7a1898280" },
