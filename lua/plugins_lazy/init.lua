@@ -36,9 +36,6 @@ return {
 
 	'samoshkin/vim-mergetool',
 
-	-- close buffers gracefully
-	"moll/vim-bbye",
-
 	-- useful treesitter actions (multiline / join lists, swap case)
 	{
 		'ckolkey/ts-node-action',
