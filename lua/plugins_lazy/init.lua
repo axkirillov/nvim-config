@@ -74,8 +74,6 @@ return {
 		end,
 	},
 
-	'echasnovski/mini.bracketed',
-
 	'towolf/vim-helm',
 
 	'github/copilot.vim',

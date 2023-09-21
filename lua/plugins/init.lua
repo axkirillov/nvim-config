@@ -1,5 +1,4 @@
 require("plugins.lsp_config")
-require("plugins.mini_bracketed")
 require("plugins.telescope")
 require("plugins.dap")
 require("plugins.dap_ui")
