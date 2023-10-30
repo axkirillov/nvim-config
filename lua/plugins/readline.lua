@@ -1,5 +1,5 @@
 return {
-	"linty-org/readline.nvim",
+	"assistcontrol/readline.nvim",
 	config = function()
 		local readline = require 'readline'
 		-- these work
