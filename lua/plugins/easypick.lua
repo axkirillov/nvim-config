@@ -27,7 +27,7 @@ return {
 				{
 					name = "make",
 					command = list_make_targets,
-					action = easypick.actions.nvim_commandf("! make"),
+					action = easypick.actions.nvim_commandf("! make %s"),
 					opts = require('telescope.themes').get_dropdown({})
 				},
 				{
