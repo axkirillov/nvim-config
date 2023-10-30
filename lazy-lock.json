@@ -14,7 +14,7 @@
   "fzf": { "branch": "master", "commit": "a0d61b4c373f6b977314f7ebe53f6236798151e9" },
   "fzf-lua": { "branch": "main", "commit": "c1de84f9c9cb227d2bef65643625f1fb8207bf8f" },
   "fzf.vim": { "branch": "master", "commit": "f3b82091a651a643ef18b220cd3e154d76a54462" },
-  "hbac.nvim": { "branch": "develop", "commit": "c1daf6f27df466aaf1230d0b5b10dee51873ace1" },
+  "hbac.nvim": { "branch": "develop", "commit": "265e57fd08ac721a26297ad6e4f829b71f0c5c5b" },
   "lazy.nvim": { "branch": "main", "commit": "84d13c1d7e9a887a89525196dababdaad5021c93" },
   "lsp_lines.nvim": { "branch": "main", "commit": "9e3f99fbbd28aaec80dc0158c43be8cca8dd5017" },
   "mason-lspconfig.nvim": { "branch": "main", "commit": "ddefe5ab051e7ca6a7b374754f0920c44668b54f" },
