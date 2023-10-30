@@ -8,7 +8,7 @@ grep -wv Makefile
 
 return {
 	'axkirillov/easypick.nvim',
-	branch = 'test',
+	branch = 'develop',
 	dependencies = 'nvim-telescope/telescope.nvim',
 	config = function()
 		local easypick = require("easypick")
@@ -27,7 +27,7 @@ return {
 				{
 					name = "make",
 					command = list_make_targets,
-					action = easypick.actions.nvim_command("FloatermNew --autoclose=0 make"),
+					action = easypick.actions.nvim_commandf("! make"),
 					opts = require('telescope.themes').get_dropdown({})
 				},
 				{

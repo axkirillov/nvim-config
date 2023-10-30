@@ -84,11 +84,11 @@ return {
 	},
 
 	{
-		'al-ce/hbac.nvim',
+		'axkirillov/hbac.nvim',
 		config = function()
 			require("hbac").setup()
 		end,
-		branch = "default_opts"
+		branch = "develop"
 	},
 
 	-- open git files in browser
