@@ -88,10 +88,6 @@ local setup = function()
 		on_attach = on_attach,
 	}
 
-	--require 'lspconfig'.tsserver.setup {
-	--	on_attach = on_attach,
-	--}
-
 	require 'lspconfig'.terraformls.setup {
 		on_attach = on_attach
 	}
@@ -105,6 +101,25 @@ local setup = function()
 	lspconfig["omnisharp_mono"].setup({
 		on_attach = on_attach,
 	})
+
+	require('lspconfig').nil_ls.setup {
+		on_attach = on_attach,
+		--autostart = true,
+		--capabilities = capabilities,
+		settings = {
+			['nil'] = {
+				testSetting = 42,
+				formatting = {
+					command = { "nixpkgs-fmt" },
+				},
+			},
+		},
+	}
+
+	--rust
+	require('lspconfig').rust_analyzer.setup {
+		on_attach = on_attach,
+	}
 end
 
 
