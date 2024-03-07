@@ -42,7 +42,7 @@ map K {
 noremap M J
 
 "lazygit
-map <silent> <C-g> :!tmux split-window -Z "lazygit"<cr>
+map <silent> <C-g> :!tmux split-window -Z -c "\#{pane_current_path}" "lazygit"<cr>
 
 "popup terminal
 map <silent> <F1> :!tmux popup -E -w 160 -h 40 -d $(pwd)<cr>
