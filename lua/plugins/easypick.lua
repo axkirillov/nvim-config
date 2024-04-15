@@ -1,4 +1,5 @@
-local base_branch = vim.g.base_branch or "develop"
+-- get base branch from environment variable or use default value
+local base_branch = os.getenv("BASE_BRANCH") or "develop"
 
 local list_make_targets = [[
 make -qp |
