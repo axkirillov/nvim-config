@@ -1,5 +1,5 @@
--- get base branch by calling `git rev-parse --symbolic-full-name refs/remotes/origin/HEAD | sed 's!.*/!!'`
-local base_branch = vim.fn.system("git rev-parse --symbolic-full-name refs/remotes/origin/HEAD | sed 's!.*/!!'") or
+-- get default branch
+local default_branch = vim.fn.system("git rev-parse --symbolic-full-name refs/remotes/origin/HEAD | sed 's!.*/!!'") or
 "main"
 
 return {
@@ -12,8 +12,8 @@ return {
 			pickers = {
 				{
 					name = "changed files",
-					command = "git diff --name-only $(git merge-base HEAD " .. base_branch .. " )",
-					previewer = easypick.previewers.branch_diff({ base_branch = base_branch })
+					command = "git diff --name-only $(git merge-base HEAD " .. default_branch .. " )",
+					previewer = easypick.previewers.branch_diff({ base_branch = default_branch })
 				},
 				{
 					name = "conflicts",
