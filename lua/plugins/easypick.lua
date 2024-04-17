@@ -1,11 +1,6 @@
--- get base branch from environment variable or use default value
-local base_branch = os.getenv("BASE_BRANCH") or "develop"
-
-local list_make_targets = [[
-make -qp |
-awk -F':' '/^[a-zA-Z0-9][^$#\/\t=]*:([^=]|$)/ {split($1,A,/ /);for(i in A)print A[i]}' |
-grep -wv Makefile
-]]
+-- get base branch by calling `git rev-parse --symbolic-full-name refs/remotes/origin/HEAD | sed 's!.*/!!'`
+local base_branch = vim.fn.system("git rev-parse --symbolic-full-name refs/remotes/origin/HEAD | sed 's!.*/!!'") or
+"main"
 
 return {
 	'axkirillov/easypick.nvim',
@@ -24,18 +19,6 @@ return {
 					name = "conflicts",
 					command = "git diff --name-only --diff-filter=U --relative",
 					previewer = easypick.previewers.file_diff(),
-				},
-				{
-					name = "make",
-					command = list_make_targets,
-					action = easypick.actions.nvim_commandf("! make %s"),
-					opts = require('telescope.themes').get_dropdown({})
-				},
-				{
-					name = "just",
-					command = "just --summary | tr ' ' '\n'",
-					action = easypick.actions.nvim_command("FloatermNew --autoclose=0 just"),
-					opts = require('telescope.themes').get_dropdown({})
 				},
 			}
 		})
