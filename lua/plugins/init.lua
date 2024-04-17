@@ -2,9 +2,6 @@ return {
 	"williamboman/mason.nvim",
 	"williamboman/mason-lspconfig.nvim",
 
-	-- nice looking menus
-	{ 'stevearc/dressing.nvim' },
-
 	{ 'ibhagwan/fzf-lua' },
 
 	{
