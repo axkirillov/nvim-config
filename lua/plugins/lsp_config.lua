@@ -79,7 +79,8 @@ local setup = function()
 					'SimpleXML',
 					'Reflection',
 					'exif',
-					"filter",
+					'filter',
+					'random',
 				}
 			}
 		}
