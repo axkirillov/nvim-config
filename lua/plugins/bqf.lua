@@ -1,6 +1,6 @@
 return {
 	'kevinhwang91/nvim-bqf',
-	config = {
+	opts = {
 		func_map = {
 			open = '<C-j>',
 		},
