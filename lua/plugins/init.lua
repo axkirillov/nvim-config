@@ -11,9 +11,6 @@ return {
 		},
 	},
 
-	-- better quickfix
-	{ 'kevinhwang91/nvim-bqf' },
-
 	{ 'dag/vim-fish' },
 
 	{
