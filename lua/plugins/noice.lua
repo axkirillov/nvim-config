@@ -1,14 +1,7 @@
+vim.api.nvim_set_keymap("n", "<C-l>", "<cmd>Noice dismiss<cr>", { noremap = true, silent = true })
+
 return {
 	"folke/noice.nvim",
-	config = function()
-		require("noice").setup({
-			-- add any options here
-
-		})
-
-		-- add a mapping to call Noice dismiss
-		vim.api.nvim_set_keymap("n", "<C-l>", "<cmd>Noice dismiss<cr>", { noremap = true, silent = true })
-	end,
 	dependencies = {
 		-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
 		"MunifTanjim/nui.nvim",
