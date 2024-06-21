@@ -90,10 +90,6 @@ local setup = function()
 		on_attach = on_attach,
 	}
 
-	require 'lspconfig'.terraformls.setup {
-		on_attach = on_attach
-	}
-
 	require 'lspconfig'.volar.setup {
 		filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json' },
 		on_attach = on_attach,
