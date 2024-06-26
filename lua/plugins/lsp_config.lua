@@ -23,14 +23,21 @@ local setup = function()
 		-- Enable completion triggered by <c-x><c-o>
 		vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-		local telescope_builtin = require('telescope.builtin');
 		-- Mappings.
 		-- See `:help vim.lsp.*` for documentation on any of the below functions
 		local bufopts = { noremap = true, silent = true, buffer = bufnr }
+		local fzflua = require('fzf-lua');
+		local fzflua_definitions = function()
+			fzflua.lsp_definitions({ jump_to_single_result = true })
+		end
+		local fzflua_references = function()
+			fzflua.lsp_references({ jump_to_single_result = true })
+		end
 		--vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-		vim.keymap.set('n', 'gd', telescope_builtin.lsp_definitions, bufopts)
+		vim.keymap.set('n', 'gd', fzflua_definitions, bufopts)
+		vim.keymap.set('n', 'gi', fzflua.lsp_implementations, bufopts)
+		vim.keymap.set('n', 'gr', fzflua_references, bufopts)
 		vim.keymap.set('n', '<C-k>', vim.lsp.buf.hover, bufopts)
-		vim.keymap.set('n', 'gi', telescope_builtin.lsp_implementations, bufopts)
 		vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, bufopts)
 		--vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
 		--vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
@@ -40,7 +47,6 @@ local setup = function()
 		--vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
 		vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
 		vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, bufopts)
-		vim.keymap.set('n', 'gr', telescope_builtin.lsp_references, bufopts)
 		--vim.keymap.set('n', '<space>fm', vim.lsp.buf.format, bufopts)
 		vim.keymap.set('n', '=', vim.lsp.buf.format, bufopts)
 	end
