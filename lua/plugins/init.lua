@@ -23,12 +23,6 @@ return {
 
 	'samoshkin/vim-mergetool',
 
-	-- useful treesitter actions (multiline / join lists, swap case)
-	{
-		'ckolkey/ts-node-action',
-		dependencies = { 'nvim-treesitter' },
-	},
-
 	-- Diffview
 	{ 'sindrets/diffview.nvim', dependencies = 'nvim-lua/plenary.nvim' },
 
