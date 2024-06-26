@@ -2,8 +2,6 @@ return {
 	"williamboman/mason.nvim",
 	"williamboman/mason-lspconfig.nvim",
 
-	{ 'ibhagwan/fzf-lua' },
-
 	{
 		'nvim-tree/nvim-tree.lua',
 		dependencies = {
@@ -12,12 +10,6 @@ return {
 	},
 
 	{ 'dag/vim-fish' },
-
-	{
-		"junegunn/fzf.vim",
-		dependencies = { "junegunn/fzf" },
-		build = function() vim.fn["fzf#install"]() end,
-	},
 
 	'tpope/vim-fugitive',
 
