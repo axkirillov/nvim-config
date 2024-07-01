@@ -5,7 +5,6 @@ return {
 		integrations = {
 			cmp = true,
 			treesitter = true,
---			telescope = true,
 		},
 	}
 }
