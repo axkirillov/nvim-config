@@ -2,13 +2,6 @@ return {
 	"williamboman/mason.nvim",
 	"williamboman/mason-lspconfig.nvim",
 
-	{
-		'nvim-tree/nvim-tree.lua',
-		dependencies = {
-			'nvim-tree/nvim-web-devicons', -- optional, for file icons
-		},
-	},
-
 	{ 'dag/vim-fish' },
 
 	'tpope/vim-fugitive',
