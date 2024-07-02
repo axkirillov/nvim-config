@@ -94,6 +94,8 @@ local function setup()
 	dap.listeners.before.event_exited["dapui_config"] = function()
 		dapui.close()
 	end
+
+	vim.keymap.set("n", "<M-k>", require('dapui').eval, { noremap = true, silent = true })
 end
 
 return {
