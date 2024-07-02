@@ -2,6 +2,9 @@ vim.api.nvim_set_keymap("n", "<C-l>", "<cmd>Noice dismiss<cr>", { noremap = true
 
 return {
 	"folke/noice.nvim",
+	config = function()
+		require("noice").setup()
+	end,
 	dependencies = {
 		-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
 		"MunifTanjim/nui.nvim",
