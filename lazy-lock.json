@@ -30,6 +30,7 @@
   "plenary.nvim": { "branch": "master", "commit": "55d9fe89e33efd26f532ef20223e5f9430c8b0c0" },
   "readline.nvim": { "branch": "main", "commit": "5cb27349bc01cdcdb3d3494e5337d8b3834aef1a" },
   "treesj": { "branch": "main", "commit": "1d6e89f4790aa04eaae38fa9460a3ee191961c96" },
+  "trouble.nvim": { "branch": "main", "commit": "0fe430e953a6c47433ef923555dfe9a42351113a" },
   "vim-fish": { "branch": "master", "commit": "50b95cbbcd09c046121367d49039710e9dc9c15f" },
   "vim-fugitive": { "branch": "master", "commit": "59659093581aad2afacedc81f009ed6a4bfad275" },
   "vim-helm": { "branch": "master", "commit": "fc2259e1f8836304a0526853ddc3fe27045be39a" },
