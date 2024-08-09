@@ -75,18 +75,19 @@ local setup = function()
 				-- possible values: stubs.txt
 				stubs = {
 					'Core',
-					'SPL',
-					'imagick',
-					'standard',
-					'pcre',
-					'date',
-					'json',
-					'ctype',
-					'SimpleXML',
 					'Reflection',
+					'SPL',
+					'SimpleXML',
+					'ctype',
+					'date',
 					'exif',
 					'filter',
+					'hash',
+					'imagick',
+					'json',
+					'pcre',
 					'random',
+					'standard',
 				}
 			}
 		}
