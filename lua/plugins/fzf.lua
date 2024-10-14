@@ -47,7 +47,49 @@ end
 
 vim.keymap.set("n", "<c-p>", run_lua_function_picker, { noremap = true, silent = true })
 
+
+
 return {
 	'ibhagwan/fzf-lua',
-	opts = { 'telescope' },
+	config = function()
+		local fzf = require("fzf-lua")
+
+		-- Custom function to get files changed by a commit
+		local function get_files_changed(commit_hash)
+			local command = string.format("git show --pretty='' --name-only %s", commit_hash)
+			return vim.fn.systemlist(command)
+		end
+
+		-- Custom action to show files changed by a commit
+		local function show_files_changed(selected)
+			local commit_hash = selected[1]:match("%S+")
+			local files = get_files_changed(commit_hash)
+			fzf.fzf_exec(files, {
+				prompt = "Files changed in " .. commit_hash .. ": ",
+				actions = {
+					["default"] = fzf.actions.file_edit
+				}
+			})
+		end
+
+		-- Configure FzfLua for git commits
+		fzf.setup({
+			'telescope',
+			git = {
+				commits = {
+					cmd = "git log --oneline --color",
+					preview = "git show --pretty='%C(yellow)%h%Creset %s %C(cyan)(%cr)%Creset' --color {1}",
+					actions = {
+						["default"] = show_files_changed,
+					},
+				},
+			},
+		})
+
+		-- Register Ex command to open git commits
+		vim.api.nvim_create_user_command('FzfGitCommits', function()
+			require('fzf-lua').git_commits()
+		end, {})
+	end
+
 }
