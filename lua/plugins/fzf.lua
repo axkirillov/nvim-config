@@ -21,6 +21,7 @@ end
 local function_table = {
 	["branch_diff"] = branch_diff,
 	["conflicts"] = conflicts,
+	["commits"] = function() require 'fzf-lua'.git_commits() end,
 }
 
 local function run_lua_function_picker()
@@ -85,11 +86,6 @@ return {
 				},
 			},
 		})
-
-		-- Register Ex command to open git commits
-		vim.api.nvim_create_user_command('FzfGitCommits', function()
-			require('fzf-lua').git_commits()
-		end, {})
 	end
 
 }
