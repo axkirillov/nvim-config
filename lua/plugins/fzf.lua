@@ -48,8 +48,6 @@ end
 
 vim.keymap.set("n", "<c-p>", run_lua_function_picker, { noremap = true, silent = true })
 
-
-
 return {
 	'ibhagwan/fzf-lua',
 	config = function()
