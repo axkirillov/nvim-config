@@ -43,3 +43,6 @@ command CloseAllButThisOne :%bd|e#
 command LspLines :lua require("lsp_lines").toggle()
 
 command OpenLineInGithub .GBrowse
+
+" replace tabs with spaces
+command ReTab :%s/\t/  /g
