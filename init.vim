@@ -5,7 +5,6 @@ endif
 " this fixes the vim bug that leads to incorrect background color in kitty
 let &t_ut=''
 
-set expandtab
 set tabstop=2
 set shiftwidth=2
 
