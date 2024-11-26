@@ -36,7 +36,7 @@ local config = {
 	log_level = "info",               -- "trace", "debug", "info", "warn", "error", "fatal"
 	log_to_file = false,              -- true, false, "/path/to/file.log", use :NeoTreeLogs to show the file
 	open_files_in_last_window = true, -- false = open files in top left window
-	popup_border_style = "rounded",        -- "double", "none", "rounded", "shadow", "single" or "solid"
+	popup_border_style = "rounded",   -- "double", "none", "rounded", "shadow", "single" or "solid"
 	resize_timer_interval = 500,      -- in ms, needed for containers to redraw right aligned and faded content
 	-- set to -1 to disable the resize timer entirely
 	--                           -- NOTE: this will speed up to 50 ms for 1 second following a resize
@@ -455,9 +455,9 @@ local config = {
 	buffers = {
 		bind_to_cwd = true,
 		follow_current_file = {
-			enabled = true,                -- This will find and focus the file in the active buffer every time
+			enabled = true,       -- This will find and focus the file in the active buffer every time
 			--              -- the current file is changed while the tree is open.
-			leave_dirs_open = false,       -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
+			leave_dirs_open = false, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
 		},
 		-- the current file is changed while the tree is open.
 		group_empty_dirs = true, -- when true, empty directories will be grouped together
