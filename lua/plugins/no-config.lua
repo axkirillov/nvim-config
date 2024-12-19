@@ -15,8 +15,7 @@ return {
 	'NoahTheDuke/vim-just',
 	"folke/neodev.nvim",
 	'towolf/vim-helm',
-	-- 'github/copilot.vim',
-	'Exafunction/codeium.vim',
+	'github/copilot.vim',
 
 	-- open git files in browser
 	'tpope/vim-rhubarb',
