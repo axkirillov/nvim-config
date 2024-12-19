@@ -88,6 +88,7 @@ local setup = function()
 					'pcre',
 					'random',
 					'standard',
+					"dom",
 				}
 			}
 		}
