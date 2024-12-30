@@ -2,12 +2,6 @@ local setup = function()
 	require("mason").setup()
 	require("mason-lspconfig").setup()
 
-	-- NEODEV
-	-- IMPORTANT: make sure to setup neodev BEFORE lspconfig
-	require("neodev").setup({
-		-- add any options here, or leave empty to use the default settings
-	})
-
 	-- Mappings.
 	-- See `:help vim.diagnostic.*` for documentation on any of the below functions
 	local opts = { noremap = true, silent = true }
@@ -21,7 +15,7 @@ local setup = function()
 	---@diagnostic disable-next-line: unused-local
 	local on_attach = function(client, bufnr)
 		-- Enable completion triggered by <c-x><c-o>
-		vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+		-- vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
 		-- Mappings.
 		-- See `:help vim.lsp.*` for documentation on any of the below functions
@@ -51,7 +45,7 @@ local setup = function()
 		vim.keymap.set('n', '=', vim.lsp.buf.format, bufopts)
 	end
 
-	local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+	-- local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 	require 'lspconfig'.lua_ls.setup {
 		on_attach = on_attach,
@@ -68,7 +62,6 @@ local setup = function()
 	}
 
 	require 'lspconfig'.intelephense.setup {
-		capabilities = capabilities,
 		on_attach = on_attach,
 		settings = {
 			intelephense = {
@@ -105,8 +98,6 @@ local setup = function()
 
 	require('lspconfig').nil_ls.setup {
 		on_attach = on_attach,
-		--autostart = true,
-		--capabilities = capabilities,
 		settings = {
 			['nil'] = {
 				testSetting = 42,

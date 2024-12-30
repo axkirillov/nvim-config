@@ -13,7 +13,7 @@ local setup = function()
 		snippet = {
 			-- REQUIRED - you must specify a snippet engine
 			expand = function(args)
-				luasnip .lsp_expand(args.body) -- For `luasnip` users.
+				luasnip.lsp_expand(args.body) -- For `luasnip` users.
 			end,
 		},
 		window = {
@@ -79,6 +79,6 @@ local setup = function()
 end
 
 return {
-	'hrsh7th/nvim-cmp',
-	config = setup,
+	--	'hrsh7th/nvim-cmp',
+	--	config = setup,
 }

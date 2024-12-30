@@ -38,5 +38,6 @@ runtime commands.vim
 lua require("lazy_bootstrap")
 lua require("lazy").setup("plugins", {change_detection = { enabled = true, notify = false} })
 lua require("mappings")
+lua require("settings")
 
 colorscheme catppuccin-macchiato " catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
