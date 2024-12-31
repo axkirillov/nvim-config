@@ -57,14 +57,10 @@ local opts = {
 			size = { height = 0.5 },
 		},
 		{
-			title = function()
-				local buf_name = vim.api.nvim_buf_get_name(0) or "[No Name]"
-				return vim.fn.fnamemodify(buf_name, ":t")
-			end,
+			title = "Outline",
 			ft = "Outline",
 			pinned = true,
 			open = "Outline",
-
 		},
 	},
 }
