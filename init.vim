@@ -2,9 +2,6 @@ if &shell =~# 'fish$'
 set shell=sh
 endif
 
-" this fixes the vim bug that leads to incorrect background color in kitty
-let &t_ut=''
-
 set tabstop=2
 set shiftwidth=2
 
