@@ -5,15 +5,15 @@ return {
 		vim.keymap.set(
 			"n",
 			"<leader>o",
-			"<cmd>OutlineFocus<CR>",
+			"<cmd>Outline<CR>",
 			{ desc = "Toggle Outline" }
 		)
 
 		require("outline").setup {
 			outline_window = {
 				auto_jump = true,
-				width = 15,
-				focus_on_open = false,
+				auto_close = true,
+				focus_on_open = true,
 			},
 			outline_items = {
 				show_symbol_details = false,
@@ -22,6 +22,5 @@ return {
 				goto_location = '<C-j>',
 			},
 		}
-		require("outline").open()
 	end,
 }
