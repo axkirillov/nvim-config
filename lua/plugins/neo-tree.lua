@@ -1,4 +1,4 @@
-vim.keymap.set('n', '<C-n>', '<Cmd>Neotree toggle<CR>')
+vim.keymap.set('n', '<C-n>', '<Cmd>Neotree focus<CR>')
 
 vim.api.nvim_create_autocmd("VimEnter", { command = 'Neotree show' })
 
