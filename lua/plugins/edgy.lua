@@ -33,19 +33,6 @@ local opts = {
 	keys = {
 		["e"] = toggle_auto_expand_width,
 	},
-	bottom = {
-		"Trouble",
-		{ ft = "qf",            title = "QuickFix" },
-		{
-			ft = "help",
-			size = { height = 20 },
-			-- only show help buffers
-			filter = function(buf)
-				return vim.bo[buf].buftype == "help"
-			end,
-		},
-		{ ft = "spectre_panel", size = { height = 0.4 } },
-	},
 	left = {
 		-- Neo-tree filesystem always takes half the screen height
 		{
@@ -59,9 +46,20 @@ local opts = {
 		{
 			title = "Outline",
 			ft = "Outline",
-			pinned = true,
-			open = "Outline",
 		},
+	},
+	bottom = {
+		"Trouble",
+		{ ft = "qf",            title = "QuickFix" },
+		{
+			ft = "help",
+			size = { height = 20 },
+			-- only show help buffers
+			filter = function(buf)
+				return vim.bo[buf].buftype == "help"
+			end,
+		},
+		{ ft = "spectre_panel", size = { height = 0.4 } },
 	},
 }
 return {
