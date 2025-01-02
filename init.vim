@@ -18,10 +18,6 @@ set awa
 set background=dark
 set clipboard=unnamedplus
 
-"competion menu options to work nicely with autocomplete
-set completeopt=menu,menuone,noselect
-
-
 syntax on
 filetype plugin indent on
 
