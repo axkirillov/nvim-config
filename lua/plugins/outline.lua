@@ -4,7 +4,7 @@ return {
 		-- Example mapping to toggle outline
 		vim.keymap.set(
 			"n",
-			"<leader>o",
+			"<C-h>",
 			"<cmd>Outline<CR>",
 			{ desc = "Toggle Outline" }
 		)

@@ -311,6 +311,7 @@ local config = {
 			["<space>"] = "none",
 			["<2-LeftMouse>"] = "open",
 			["<C-j>"] = "open",
+			["<C-n>"] = "open",
 			["<esc>"] = "revert_preview",
 			["P"] = { "toggle_preview", config = { use_float = true } },
 			["S"] = "open_split",
