@@ -60,3 +60,6 @@ vim.keymap.set('', '<F1>', ':!tmux popup -E -w 160 -h 40 -d $(pwd)<cr>')
 
 -- Git blame (requires fugitive)
 vim.keymap.set('n', 'gb', ':Gblame<CR>')
+
+-- disable c-w h
+vim.keymap.set('n', '<C-w>', '<Nop>')
