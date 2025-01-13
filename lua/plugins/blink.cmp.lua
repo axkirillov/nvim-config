@@ -20,6 +20,24 @@ return {
 		keymap = {
 			preset = 'default',
 			['<C-j>'] = { 'accept', 'fallback' },
+			['<Tab>'] = {
+				'fallback'
+			},
+			['<S-Tab>'] = {
+				'show',
+				'fallback'
+			},
+		},
+
+		completion = {
+			list = {
+				selection = function(ctx)
+					if ctx.mode == 'cmdline' then
+						return 'manual'
+					end
+					return 'preselect'
+				end
+			},
 		},
 
 		appearance = {
