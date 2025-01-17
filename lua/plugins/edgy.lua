@@ -68,6 +68,9 @@ return {
 	init = function()
 		vim.opt.laststatus = 3
 		vim.opt.splitkeep = "screen"
+
+		-- disable c-w h
+		vim.keymap.set('n', '<C-w>h', '<Nop>')
 	end,
 	opts = opts,
 }

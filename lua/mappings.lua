@@ -31,6 +31,3 @@ vim.keymap.set('', 'M', 'J')
 
 -- Git blame (requires fugitive)
 vim.keymap.set('n', 'gb', ':Gblame<CR>')
-
--- disable c-w h
-vim.keymap.set('n', '<C-w>h', '<Nop>')
