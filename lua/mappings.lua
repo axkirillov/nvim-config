@@ -28,6 +28,3 @@ vim.keymap.set('', 'K', '{')
 
 -- Give a new home to J
 vim.keymap.set('', 'M', 'J')
-
--- Git blame (requires fugitive)
-vim.keymap.set('n', 'gb', ':Gblame<CR>')
