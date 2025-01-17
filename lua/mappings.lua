@@ -6,12 +6,6 @@ end, {expr = true})
 -- Set leader key
 vim.g.mapleader = ' '
 
--- Disable arrow navigation
-vim.keymap.set('', '<Up>', '<Nop>')
-vim.keymap.set('', '<Down>', '<Nop>')
-vim.keymap.set('', '<Left>', '<Nop>')
-vim.keymap.set('', '<Right>', '<Nop>')
-
 -- Exit terminal mode
 vim.keymap.set('t', '<C-e>', '<C-\\><C-n>')
 
