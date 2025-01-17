@@ -17,17 +17,9 @@ vim.keymap.set('t', '<C-e>', '<C-\\><C-n>')
 
 -- Copy file path to clipboard
 vim.keymap.set('n', 'cp', function()
-  vim.fn.setreg('*', vim.fn.expand('%'))
-end)
-
--- Yank to clipboard
-vim.keymap.set({'n', 'v'}, '<leader>y', '"+y')
-
--- Create file and path under cursor and open it in a buffer
-vim.keymap.set('', '<leader>cf', function()
-  local file = vim.fn.expand('<cfile>')
-  vim.fn.system('mkdir -p "$(dirname ' .. file .. ')"')
-  vim.cmd('e ' .. file)
+  -- Get relative path using :. modifier
+  local relative_path = vim.fn.expand('%:.')
+  vim.fn.setreg('*', relative_path)
 end)
 
 -- Paste unix timestamp
