@@ -52,3 +52,9 @@ vim.api.nvim_create_user_command('OpenLineInGithub', '.GBrowse', {})
 
 -- Replace tabs with spaces
 vim.api.nvim_create_user_command('ReTab', '%s/\\t/  /g', {})
+
+-- Copy file path
+vim.api.nvim_create_user_command('CopyFilePath', function()
+  local relative_path = vim.fn.expand('%:.')
+  vim.fn.setreg('*', relative_path)
+end, {})

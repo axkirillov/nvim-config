@@ -15,13 +15,6 @@ vim.keymap.set('', '<Right>', '<Nop>')
 -- Exit terminal mode
 vim.keymap.set('t', '<C-e>', '<C-\\><C-n>')
 
--- Copy file path to clipboard
-vim.keymap.set('n', 'cp', function()
-  -- Get relative path using :. modifier
-  local relative_path = vim.fn.expand('%:.')
-  vim.fn.setreg('*', relative_path)
-end)
-
 -- Paste unix timestamp
 vim.keymap.set('n', '<F2>', function()
   local timestamp = vim.fn.substitute(vim.fn.system('gdate +%s%3N'), '\\n\\+$', '', '')
