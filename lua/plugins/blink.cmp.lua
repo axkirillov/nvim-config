@@ -19,7 +19,10 @@ return {
 		-- See the full "keymap" documentation for information on defining your own keymap.
 		keymap = {
 			preset = 'default',
-			['<C-j>'] = { 'accept', 'fallback' },
+			['<C-j>'] = {
+				'accept',
+				'fallback',
+			},
 			['<Tab>'] = {
 				'fallback'
 			},
@@ -31,12 +34,7 @@ return {
 
 		completion = {
 			list = {
-				selection = function(ctx)
-					if ctx.mode == 'cmdline' then
-						return 'manual'
-					end
-					return 'preselect'
-				end
+				selection = 'manual',
 			},
 		},
 
