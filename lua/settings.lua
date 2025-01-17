@@ -17,10 +17,14 @@ vim.opt.autowrite = true
 vim.opt.background = 'dark'
 vim.opt.clipboard = 'unnamedplus'
 
-vim.cmd('syntax on')
-vim.cmd('filetype plugin indent on')
-
+-- fold opitions
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldenable = false
 vim.opt.foldlevel = 99
+
+vim.cmd('syntax on')
+vim.cmd('filetype plugin indent on')
+
+vim.g.mapleader = ' '
+

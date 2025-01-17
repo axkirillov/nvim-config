@@ -3,8 +3,6 @@ vim.keymap.set("n", "dd", function ()
 	if vim.fn.getline(".") == "" then return '"_dd' end
 	return "dd"
 end, {expr = true})
--- Set leader key
-vim.g.mapleader = ' '
 
 -- Exit terminal mode
 vim.keymap.set('t', '<C-e>', '<C-\\><C-n>')
