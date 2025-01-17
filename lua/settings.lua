@@ -2,7 +2,6 @@ if vim.o.shell:match('fish$') then
   vim.o.shell = 'sh'
 end
 
--- Vim options converted to Lua
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 
