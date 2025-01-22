@@ -1,5 +1,5 @@
 if vim.o.shell:match('fish$') then
-  vim.o.shell = 'sh'
+	--vim.o.shell = 'sh'
 end
 
 vim.opt.tabstop = 2
