@@ -19,11 +19,30 @@ return
 	config = function()
 		local snacks = require("snacks")
 		vim.keymap.set("n", "<C-g>", function() snacks.lazygit() end, { noremap = true, silent = true })
+		local aider_opts = {
+			interactive = true,
+			win = {
+				relative = "editor",
+				position = "bottom",
+			},
+		}
+		local toggle_aider = function()
+			snacks.terminal.toggle("aider", aider_opts)
+		end
+		vim.api.nvim_create_autocmd(
+			{ "VimEnter" },
+			{
+				callback = function()
+					toggle_aider()
+					toggle_aider()
+				end,
+			}
+		)
 		vim.keymap.set(
 			{ "n", "t" },
 			"<C-t>",
 			function()
-				snacks.terminal.toggle()
+				toggle_aider()
 				-- reload current buffer if it was changed
 				vim.cmd("checktime")
 			end,
@@ -36,18 +55,25 @@ return
 				-- get current file path
 				local relative_path = vim.fn.expand('%:.')
 				vim.fn.setreg('*', relative_path)
-				snacks.terminal.toggle()
+				toggle_aider()
 				--paste file path
 				vim.api.nvim_feedkeys("/add " .. relative_path, "n", false)
 			end,
 			{ noremap = true, silent = true }
 		)
+		local test_opts = {
+			interactive = false,
+			win = {
+				relative = "editor",
+				position = "bottom"
+			}
+		}
 		vim.api.nvim_create_user_command(
 			"RunTest",
 			function()
 				-- get the only the file name (without extention and path)
 				local relative_path = vim.fn.expand('%:t:r')
-				snacks.terminal.open("./test.sh " .. relative_path, { interactive = false })
+				snacks.terminal.open("./test.sh " .. relative_path, test_opts)
 			end,
 			{}
 		)
