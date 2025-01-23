@@ -34,10 +34,11 @@ return
 			"<leader>a",
 			function()
 				-- get current file path
-				local filepath = vim.api.nvim_buf_get_name(0)
+				local relative_path = vim.fn.expand('%:.')
+				vim.fn.setreg('*', relative_path)
 				snacks.terminal.toggle()
 				--paste file path
-				vim.api.nvim_feedkeys("/add " .. filepath, "n", false)
+				vim.api.nvim_feedkeys("/add " .. relative_path, "n", false)
 			end,
 			{ noremap = true, silent = true }
 		)
