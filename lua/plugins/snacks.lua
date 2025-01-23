@@ -1,3 +1,9 @@
+local function get_relative_path()
+	local relative_path = vim.fn.expand('%:.')
+	vim.fn.setreg('*', relative_path)
+	return relative_path
+end
+
 return
 {
 	"folke/snacks.nvim",
@@ -40,7 +46,7 @@ return
 		)
 		vim.keymap.set(
 			{ "n", "t" },
-			"<C-t>",
+			"<leader>a",
 			function()
 				toggle_aider()
 				-- reload current buffer if it was changed
@@ -48,32 +54,23 @@ return
 			end,
 			{ noremap = true, silent = true }
 		)
-		vim.keymap.set(
-			{ "n", },
-			"<leader>a",
+		vim.api.nvim_create_user_command(
+			"AddFileToAider",
 			function()
-				-- get current file path
-				local relative_path = vim.fn.expand('%:.')
-				vim.fn.setreg('*', relative_path)
+				local relative_path = get_relative_path()
 				toggle_aider()
-				--paste file path
 				vim.api.nvim_feedkeys("/add " .. relative_path, "n", false)
 			end,
-			{ noremap = true, silent = true }
+			{}
 		)
-		local test_opts = {
-			interactive = false,
-			win = {
-				relative = "editor",
-				position = "bottom"
-			}
-		}
 		vim.api.nvim_create_user_command(
-			"RunTest",
+			"RunTestInAider",
 			function()
 				-- get the only the file name (without extention and path)
 				local relative_path = vim.fn.expand('%:t:r')
-				snacks.terminal.open("./test.sh " .. relative_path, test_opts)
+				toggle_aider()
+				--paste file path
+				vim.api.nvim_feedkeys("/test ./test.sh " .. relative_path, "n", false)
 			end,
 			{}
 		)
