@@ -42,5 +42,14 @@ return
 			end,
 			{ noremap = true, silent = true }
 		)
+		vim.api.nvim_create_user_command(
+			"RunTest",
+			function()
+				-- get the only the file name (without extention and path)
+				local relative_path = vim.fn.expand('%:t:r')
+				snacks.terminal.open("./test.sh " .. relative_path, { interactive = false })
+			end,
+			{}
+		)
 	end
 }
