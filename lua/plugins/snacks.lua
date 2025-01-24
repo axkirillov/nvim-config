@@ -47,7 +47,7 @@ return
 		)
 		vim.keymap.set(
 			{ "n", "t" },
-			"<leader>a",
+			"<M-a>",
 			function()
 				toggle_aider()
 				-- reload current buffer if it was changed
