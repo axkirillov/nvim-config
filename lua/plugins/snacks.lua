@@ -30,6 +30,7 @@ return
 			win = {
 				relative = "editor",
 				position = "bottom",
+				height = 100,
 			},
 		}
 		local toggle_aider = function()
