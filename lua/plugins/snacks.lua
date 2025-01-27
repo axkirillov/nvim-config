@@ -67,11 +67,19 @@ return
 		vim.api.nvim_create_user_command(
 			"RunTestInAider",
 			function()
-				-- get the only the file name (without extention and path)
+				-- get only the file name (without extention and path)
 				local relative_path = vim.fn.expand('%:t:r')
 				toggle_aider()
-				--paste file path
 				vim.api.nvim_feedkeys("/test ./test.sh " .. relative_path, "n", false)
+			end,
+			{}
+		)
+		vim.api.nvim_create_user_command(
+			"WriteTestInAider",
+			function()
+				local relative_path = get_relative_path()
+				toggle_aider()
+				vim.api.nvim_feedkeys("write a test for the following file " .. relative_path, "n", false)
 			end,
 			{}
 		)
