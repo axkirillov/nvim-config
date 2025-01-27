@@ -7,9 +7,6 @@ vim.api.nvim_create_user_command('Jq', function()
 	vim.o.syntax = 'json'
 end, {})
 
--- Set syntax to gotmpl
-vim.api.nvim_create_user_command('GoTmpl', 'set filetype=gotmpl', {})
-
 -- Frequent typos
 vim.api.nvim_create_user_command('W', 'w', {})
 vim.api.nvim_create_user_command('Wq', 'wq', {})
