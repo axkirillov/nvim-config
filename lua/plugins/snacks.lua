@@ -19,7 +19,8 @@ return
 			}
 		},
 		terminal = {
-
+		},
+		input = {
 		},
 	},
 	config = function()
