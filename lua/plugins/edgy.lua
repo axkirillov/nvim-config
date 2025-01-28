@@ -1,23 +1,17 @@
-local function find_longest_line()
-	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-	local max_length = 0
-
-	for _, line in ipairs(lines) do
-		max_length = math.max(max_length, vim.fn.strdisplaywidth(line))
-	end
-
-	return max_length
-end
-
+---@param win Edgy.Window
 local function toggle_auto_expand_width(win)
+	-- to load the filetypes
+	require("edgy")
+	local neotree_sources_common_commands = require("neo-tree.sources.common.commands")
 	local win_width = vim.api.nvim_win_get_width(0)
 	local state = require("neo-tree.sources.manager").get_state("filesystem")
 	if state.window.auto_expand_width then
+		neotree_sources_common_commands.toggle_auto_expand_width(state)
 		win.view.edgebar:equalize()
+		return
 	end
-	require("neo-tree.sources.common.commands").toggle_auto_expand_width(state)
-	local longest_line = find_longest_line()
-	while win_width < longest_line + 1 do
+	neotree_sources_common_commands.toggle_auto_expand_width(state)
+	while win_width < state.win_width + 1 do
 		win:resize("width", 1)
 		win_width = win_width + 1
 	end
@@ -71,7 +65,6 @@ return {
 	init = function()
 		vim.opt.laststatus = 3
 		vim.opt.splitkeep = "screen"
-
 		-- disable c-w h
 		-- vim.keymap.set('n', '<C-w>h', '<Nop>')
 	end,
