@@ -61,7 +61,9 @@ return
 			function()
 				local relative_path = get_relative_path()
 				toggle_aider()
+				vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-l>', true, true, true), 't', true)
 				vim.api.nvim_feedkeys("/add " .. relative_path, "n", false)
+				vim.api.nvim_feedkeys("\r", "n", true)
 			end,
 			{}
 		)
