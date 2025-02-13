@@ -1,3 +1,8 @@
+local keymap_opts = {
+  noremap = true,
+  silent = true,
+}
+
 return
 {
 	"folke/snacks.nvim",
@@ -17,6 +22,6 @@ return
 	},
 	config = function()
 		local snacks = require("snacks")
-		vim.keymap.set("n", "<C-g>", function() snacks.lazygit() end, { noremap = true, silent = true })
+		vim.keymap.set("n", "<C-g>", function() snacks.lazygit() end, keymap_opts)
 	end
 }

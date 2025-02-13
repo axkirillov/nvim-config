@@ -44,12 +44,16 @@ local setup = function()
 		},
 	}
 
+	local keymap_opts = {
+    noremap = true,
+    silent = true,
+  }
 
-	vim.keymap.set("n", "<F5>", function() dap.continue() end, { noremap = true })
-	vim.keymap.set("n", "<F9>", function() dap.toggle_breakpoint() end, { noremap = true })
-	vim.keymap.set("n", "<F10>", function() dap.step_over() end, { noremap = true })
-	vim.keymap.set("n", "<F11>", function() dap.step_into() end, { noremap = true })
-	vim.keymap.set("n", "<F12>", function() dap.step_out() end, { noremap = true })
+	vim.keymap.set("n", "<F5>", function() dap.continue() end, keymap_opts)
+	vim.keymap.set("n", "<F9>", function() dap.toggle_breakpoint() end, keymap_opts)
+	vim.keymap.set("n", "<F10>", function() dap.step_over() end, keymap_opts)
+	vim.keymap.set("n", "<F11>", function() dap.step_into() end, keymap_opts)
+	vim.keymap.set("n", "<F12>", function() dap.step_out() end, keymap_opts)
 end
 
 return {

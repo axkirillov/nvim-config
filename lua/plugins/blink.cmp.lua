@@ -1,3 +1,5 @@
+---@module 'blink.cmp'
+
 return {
 	'saghen/blink.cmp',
 	-- use a release tag to download pre-built binaries
@@ -7,7 +9,6 @@ return {
 	-- If you use nix, you can build from source using latest nightly rust with:
 	-- build = 'nix run .#build-plugin',
 
-	---@module 'blink.cmp'
 	---@type blink.cmp.Config
 	opts = {
 		-- 'default' for mappings similar to built-in completion

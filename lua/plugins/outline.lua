@@ -2,11 +2,12 @@ return {
 	"hedyhli/outline.nvim",
 	config = function()
 		-- Example mapping to toggle outline
+		local keymap_opts = { desc = "Toggle Outline" }
 		vim.keymap.set(
 			"n",
 			"<C-h>",
 			"<cmd>Outline<CR>",
-			{ desc = "Toggle Outline" }
+			keymap_opts
 		)
 
 		require("outline").setup {

@@ -1,12 +1,6 @@
 ---@module "nvim_aider"
 ---@module 'snacks'
 
-local function get_relative_path()
-	local relative_path = vim.fn.expand('%:.')
-	vim.fn.setreg('*', relative_path)
-	return relative_path
-end
-
 return {
 	"GeorgesAlkhouri/nvim-aider",
 	lazy = false,
@@ -61,13 +55,18 @@ return {
 			end
 		})
 
+		local keymap_opts = {
+			noremap = true,
+			silent = true,
+		}
+
 		vim.keymap.set(
 			{ "n", "t" },
 			"<F1>",
 			function()
 				terminal.toggle()
 			end,
-			{ noremap = true, silent = true }
+			keymap_opts
 		)
 
 		vim.api.nvim_create_user_command(

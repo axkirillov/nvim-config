@@ -1,4 +1,9 @@
-vim.api.nvim_set_keymap("n", "<C-l>", "<cmd>Noice dismiss<cr>", { noremap = true, silent = true })
+local keymap_opts = {
+  noremap = true,
+  silent = true,
+}
+
+vim.api.nvim_set_keymap("n", "<C-l>", "<cmd>Noice dismiss<cr>", keymap_opts)
 
 return {
 	"folke/noice.nvim",

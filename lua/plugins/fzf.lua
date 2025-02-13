@@ -1,7 +1,12 @@
-vim.keymap.set("n", "<leader>f", ":FzfLua files<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<leader>rg", ":FzfLua grep_project<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<leader>b", ":FzfLua buffers<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<leader>g", ":FzfLua git_status<CR>", { noremap = true, silent = true })
+local keymap_opts = {
+  noremap = true,
+  silent = true,
+}
+
+vim.keymap.set("n", "<leader>f", ":FzfLua files<CR>", keymap_opts)
+vim.keymap.set("n", "<leader>rg", ":FzfLua grep_project<CR>", keymap_opts)
+vim.keymap.set("n", "<leader>b", ":FzfLua buffers<CR>", keymap_opts)
+vim.keymap.set("n", "<leader>g", ":FzfLua git_status<CR>", keymap_opts)
 
 local default_branch
 local branch_diff = function()
@@ -46,7 +51,7 @@ local function run_lua_function_picker()
 	})
 end
 
-vim.keymap.set("n", "<c-p>", run_lua_function_picker, { noremap = true, silent = true })
+vim.keymap.set("n", "<c-p>", run_lua_function_picker, keymap_opts)
 
 return {
 	'ibhagwan/fzf-lua',

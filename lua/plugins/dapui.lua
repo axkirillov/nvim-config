@@ -95,7 +95,9 @@ local function setup()
 		dapui.close()
 	end
 
-	vim.keymap.set("n", "<M-k>", require('dapui').eval, { noremap = true, silent = true })
+	local keymap_opts = { noremap = true, silent = true }
+
+	vim.keymap.set("n", "<M-k>", require('dapui').eval, keymap_opts)
 end
 
 return {
