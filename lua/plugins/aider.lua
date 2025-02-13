@@ -1,3 +1,6 @@
+---@module "nvim_aider"
+---@module 'snacks'
+
 local function get_relative_path()
 	local relative_path = vim.fn.expand('%:.')
 	vim.fn.setreg('*', relative_path)
@@ -27,7 +30,10 @@ return {
 	},
 	config = function()
 		local aider = require("nvim_aider")
-		aider.setup(
+		local terminal = require("nvim_aider.terminal")
+		--local utils = require("nvim_aider.utils")
+
+		local config = (
 			{
 				defaults = {
 
@@ -38,41 +44,73 @@ return {
 				options = {
 
 				},
+				---@type snacks.win.Config|{}
 				win = {
-					height = 100,
+					position = "float",
 				},
 			}
 		)
-		local toggle_aider = function()
-			vim.cmd("AiderTerminalToggle")
-			vim.cmd("checktime")
-		end
+
+		aider.setup(config)
+
+		vim.api.nvim_create_autocmd("VimEnter", {
+			group = vim.api.nvim_create_augroup("Aider", { clear = true }),
+			callback = function()
+				terminal.toggle()
+				terminal.toggle()
+			end
+		})
+
 		vim.keymap.set(
 			{ "n", "t" },
-			"<M-a>",
+			"<F1>",
 			function()
-				toggle_aider()
+				terminal.toggle()
 			end,
 			{ noremap = true, silent = true }
 		)
+
 		vim.api.nvim_create_user_command(
 			"RunTestInAider",
 			function()
-				-- get only the file name (without extention and path)
 				local relative_path = vim.fn.expand('%:t:r')
-				toggle_aider()
-				vim.api.nvim_feedkeys("/test ./test.sh " .. relative_path, "n", false)
-				vim.api.nvim_feedkeys("\r", "n", true)
+				vim.cmd("AiderQuickAddFile")
+				terminal.send(
+					"/run ./test.sh " .. relative_path,
+					config,
+					false
+				)
+				terminal.toggle()
 			end,
 			{}
 		)
+
 		vim.api.nvim_create_user_command(
 			"WriteTestInAider",
 			function()
-				local relative_path = get_relative_path()
-				toggle_aider()
-				vim.api.nvim_feedkeys("write a test for the following file " .. relative_path, "n", false)
-				vim.api.nvim_feedkeys("\r", "n", true)
+				local filename = vim.fn.expand('%:t')
+				vim.cmd("AiderQuickReadOnlyFile")
+				terminal.send(
+					"write a test for " .. filename,
+					config,
+					false
+				)
+				terminal.toggle()
+			end,
+			{}
+		)
+
+		vim.api.nvim_create_user_command(
+			"RunPHPStanInAider",
+			function()
+				local full_path = vim.fn.expand('%:p')
+				vim.cmd("AiderQuickAddFile")
+				terminal.send(
+					"/run make phpstan --" .. full_path,
+					config,
+					false
+				)
+				terminal.toggle()
 			end,
 			{}
 		)
