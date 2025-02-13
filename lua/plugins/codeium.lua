@@ -34,7 +34,7 @@ return {
 					-- Accept the current completion.
 					accept = "<Tab>",
 					-- Accept the next word.
-					accept_word = "<C-f>",
+					accept_word = "<M-o>",
 					-- Accept the next line.
 					accept_line = false,
 					-- Clear the virtual text.
