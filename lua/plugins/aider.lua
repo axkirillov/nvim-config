@@ -52,6 +52,7 @@ return {
 			callback = function()
 				terminal.toggle()
 				terminal.toggle()
+				vim.cmd("stopinsert")
 			end
 		})
 
@@ -65,6 +66,7 @@ return {
 			"<F1>",
 			function()
 				terminal.toggle()
+				vim.cmd("checktime")
 			end,
 			keymap_opts
 		)
@@ -72,10 +74,10 @@ return {
 		vim.api.nvim_create_user_command(
 			"RunTestInAider",
 			function()
-				local relative_path = vim.fn.expand('%:t:r')
+				local filename = vim.fn.expand('%:t:r')
 				vim.cmd("AiderQuickAddFile")
 				terminal.send(
-					"/run ./test.sh " .. relative_path,
+					"/run ./test.sh " .. filename,
 					config,
 					false
 				)
@@ -102,10 +104,10 @@ return {
 		vim.api.nvim_create_user_command(
 			"RunPHPStanInAider",
 			function()
-				local full_path = vim.fn.expand('%:p')
+				local relative_path = vim.fn.expand('%:.')
 				vim.cmd("AiderQuickAddFile")
 				terminal.send(
-					"/run make phpstan --" .. full_path,
+					"/run ./stan.sh " .. relative_path,
 					config,
 					false
 				)
