@@ -35,26 +35,3 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 		end
 	end,
 })
-
--- Add a VimEnter autocommand to create a persistent left padding window
-vim.api.nvim_create_autocmd("VimEnter",
-	{
-		callback = function()
-			-- Only create the left padding if there's just one window
-			if #vim.api.nvim_tabpage_list_wins(0) == 1 then
-				-- Create a vertical split on the left and set it to 30 columns wide
-				vim.cmd("leftabove vsplit")
-				vim.cmd("vertical resize 30")
-				-- Set up this buffer as a scratch buffer (no file, non-modifiable, etc.)
-				vim.bo.buftype = "nofile"
-				vim.bo.bufhidden = "hide"
-				vim.bo.swapfile = false
-        vim.bo.modifiable = false
-				-- Remove line numbers in the padding window
-				vim.wo.number = false
-				vim.wo.relativenumber = false
-				-- Move focus back to the main editing window (to the right)
-				vim.cmd("wincmd l")
-			end
-		end,
-	})
