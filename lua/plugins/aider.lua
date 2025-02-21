@@ -1,9 +1,24 @@
 ---@module "nvim_aider"
 ---@module 'snacks'
 
+local keymap_opts = {
+	noremap = true,
+	silent = true,
+}
+
+vim.keymap.set(
+	{ "n", "t" },
+	"<F1>",
+	function()
+		local terminal = require("nvim_aider.terminal")
+		terminal.toggle()
+		vim.cmd("checktime")
+	end,
+	keymap_opts
+)
+
 return {
 	"GeorgesAlkhouri/nvim-aider",
-	lazy = false,
 	keys = {
 	},
 	dependencies = {
@@ -15,7 +30,6 @@ return {
 	config = function()
 		local aider = require("nvim_aider")
 		local terminal = require("nvim_aider.terminal")
-		--local utils = require("nvim_aider.utils")
 
 		local config = (
 			{
@@ -36,21 +50,6 @@ return {
 		)
 
 		aider.setup(config)
-
-		local keymap_opts = {
-			noremap = true,
-			silent = true,
-		}
-
-		vim.keymap.set(
-			{ "n", "t" },
-			"<F1>",
-			function()
-				terminal.toggle()
-				vim.cmd("checktime")
-			end,
-			keymap_opts
-		)
 
 		vim.api.nvim_create_user_command(
 			"RunTestInAider",
