@@ -7,7 +7,7 @@ vim.keymap.set("n", "dd", function ()
 end, opts)
 
 -- Exit terminal mode
-vim.keymap.set('t', '<C-e>', '<C-\\><C-n>')
+vim.keymap.set('t', '<M-e>', '<C-\\><C-n>')
 
 -- Open diagnostic in a float window
 vim.keymap.set('n', '<leader>df', vim.diagnostic.open_float)
