@@ -55,6 +55,7 @@ vim.keymap.set("n", "<c-p>", run_lua_function_picker, keymap_opts)
 
 return {
 	'ibhagwan/fzf-lua',
+	cmd = "FzfLua",
 	config = function()
 		local fzf = require("fzf-lua")
 
