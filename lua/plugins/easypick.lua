@@ -4,23 +4,26 @@ return {
 	dependencies = {
 		"nvim-telescope/telescope.nvim",
 	},
+	cmd = "Easypick",
 	config = function()
 		local easypick = require("easypick")
 
 		-- only required for the example to work
-		local get_default_branch = "git remote show origin | grep 'HEAD branch' | cut -d' ' -f5"
-		local base_branch = vim.fn.system(get_default_branch) or "main"
+		local base_branch = function()
+			return vim.fn.system("git remote show origin | grep 'HEAD branch' | cut -d' ' -f5")
+					or "main"
+		end
 
 		easypick.setup({
 			pickers = {
 				{
-          name = "git_commits",
-          command = "git log --oneline --reverse",
-          previewer = easypick.previewers.default()
-        },
+					name = "git_commits",
+					command = "git log --oneline --reverse",
+					previewer = easypick.previewers.default()
+				},
 				{
 					name = "changed_files",
-					command = "git diff --name-only $(git merge-base HEAD " .. base_branch .. " )",
+					command = "git diff --name-only $(git merge-base HEAD " .. base_branch() .. " )",
 					--	previewer = easypick.previewers.branch_diff({ base_branch = base_branch })
 				},
 

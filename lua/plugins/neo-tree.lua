@@ -1,7 +1,3 @@
-vim.keymap.set('n', '<C-n>', '<Cmd>Neotree focus<CR>')
-
-vim.api.nvim_create_autocmd("VimEnter", { command = 'Neotree show' })
-
 local config = {
 	-- If a user has a sources list it will replace this one.
 	-- Only sources listed here will be loaded.
@@ -510,5 +506,6 @@ return {
 		"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
 		"MunifTanjim/nui.nvim",
 	},
-	opts = config
+	opts = config,
+	cmd = "Neotree"
 }
