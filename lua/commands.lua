@@ -21,6 +21,16 @@ vim.api.nvim_create_user_command('ReTab', '%s/\\t/  /g', {})
 
 -- Copy file path
 vim.api.nvim_create_user_command('CopyFilePath', function()
-  local relative_path = vim.fn.expand('%:.')
-  vim.fn.setreg('*', relative_path)
+	local relative_path = vim.fn.expand('%:.')
+	vim.fn.setreg('*', relative_path)
 end, {})
+
+-- Paste unix timestamp
+vim.api.nvim_create_user_command(
+	'PasteTimestamp',
+	function()
+		local timestamp = vim.fn.substitute(vim.fn.system('gdate +%s%3N'), '\\n\\+$', '', '')
+		vim.api.nvim_put({ timestamp }, 'c', true, true)
+	end,
+	{}
+)

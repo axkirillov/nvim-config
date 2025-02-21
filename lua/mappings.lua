@@ -9,13 +9,6 @@ end, opts)
 -- Exit terminal mode
 vim.keymap.set('t', '<C-e>', '<C-\\><C-n>')
 
--- Paste unix timestamp
-vim.keymap.set('n', '<F2>', function()
-  local timestamp = vim.fn.substitute(vim.fn.system('gdate +%s%3N'), '\\n\\+$', '', '')
-  vim.fn.setreg('=', timestamp)
-  vim.cmd('normal p')
-end)
-
 -- Open diagnostic in a float window
 vim.keymap.set('n', '<leader>df', vim.diagnostic.open_float)
 
