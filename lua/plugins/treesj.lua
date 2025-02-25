@@ -1,7 +1,7 @@
 return {
 	'Wansmer/treesj',
 	dependencies = { 'nvim-treesitter' },
-	cmd = { 'TSJToggle' },
+	event = "BufReadPre",
 	config = function()
 		require('treesj').setup({
 			-- Use default keymaps
