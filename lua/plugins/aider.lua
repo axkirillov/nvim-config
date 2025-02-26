@@ -67,6 +67,22 @@ return {
 		)
 
 		vim.api.nvim_create_user_command(
+			"RunCestInAider",
+			function()
+				local filepath = vim.fn.expand('%')
+				vim.cmd("AiderQuickAddFile")
+				terminal.send(
+					"/run ./cest.sh " .. filepath,
+					config,
+					false
+				)
+				terminal.toggle()
+			end,
+			{}
+		)
+
+
+		vim.api.nvim_create_user_command(
 			"WriteTestInAider",
 			function()
 				local filename = vim.fn.expand('%:t')
