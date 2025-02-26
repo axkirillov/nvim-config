@@ -111,5 +111,25 @@ return {
 			end,
 			{}
 		)
+
+		vim.api.nvim_create_user_command(
+			"PerformCodeReview",
+			function()
+				local default_branch = vim.fn.system("git remote show origin | grep 'HEAD branch' | cut -d' ' -f5")
+				vim.fn.system("git diff $(git merge-base HEAD " .. default_branch .. " ) > diff")
+				terminal.send(
+					"/read-only diff",
+					config,
+					false
+				)
+				terminal.send(
+					"perform code review",
+					config,
+					false
+				)
+				terminal.toggle()
+			end,
+			{}
+		)
 	end,
 }
