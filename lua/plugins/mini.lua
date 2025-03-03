@@ -1,8 +1,6 @@
-return {
-	'echasnovski/mini.nvim',
-	version = '*',
-	config = function()
-		local config = {
+local setup_files = function()
+	require('mini.files').setup(
+		{
 			mappings = {
 				close       = 'q',
 				go_in       = 'l',
@@ -19,12 +17,22 @@ return {
 				trim_right  = '>',
 			}
 		}
-
-		require('mini.files').setup(config)
-
-		vim.keymap.set('n', '<c-n>', function()
+	)
+	vim.keymap.set(
+		'n',
+		'<c-n>',
+		function()
 			MiniFiles.open(vim.api.nvim_buf_get_name(0))
 			MiniFiles.reveal_cwd()
-		end)
+		end
+	)
+end
+
+return {
+	'echasnovski/mini.nvim',
+	version = '*',
+	config = function()
+		setup_files()
+		require('mini.splitjoin').setup()
 	end
 }
