@@ -33,6 +33,6 @@ return {
 	version = '*',
 	config = function()
 		setup_files()
-		require('mini.splitjoin').setup()
+		require('mini.bracketed').setup()
 	end
 }
