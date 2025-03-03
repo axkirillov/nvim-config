@@ -34,7 +34,7 @@ return {
 					-- Accept the current completion.
 					accept = "<Tab>",
 					-- Accept the next word.
-					accept_word = "<M-o>",
+					accept_word = false,
 					-- Accept the next line.
 					accept_line = false,
 					-- Clear the virtual text.
@@ -46,5 +46,21 @@ return {
 				}
 			}
 		})
+
+		-- set M-f to accept word, but only if there is virtual text on the line
+		vim.keymap.set(
+			'i',
+			'<M-f>',
+			function()
+				local next_word = require("codeium.virtual_text").accept_next_word()
+				if next_word == "" then
+					-- If no completion, just move forward a word
+					return "<Cmd>lua require('readline').forward_word()<CR>"
+				end
+				-- Otherwise return the completion text (which will be inserted)
+				return next_word
+			end,
+			{ expr = true }
+		)
 	end
 }
