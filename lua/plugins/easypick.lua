@@ -2,6 +2,7 @@ return {
 	"axkirillov/easypick.nvim",
 	branch = "develop",
 	dependencies = {
+		'ibhagwan/fzf-lua',
 		"nvim-telescope/telescope.nvim",
 	},
 	cmd = "Easypick",
@@ -13,26 +14,27 @@ return {
 			return vim.fn.system("git remote show origin | grep 'HEAD branch' | cut -d' ' -f5")
 					or "main"
 		end
-
+		local list = [[
+			<< EOF
+				:FzfLua files
+				:Git blame
+			EOF
+		]]
 		easypick.setup({
 			pickers = {
 				{
-					name = "git_commits",
-					command = "git log --oneline --reverse",
+					name = "ls",
+					command = "ls",
 					previewer = easypick.previewers.default()
 				},
 				{
-					name = "changed_files",
-					command = "git diff --name-only $(git merge-base HEAD " .. base_branch() .. " )",
-					--	previewer = easypick.previewers.branch_diff({ base_branch = base_branch })
-				},
-
-				-- list files that have conflicts with diffs in preview
-				{
-					name = "conflicts",
-					command = "git diff --name-only --diff-filter=U --relative",
-					-- previewer = easypick.previewers.file_diff()
-				},
+					name = "command_palette",
+					command = "cat " .. list,
+					-- pass a pre-configured action that runs the command
+					action = easypick.actions.nvim_commandf("%s"),
+					-- you can specify any theme you want, but the dropdown looks good for this example =)
+					opts = require('telescope.themes').get_dropdown({})
+				}
 			}
 		})
 	end
