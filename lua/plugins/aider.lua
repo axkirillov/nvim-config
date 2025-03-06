@@ -131,5 +131,12 @@ return {
 			end,
 			{}
 		)
+		vim.api.nvim_create_user_command(
+      "AiderCommit",
+      function()
+        terminal.command("/commit")
+      end,
+      {}
+    )
 	end,
 }
