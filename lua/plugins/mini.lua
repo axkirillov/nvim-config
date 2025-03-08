@@ -3,10 +3,10 @@ local setup_files = function()
 		{
 			mappings = {
 				close       = 'q',
-				go_in       = 'l',
+				go_in       = '<c-l>',
 				go_in_plus  = '<c-j>',
-				go_out      = 'h',
-				go_out_plus = 'H',
+				go_out      = '<c-h>',
+				go_out_plus = '<H>',
 				mark_goto   = "'",
 				mark_set    = 'm',
 				reset       = '<BS>',
