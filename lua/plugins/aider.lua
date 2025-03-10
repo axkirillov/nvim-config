@@ -1,6 +1,22 @@
 ---@module "nvim_aider"
 ---@module 'snacks'
 
+local M = {
+	terminal = {},
+	config = {
+		defaults = {
+		},
+		setup = {
+		},
+		options = {
+		},
+		---@type snacks.win.Config|{}
+		win = {
+			position = "float",
+		},
+	},
+}
+
 local keymap_opts = {
 	noremap = true,
 	silent = true,
@@ -17,6 +33,23 @@ vim.keymap.set(
 	keymap_opts
 )
 
+local function add_file(filepath, opts)
+	opts = opts or {}
+	local command = opts.readonly and "/read" or "/add"
+	M.terminal.send(
+		string.format("%s %s", command, filepath),
+		M.config,
+		false
+	)
+	M.terminal.toggle()
+end
+
+local function send(command)
+	local terminal = require("nvim_aider.terminal")
+	terminal.send(command, M.config, false)
+	terminal.toggle()
+end
+
 return {
 	"GeorgesAlkhouri/nvim-aider",
 	keys = {
@@ -29,44 +62,17 @@ return {
 	},
 	config = function()
 		local aider = require("nvim_aider")
-		local terminal = require("nvim_aider.terminal")
+		M.terminal = require("nvim_aider.terminal")
 
-		local config = (
-			{
-				defaults = {
-
-				},
-				setup = {
-
-				},
-				options = {
-
-				},
-				---@type snacks.win.Config|{}
-				win = {
-					position = "float",
-				},
-			}
-		)
-
-		aider.setup(config)
+		aider.setup(M.config)
 
 		vim.api.nvim_create_user_command(
 			"RunTestInAider",
 			function()
 				local filename = vim.fn.expand('%:t:r')
 				local filepath = vim.fn.expand('%')
-				terminal.send(
-					"/add " .. filepath,
-					config,
-					false
-				)
-				terminal.send(
-					"/run ./test.sh " .. filename,
-					config,
-					false
-				)
-				terminal.toggle()
+				add_file(filepath)
+				send(string.format("/run ./test.sh %s", filename))
 			end,
 			{}
 		)
@@ -75,13 +81,8 @@ return {
 			"RunCestInAider",
 			function()
 				local filepath = vim.fn.expand('%')
-				vim.cmd("AiderQuickAddFile")
-				terminal.send(
-					"/run ./cest.sh " .. filepath,
-					config,
-					false
-				)
-				terminal.toggle()
+				add_file(filepath)
+				send(string.format("/run ./cest.sh %s", filepath))
 			end,
 			{}
 		)
@@ -90,13 +91,8 @@ return {
 			"WriteTestInAider",
 			function()
 				local filename = vim.fn.expand('%:t')
-				vim.cmd("AiderQuickReadOnlyFile")
-				terminal.send(
-					"write a test for " .. filename,
-					config,
-					false
-				)
-				terminal.toggle()
+				add_file(vim.fn.expand('%'), { readonly = true })
+				send(string.format("write a test for %s", filename))
 			end,
 			{}
 		)
@@ -105,13 +101,8 @@ return {
 			"RunPHPStanInAider",
 			function()
 				local relative_path = vim.fn.expand('%:.')
-				vim.cmd("AiderQuickAddFile")
-				terminal.send(
-					"/run ./stan.sh " .. relative_path,
-					config,
-					false
-				)
-				terminal.toggle()
+				add_file(vim.fn.expand('%'))
+				send(string.format("/run ./stan.sh %s", relative_path))
 			end,
 			{}
 		)
@@ -120,25 +111,26 @@ return {
 			"PerformCodeReview",
 			function()
 				local default_branch = vim.fn.system("git remote show origin | grep 'HEAD branch' | cut -d' ' -f5")
-				vim.fn.system("git diff $(git merge-base HEAD " .. default_branch .. " ) > diff")
-				terminal.send(
-					"/read-only diff",
-					config,
-					false
-				)
-				terminal.send(
-					"perform code review",
-					config,
-					false
-				)
-				terminal.toggle()
+				vim.fn.system(string.format("git diff $(git merge-base HEAD %s ) > diff", default_branch))
+				send("/read-only diff")
+				send("perform code review")
 			end,
 			{}
 		)
+
 		vim.api.nvim_create_user_command(
 			"AiderCommit",
 			function()
-				terminal.command("/commit")
+				M.terminal.command("/commit")
+			end,
+			{}
+		)
+
+		vim.api.nvim_create_user_command(
+			"AiderCreateClassUnderCursor",
+			function()
+				local class_name = vim.fn.expand("<cword>")
+				send(string.format("/create class %s", class_name))
 			end,
 			{}
 		)
