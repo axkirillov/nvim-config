@@ -55,7 +55,12 @@ return {
 			"RunTestInAider",
 			function()
 				local filename = vim.fn.expand('%:t:r')
-				vim.cmd("AiderQuickAddFile")
+				local filepath = vim.fn.expand('%')
+				terminal.send(
+					"/add " .. filepath,
+					config,
+					false
+				)
 				terminal.send(
 					"/run ./test.sh " .. filename,
 					config,
@@ -80,7 +85,6 @@ return {
 			end,
 			{}
 		)
-
 
 		vim.api.nvim_create_user_command(
 			"WriteTestInAider",
@@ -132,11 +136,11 @@ return {
 			{}
 		)
 		vim.api.nvim_create_user_command(
-      "AiderCommit",
-      function()
-        terminal.command("/commit")
-      end,
-      {}
-    )
+			"AiderCommit",
+			function()
+				terminal.command("/commit")
+			end,
+			{}
+		)
 	end,
 }
