@@ -3,7 +3,7 @@
 
 local M = {
 	terminal = {},
-	config = {
+	terminal_config = {
 		defaults = {
 		},
 		setup = {
@@ -38,7 +38,7 @@ local function add_file(filepath, opts)
 	local command = opts.readonly and "/read" or "/add"
 	M.terminal.send(
 		string.format("%s %s", command, filepath),
-		M.config,
+		M.terminal_config,
 		false
 	)
 	M.terminal.toggle()
@@ -46,7 +46,7 @@ end
 
 local function send(command)
 	local terminal = require("nvim_aider.terminal")
-	terminal.send(command, M.config, false)
+	terminal.send(command, M.terminal_config, false)
 	terminal.toggle()
 end
 
@@ -64,7 +64,7 @@ return {
 		local aider = require("nvim_aider")
 		M.terminal = require("nvim_aider.terminal")
 
-		aider.setup(M.config)
+		aider.setup(M.terminal_config)
 
 		vim.api.nvim_create_user_command(
 			"RunTestInAider",
