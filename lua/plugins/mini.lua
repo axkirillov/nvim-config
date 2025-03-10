@@ -3,8 +3,8 @@ local setup_files = function()
 		{
 			mappings = {
 				close       = 'q',
-				go_in       = '<c-l>',
-				go_in_plus  = '<c-j>',
+				go_in       = '',
+				go_in_plus  = '<c-l>',
 				go_out      = '<c-h>',
 				go_out_plus = '<H>',
 				mark_goto   = "'",
@@ -36,30 +36,34 @@ local setup_files = function()
 	})
 end
 
+local setup_bracketed = function()
+	require('mini.bracketed').setup()
+	-- needs to be remapped bacause otherwise the default diagnostic is going to be showed
+	-- and we are using tiny-inline-diagnostic
+	local opts = { noremap = true, silent = true }
+	vim.keymap.set(
+		'n',
+		'[d',
+		function()
+			vim.diagnostic.goto_prev({ float = false })
+		end,
+		opts
+	)
+	vim.keymap.set(
+		'n',
+		']d',
+		function()
+			vim.diagnostic.goto_next({ float = false })
+		end,
+		opts
+	)
+end
+
 return {
 	'echasnovski/mini.nvim',
 	version = '*',
 	config = function()
 		setup_files()
-		require('mini.bracketed').setup()
-		-- needs to be remapped bacause otherwise the default diagnostic is going to be showed
-		-- and we are using tiny-inline-diagnostic
-		local opts = { noremap = true, silent = true }
-		vim.keymap.set(
-			'n',
-			'[d',
-			function()
-				vim.diagnostic.goto_prev({ float = false })
-			end,
-			opts
-		)
-		vim.keymap.set(
-			'n',
-			']d',
-			function()
-				vim.diagnostic.goto_next({ float = false })
-			end,
-			opts
-		)
+		setup_bracketed()
 	end
 }
