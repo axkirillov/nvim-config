@@ -22,17 +22,6 @@ local keymap_opts = {
 	silent = true,
 }
 
-vim.keymap.set(
-	{ "n", "t" },
-	"<F1>",
-	function()
-		local terminal = require("nvim_aider.terminal")
-		terminal.toggle()
-		vim.cmd("checktime")
-	end,
-	keymap_opts
-)
-
 local function add_file(filepath, opts)
 	opts = opts or {}
 	local command = opts.readonly and "/read" or "/add"
@@ -41,19 +30,15 @@ local function add_file(filepath, opts)
 		M.terminal_config,
 		false
 	)
-	M.terminal.toggle()
 end
 
 local function send(command)
-	local terminal = require("nvim_aider.terminal")
-	terminal.send(command, M.terminal_config, false)
-	terminal.toggle()
+	M.terminal.send(command, M.terminal_config, false)
+	M.terminal.toggle()
 end
 
 return {
 	"GeorgesAlkhouri/nvim-aider",
-	keys = {
-	},
 	dependencies = {
 		"folke/snacks.nvim",
 		"nvim-telescope/telescope.nvim",
@@ -63,6 +48,15 @@ return {
 	config = function()
 		local aider = require("nvim_aider")
 		M.terminal = require("nvim_aider.terminal")
+		vim.keymap.set(
+			{ "n", "t" },
+			"<F1>",
+			function()
+				M.terminal.toggle()
+				vim.cmd("checktime")
+			end,
+			keymap_opts
+		)
 
 		aider.setup(M.terminal_config)
 
@@ -121,6 +115,8 @@ return {
 		vim.api.nvim_create_user_command(
 			"AiderCommit",
 			function()
+				-- run pre commit hooks in a one off terminal
+				vim.fn.system(".git/hooks/pre-commit")
 				M.terminal.command("/commit")
 			end,
 			{}
