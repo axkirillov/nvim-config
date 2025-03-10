@@ -4,9 +4,6 @@ local setup = function()
 
 	-- Mappings.
 	-- See `:help vim.diagnostic.*` for documentation on any of the below functions
-	local opts = { noremap = true, silent = true }
-	vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-	vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 	vim.api.nvim_create_user_command('DiagnosticFloat',
 		function()
 			vim.diagnostic.open_float()
