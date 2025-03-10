@@ -26,6 +26,14 @@ local setup_files = function()
 			MiniFiles.reveal_cwd()
 		end
 	)
+	vim.api.nvim_create_autocmd('User', {
+		pattern = 'MiniFilesBufferCreate',
+		callback = function(args)
+			local buf_id = args.data.buf_id
+			vim.keymap.set('n', '<c-j>', 'j', { buffer = buf_id })
+			vim.keymap.set('n', '<c-k>', 'k', { buffer = buf_id })
+		end,
+	})
 end
 
 return {
@@ -49,8 +57,8 @@ return {
 			'n',
 			']d',
 			function()
-        vim.diagnostic.goto_next({ float = false })
-      end,
+				vim.diagnostic.goto_next({ float = false })
+			end,
 			opts
 		)
 	end
