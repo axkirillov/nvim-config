@@ -113,11 +113,9 @@ return {
 		)
 
 		vim.api.nvim_create_user_command(
-			"AiderCommit",
+			"AiderRunPreCommitHook",
 			function()
-				-- run pre commit hooks in a one off terminal
-				vim.fn.system(".git/hooks/pre-commit")
-				M.terminal.command("/commit")
+				send("/run .git/hooks/pre-commit")
 			end,
 			{}
 		)
