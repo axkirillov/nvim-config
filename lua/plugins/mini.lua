@@ -41,6 +41,7 @@ local setup_bracketed = function()
 	-- needs to be remapped bacause otherwise the default diagnostic is going to be showed
 	-- and we are using tiny-inline-diagnostic
 	local opts = { noremap = true, silent = true }
+
 	vim.keymap.set(
 		'n',
 		'[d',
@@ -49,6 +50,7 @@ local setup_bracketed = function()
 		end,
 		opts
 	)
+
 	vim.keymap.set(
 		'n',
 		']d',

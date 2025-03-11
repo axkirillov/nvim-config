@@ -58,6 +58,18 @@ return {
 			keymap_opts
 		)
 
+		-- start on vim startup
+		vim.api.nvim_create_autocmd(
+			"VimEnter",
+			{
+				callback = function()
+					M.terminal.toggle()
+					M.terminal.toggle()
+					vim.cmd("stopinsert")
+				end
+			}
+		)
+
 		aider.setup(M.terminal_config)
 
 		vim.api.nvim_create_user_command(
@@ -116,6 +128,14 @@ return {
 			"AiderRunPreCommitHook",
 			function()
 				send("/run .git/hooks/pre-commit")
+			end,
+			{}
+		)
+
+		vim.api.nvim_create_user_command(
+			"AiderRunPrePushHook",
+			function()
+				send("/run .git/hooks/pre-push")
 			end,
 			{}
 		)
