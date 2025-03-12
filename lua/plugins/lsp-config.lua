@@ -4,15 +4,18 @@ local setup = function()
 
 	-- Mappings.
 	-- See `:help vim.diagnostic.*` for documentation on any of the below functions
-	vim.api.nvim_create_user_command('DiagnosticFloat',
+	vim.api.nvim_create_user_command(
+		'DiagnosticFloat',
 		function()
 			vim.diagnostic.open_float()
-		end, {})
+		end, {}
+	)
 
-	vim.api.nvim_create_user_command('DiagnosticList',
-		function()
-			vim.diagnostic.setloclist()
-		end, {})
+	vim.api.nvim_create_user_command(
+		'DiagnosticList',
+		function() vim.diagnostic.setloclist() end,
+		{}
+	)
 
 	-- Use an on_attach function to only map the following keys
 	-- after the language server attaches to the current buffer
