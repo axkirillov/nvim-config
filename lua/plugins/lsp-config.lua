@@ -6,9 +6,8 @@ local setup = function()
 	-- See `:help vim.diagnostic.*` for documentation on any of the below functions
 	vim.api.nvim_create_user_command(
 		'DiagnosticFloat',
-		function()
-			vim.diagnostic.open_float()
-		end, {}
+		function() vim.diagnostic.open_float() end,
+		{}
 	)
 
 	vim.api.nvim_create_user_command(
