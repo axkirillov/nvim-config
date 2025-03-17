@@ -1,7 +1,6 @@
 {
   "blink.cmp": { "branch": "main", "commit": "5f442681df24fe705d1ee7ce5b4d435aa4b4dee4" },
   "catppuccin": { "branch": "main", "commit": "5b5e3aef9ad7af84f463d17b5479f06b87d5c429" },
-  "copilot.vim": { "branch": "release", "commit": "5015939f131627a6a332c9e3ecad9a7cb4c2e549" },
   "diffview.nvim": { "branch": "main", "commit": "4516612fe98ff56ae0415a259ff6361a89419b0a" },
   "easypick.nvim": { "branch": "develop", "commit": "33a40edc0172af607deafdae8fe75ff8034a0d8f" },
   "fzf-lua": { "branch": "main", "commit": "c5df6f2b5b8147d1696a577e46036ea3c06c8657" },
@@ -31,6 +30,7 @@
   "readline.nvim": { "branch": "main", "commit": "5cb27349bc01cdcdb3d3494e5337d8b3834aef1a" },
   "refactoring.nvim": { "branch": "master", "commit": "2db6d378e873de31d18ade549c2edba64ff1c2e3" },
   "snacks.nvim": { "branch": "main", "commit": "6e0962a82e46a5b07445a1f43ece798b71dfccdc" },
+  "supermaven-nvim": { "branch": "main", "commit": "07d20fce48a5629686aefb0a7cd4b25e33947d50" },
   "telescope.nvim": { "branch": "master", "commit": "415af52339215926d705cccc08145f3782c4d132" },
   "tiny-inline-diagnostic.nvim": { "branch": "main", "commit": "de01d4c9cd032d4dac69bf64d5a184fbe62e1fd1" },
   "treesj": { "branch": "main", "commit": "03415ac60791d48e120a80d37e080744faf3ac15" },
