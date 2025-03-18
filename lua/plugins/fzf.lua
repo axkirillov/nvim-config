@@ -9,83 +9,45 @@ vim.keymap.set("n", "<leader>b", ":FzfLua buffers<CR>", keymap_opts)
 vim.keymap.set("n", "<leader>g", ":FzfLua git_status<CR>", keymap_opts)
 
 local default_branch
-local branch_diff = function()
+
+local get_default_branch = function()
 	if not default_branch then
 		local command = "git remote show origin | grep 'HEAD branch' | cut -d' ' -f5"
 		default_branch = vim.fn.system(command) or "main"
 	end
-	local command = "git diff --name-only $(git merge-base HEAD " .. default_branch .. " )"
-	require 'fzf-lua'.files({ cmd = command })
+	return default_branch
 end
 
-local conflicts = function()
-	local command = "git diff --name-only --diff-filter=U --relative"
-	require 'fzf-lua'.files({ cmd = command })
+-- Custom function to get files changed by a commit
+local function get_files_changed(commit_hash)
+	local command = string.format("git show --pretty='' --name-only %s", commit_hash)
+	return vim.fn.systemlist(command)
 end
-
-local function_table = {
-	["branch_diff"] = branch_diff,
-	["conflicts"] = conflicts,
-	["commits"] = function() require 'fzf-lua'.git_commits() end,
-}
-
-local function run_lua_function_picker()
-	local fzf = require('fzf-lua')
-	local function_names = {}
-	for name, _ in pairs(function_table) do
-		table.insert(function_names, name)
-	end
-
-	fzf.fzf_exec(function_names, {
-		prompt = "Select a Lua function to run: ",
-		actions = {
-			["default"] = function(selected)
-				local func = function_table[selected[1]]
-				if func then
-					func()
-				else
-					print("Function not found")
-				end
-			end
-		}
-	})
-end
-
-vim.keymap.set("n", "<c-p>", run_lua_function_picker, keymap_opts)
 
 return {
 	'ibhagwan/fzf-lua',
 	cmd = "FzfLua",
 	config = function()
-		local fzf = require("fzf-lua")
-
-		-- Custom function to get files changed by a commit
-		local function get_files_changed(commit_hash)
-			local command = string.format("git show --pretty='' --name-only %s", commit_hash)
-			return vim.fn.systemlist(command)
-		end
-
-		-- Custom action to show files changed by a commit
-		local function show_files_changed(selected)
-			local commit_hash = selected[1]:match("%S+")
-			local files = get_files_changed(commit_hash)
-			fzf.fzf_exec(files, {
-				prompt = "Files changed in " .. commit_hash .. ": ",
-				actions = {
-					["default"] = fzf.actions.file_edit
-				}
-			})
-		end
+		local fzf_lua = require("fzf-lua")
 
 		-- Configure FzfLua for git commits
-		fzf.setup({
+		fzf_lua.setup({
 			'telescope',
 			git = {
 				commits = {
 					cmd = "git log --oneline --color",
 					preview = "git show --pretty='%C(yellow)%h%Creset %s %C(cyan)(%cr)%Creset' --color {1}",
 					actions = {
-						["default"] = show_files_changed,
+						["default"] = function(selected)
+							local commit_hash = selected[1]:match("%S+")
+							local files = get_files_changed(commit_hash)
+							fzf_lua.fzf_exec(files, {
+								prompt = "Files changed in " .. commit_hash .. ": ",
+								actions = {
+									["default"] = fzf_lua.actions.file_edit
+								}
+							})
+						end,
 					},
 				},
 			},
@@ -98,6 +60,22 @@ return {
 			grep = {
 			}
 		})
+
+		vim.api.nvim_create_user_command(
+			"BranchDiff",
+			function()
+				fzf_lua.files({ cmd = "git diff --name-only $(git merge-base HEAD " .. get_default_branch() .. " )" })
+			end,
+			{}
+		)
+		vim.api.nvim_create_user_command(
+			"Conflicts",
+			function()
+				fzf_lua.files({ cmd = "git diff --name-only --diff-filter=U --relative" })
+			end,
+			{}
+		)
+		vim.api.nvim_create_user_command("Commits", fzf_lua.git_commits, {})
 	end
 
 }
