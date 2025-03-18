@@ -16,7 +16,7 @@ return {
 				auto_close = true,
 				focus_on_open = true,
 				width = 15,
-				position = 'left',
+				position = 'right',
 			},
 			outline_items = {
 				show_symbol_details = false,
