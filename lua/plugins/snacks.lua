@@ -48,6 +48,7 @@ return
 						win = { position = "float" },
 					}
 				)
+				vim.cmd("checktime")
 			end,
 			keymap_opts
 		)
