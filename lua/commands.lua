@@ -41,41 +41,41 @@ vim.api.nvim_create_user_command(
 	function()
 		-- Get current repo from git remote
 		local remote_url = vim.fn.trim(vim.fn.system("git remote get-url origin"))
-		
+
 		-- Extract owner and repo from URL
 		local owner, repo
 		if remote_url:match("github.com") then
 			owner, repo = remote_url:match("github.com[:/]([^/]+)/([^/%.]+)")
 		end
-		
+
 		if not owner or not repo then
 			vim.notify("Could not determine GitHub repository from remote URL", vim.log.levels.ERROR)
 			return
 		end
-		
+
 		-- Remove .git suffix if present
 		repo = repo:gsub("%.git$", "")
-		
+
 		-- Fetch PRs using GitHub CLI
 		local cmd = string.format("gh pr list --json number,title,headRefName,url -L 100")
 		local handle = io.popen(cmd)
 		local result = handle:read("*a")
 		handle:close()
-		
+
 		-- Parse JSON result
 		local prs = vim.fn.json_decode(result)
-		
+
 		if #prs == 0 then
 			vim.notify("No pull requests found", vim.log.levels.INFO)
 			return
 		end
-		
+
 		-- Format PRs for fzf-lua
 		local formatted_prs = {}
 		for _, pr in ipairs(prs) do
 			table.insert(formatted_prs, string.format("#%d | %s | %s", pr.number, pr.headRefName, pr.title))
 		end
-		
+
 		-- Open fzf-lua with the PRs
 		local fzf_lua = require("fzf-lua")
 		fzf_lua.fzf_exec(formatted_prs, {
@@ -120,3 +120,4 @@ Ctrl-O: Open in browser
 	end,
 	{}
 )
+
