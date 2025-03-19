@@ -50,7 +50,7 @@ return {
 		M.terminal = require("nvim_aider.terminal")
 		vim.keymap.set(
 			{ "n", "t" },
-			"<F1>",
+			"<F2>",
 			function()
 				M.terminal.toggle()
 				vim.cmd("checktime")

@@ -39,10 +39,10 @@ return
 		)
 		vim.keymap.set(
 			{ "n", "t" },
-			"<F2>",
+			"<F1>",
 			function()
 				snacks.terminal.toggle(
-					nil,
+					"claude",
 					{
 						auto_close = false,
 						win = { position = "float" },
