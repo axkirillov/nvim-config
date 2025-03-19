@@ -41,41 +41,41 @@ vim.api.nvim_create_user_command(
 	function()
 		-- Get current repo from git remote
 		local remote_url = vim.fn.trim(vim.fn.system("git remote get-url origin"))
-
+		
 		-- Extract owner and repo from URL
 		local owner, repo
 		if remote_url:match("github.com") then
 			owner, repo = remote_url:match("github.com[:/]([^/]+)/([^/%.]+)")
 		end
-
+		
 		if not owner or not repo then
 			vim.notify("Could not determine GitHub repository from remote URL", vim.log.levels.ERROR)
 			return
 		end
-
+		
 		-- Remove .git suffix if present
 		repo = repo:gsub("%.git$", "")
-
+		
 		-- Fetch PRs using GitHub CLI
 		local cmd = string.format("gh pr list --json number,title,headRefName,url -L 100")
 		local handle = io.popen(cmd)
 		local result = handle:read("*a")
 		handle:close()
-
+		
 		-- Parse JSON result
 		local prs = vim.fn.json_decode(result)
-
+		
 		if #prs == 0 then
 			vim.notify("No pull requests found", vim.log.levels.INFO)
 			return
 		end
-
+		
 		-- Format PRs for fzf-lua
 		local formatted_prs = {}
 		for _, pr in ipairs(prs) do
 			table.insert(formatted_prs, string.format("#%d | %s | %s", pr.number, pr.headRefName, pr.title))
 		end
-
+		
 		-- Open fzf-lua with the PRs
 		local fzf_lua = require("fzf-lua")
 		fzf_lua.fzf_exec(formatted_prs, {
@@ -94,17 +94,11 @@ vim.api.nvim_create_user_command(
 				["ctrl-d"] = function(selected)
 					local pr_number = selected[1]:match("#(%d+)")
 					if pr_number then
-						-- Get PR branch name
-						local branch_name = selected[1]:match("#%d+ | ([^|]+) |")
-						if branch_name then
-							branch_name = vim.fn.trim(branch_name)
-							-- Get default branch name
-							local default_branch = vim.fn.trim(vim.fn.system(
-							"git remote show origin | grep 'HEAD branch' | cut -d' ' -f5"))
-							-- Open DiffView
-							vim.cmd('DiffviewOpen ' .. default_branch .. '..' .. branch_name)
-							vim.notify("Opened PR #" .. pr_number .. " in DiffView", vim.log.levels.INFO)
-						end
+						-- Use GitHub CLI to directly open PR in DiffView
+						-- This avoids issues with branch name parsing
+						vim.notify("Opening PR #" .. pr_number .. " in DiffView...", vim.log.levels.INFO)
+						vim.fn.system("gh pr checkout " .. pr_number)
+						vim.cmd('DiffviewOpen origin/HEAD...HEAD')
 					end
 				end,
 				-- Action for opening PR in browser
