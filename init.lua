@@ -3,7 +3,6 @@ require("settings")
 require("mappings")
 require("commands")
 require("autocommands")
-require("claude")
 require("lazy_bootstrap")
 require("lazy").setup(
 	"plugins",
@@ -14,6 +13,7 @@ require("lazy").setup(
 		},
 	}
 )
+require("claude")
 
 -- Set colorscheme
 vim.cmd('colorscheme catppuccin-macchiato')

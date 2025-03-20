@@ -9,6 +9,17 @@ local claude_term_opts = {
 	win = { position = "float" },
 }
 
+-- Auto-create Claude terminal on startup using double toggle hack
+local function create_claude_terminal()
+	local snacks = require("snacks")
+	-- First toggle to create and show
+	snacks.terminal.toggle("claude", claude_term_opts)
+	-- Second toggle to hide immediately without waiting
+	snacks.terminal.toggle("claude", claude_term_opts)
+	-- excape insert mode
+	vim.cmd("stopinsert")
+end
+
 local function send_to_claude(text)
 	local term = require("snacks.terminal").get("claude", claude_term_opts)
 
@@ -22,8 +33,6 @@ local function send_to_claude(text)
 		if chan then
 			text = text:gsub("\n", " ")
 			vim.api.nvim_chan_send(chan, text)
-			-- Send Enter key as a separate command
-			vim.api.nvim_chan_send(chan, vim.api.nvim_replace_termcodes("<CR>", true, true, true))
 		else
 			vim.notify("No Claude terminal job found!", vim.log.levels.ERROR)
 		end
@@ -64,8 +73,20 @@ vim.keymap.set(
 	keymap_opts
 )
 
+-- Initialize Claude terminal on Vim startup
+vim.api.nvim_create_autocmd("VimEnter", {
+	callback = function()
+		create_claude_terminal()
+	end,
+	group = vim.api.nvim_create_augroup("ClaudeTerminalInit", { clear = true }),
+	desc = "Create Claude terminal on startup"
+})
+
+-- Call immediately for current session
+create_claude_terminal()
+
 return {
 	send_to_claude = send_to_claude,
-	claude_term_opts = claude_term_opts
+	claude_term_opts = claude_term_opts,
+	create_claude_terminal = create_claude_terminal
 }
-

@@ -25,3 +25,4 @@
 ## Git Integration
 - DiffView for git diff visualization 
 - Supports merge conflict resolution with custom keybindings
+- Do not instert Co-Authored-By: Claude
