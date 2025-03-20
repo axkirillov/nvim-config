@@ -83,81 +83,81 @@ return {
 		--	{}
 		--)
 
-		vim.api.nvim_create_user_command(
-			"RunTest",
-			function()
-				local filename = vim.fn.expand('%:t:r')
-				local filepath = vim.fn.expand('%')
-				add_file(filepath)
-				send(string.format("/run ./test.sh %s", filename))
-			end,
-			{}
-		)
+		--vim.api.nvim_create_user_command(
+		--	"RunTest",
+		--	function()
+		--		local filename = vim.fn.expand('%:t:r')
+		--		local filepath = vim.fn.expand('%')
+		--		add_file(filepath)
+		--		send(string.format("/run ./test.sh %s", filename))
+		--	end,
+		--	{}
+		--)
 
-		vim.api.nvim_create_user_command(
-			"RunCestInAider",
-			function()
-				local filepath = vim.fn.expand('%')
-				add_file(filepath)
-				send(string.format("/run ./cest.sh %s", filepath))
-			end,
-			{}
-		)
+		--vim.api.nvim_create_user_command(
+		--	"RunCestInAider",
+		--	function()
+		--		local filepath = vim.fn.expand('%')
+		--		add_file(filepath)
+		--		send(string.format("/run ./cest.sh %s", filepath))
+		--	end,
+		--	{}
+		--)
 
-		vim.api.nvim_create_user_command(
-			"WriteTestInAider",
-			function()
-				local filename = vim.fn.expand('%:t')
-				add_file(vim.fn.expand('%'), { readonly = true })
-				send(string.format("write a test for %s", filename))
-			end,
-			{}
-		)
+		--vim.api.nvim_create_user_command(
+		--	"WriteTestInAider",
+		--	function()
+		--		local filename = vim.fn.expand('%:t')
+		--		add_file(vim.fn.expand('%'), { readonly = true })
+		--		send(string.format("write a test for %s", filename))
+		--	end,
+		--	{}
+		--)
 
-		vim.api.nvim_create_user_command(
-			"RunPHPStanInAider",
-			function()
-				local relative_path = vim.fn.expand('%:.')
-				add_file(vim.fn.expand('%'))
-				send(string.format("/run ./stan.sh %s", relative_path))
-			end,
-			{}
-		)
+		--vim.api.nvim_create_user_command(
+		--	"RunPHPStanInAider",
+		--	function()
+		--		local relative_path = vim.fn.expand('%:.')
+		--		add_file(vim.fn.expand('%'))
+		--		send(string.format("/run ./stan.sh %s", relative_path))
+		--	end,
+		--	{}
+		--)
 
-		vim.api.nvim_create_user_command(
-			"PerformCodeReview",
-			function()
-				local default_branch = vim.fn.system("git remote show origin | grep 'HEAD branch' | cut -d' ' -f5")
-				vim.fn.system(string.format("git diff $(git merge-base HEAD %s ) > diff", default_branch))
-				send("/read-only diff")
-				send("perform code review")
-			end,
-			{}
-		)
+		--vim.api.nvim_create_user_command(
+		--	"PerformCodeReview",
+		--	function()
+		--		local default_branch = vim.fn.system("git remote show origin | grep 'HEAD branch' | cut -d' ' -f5")
+		--		vim.fn.system(string.format("git diff $(git merge-base HEAD %s ) > diff", default_branch))
+		--		send("/read-only diff")
+		--		send("perform code review")
+		--	end,
+		--	{}
+		--)
 
-		vim.api.nvim_create_user_command(
-			"AiderRunPreCommitHook",
-			function()
-				send("/run .git/hooks/pre-commit")
-			end,
-			{}
-		)
+		--vim.api.nvim_create_user_command(
+		--	"AiderRunPreCommitHook",
+		--	function()
+		--		send("/run .git/hooks/pre-commit")
+		--	end,
+		--	{}
+		--)
 
-		vim.api.nvim_create_user_command(
-			"AiderRunPrePushHook",
-			function()
-				send("/run .git/hooks/pre-push")
-			end,
-			{}
-		)
+		--vim.api.nvim_create_user_command(
+		--	"AiderRunPrePushHook",
+		--	function()
+		--		send("/run .git/hooks/pre-push")
+		--	end,
+		--	{}
+		--)
 
-		vim.api.nvim_create_user_command(
-			"AiderCreateClassUnderCursor",
-			function()
-				local class_name = vim.fn.expand("<cword>")
-				send(string.format("/create class %s", class_name))
-			end,
-			{}
-		)
+		--vim.api.nvim_create_user_command(
+		--	"AiderCreateClassUnderCursor",
+		--	function()
+		--		local class_name = vim.fn.expand("<cword>")
+		--		send(string.format("/create class %s", class_name))
+		--	end,
+		--	{}
+		--)
 	end,
 }
