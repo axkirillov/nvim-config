@@ -72,8 +72,19 @@ return {
 
 		aider.setup(M.terminal_config)
 
+		--vim.api.nvim_create_user_command(
+		--	"RunTestInAider",
+		--	function()
+		--		local filename = vim.fn.expand('%:t:r')
+		--		local filepath = vim.fn.expand('%')
+		--		add_file(filepath)
+		--		send(string.format("/run ./test.sh %s", filename))
+		--	end,
+		--	{}
+		--)
+
 		vim.api.nvim_create_user_command(
-			"RunTestInAider",
+			"RunTest",
 			function()
 				local filename = vim.fn.expand('%:t:r')
 				local filepath = vim.fn.expand('%')
