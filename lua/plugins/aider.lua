@@ -59,16 +59,16 @@ return {
 		)
 
 		-- start on vim startup
-		vim.api.nvim_create_autocmd(
-			"VimEnter",
-			{
-				callback = function()
-					M.terminal.toggle()
-					M.terminal.toggle()
-					vim.cmd("stopinsert")
-				end
-			}
-		)
+		--vim.api.nvim_create_autocmd(
+		--	"VimEnter",
+		--	{
+		--		callback = function()
+		--			M.terminal.toggle()
+		--			M.terminal.toggle()
+		--			vim.cmd("stopinsert")
+		--		end
+		--	}
+		--)
 
 		aider.setup(M.terminal_config)
 

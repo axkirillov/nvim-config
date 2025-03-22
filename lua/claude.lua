@@ -48,10 +48,8 @@ vim.api.nvim_create_user_command(
 		local snacks = require("snacks")
 		local filename = vim.fn.expand('%:t:r')
 
-		-- First open the terminal
 		snacks.terminal.toggle("claude", claude_term_opts)
 
-		-- Give terminal time to initialize before sending commands
 		vim.defer_fn(function()
 			-- Just prepare the command in terminal for user to press Enter
 			send_to_claude(string.format("! %s", filename))
@@ -60,6 +58,25 @@ vim.api.nvim_create_user_command(
 	end,
 	{}
 )
+
+-- Create command to run make phpstan
+vim.api.nvim_create_user_command(
+	"RunMakePhpstan",
+	function()
+		local snacks = require("snacks")
+
+		snacks.terminal.toggle("claude", claude_term_opts)
+
+		vim.defer_fn(function()
+			send_to_claude("!")
+			send_to_claude(string.format("make phpstan"))
+		end, 100)
+	end,
+	{}
+)
+
+-- remap c-j to enter in terminal insert mode
+vim.keymap.set("i", "<C-j>", "<CR>", keymap_opts)
 
 -- Add keymap for Claude terminal
 vim.keymap.set(
