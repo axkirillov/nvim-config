@@ -248,7 +248,7 @@ return {
 				-- Get the merge-base commit
 				local merge_base = vim.fn.trim(vim.fn.system('git merge-base HEAD ' .. default_branch))
 				-- Open diffview between merge-base and HEAD
-				vim.cmd('DiffviewOpen ' .. merge_base .. '..HEAD')
+				vim.cmd('DiffviewOpen ' .. merge_base)
 			end,
 			{ desc = 'Open diff between merge-base and HEAD' }
 		)
