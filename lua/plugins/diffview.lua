@@ -1,5 +1,6 @@
 return {
-	'sindrets/diffview.nvim',
+	--sindrets/diffview.nvim',
+	dir = '~/repo/diffview.nvim',
 	dependencies = 'nvim-lua/plenary.nvim',
 	config = function()
 		local actions = require("diffview.actions")
@@ -34,7 +35,8 @@ return {
 				-- For more info, see |diffview-config-view.x.layout|.
 				default = {
 					-- Config for changed files, and staged files in diff views.
-					layout = "diff2_vertical",
+					layout = "diff_unified",
+					--layout = "diff2_vertical",
 					disable_diagnostics = false, -- Temporarily disable diagnostics for diff buffers while in the view.
 					winbar_info = false,    -- See |diffview-config-view.x.winbar_info|
 				},
