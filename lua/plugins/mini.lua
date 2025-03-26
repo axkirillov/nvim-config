@@ -61,6 +61,7 @@ local setup_bracketed = function()
 	)
 end
 
+
 return {
 	'echasnovski/mini.nvim',
 	version = '*',

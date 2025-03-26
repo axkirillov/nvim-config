@@ -38,39 +38,6 @@ return
 			keymap_opts
 		)
 
-		local function send_to_claude(text)
-			local term = require("snacks.terminal").get("claude", claude_term_opts)
-
-			if not term then
-				vim.notify("Please open a Claude terminal first.", vim.log.levels.INFO)
-				return
-			end
-
-			if term and term:buf_valid() then
-				local chan = vim.api.nvim_buf_get_var(term.buf, "terminal_job_id")
-				if chan then
-					text = text:gsub("\n", " ") .. "\n"
-					vim.api.nvim_chan_send(chan, text)
-				else
-					vim.notify("No Aider terminal job found!", vim.log.levels.ERROR)
-				end
-			else
-				vim.notify("Please open an Aider terminal first.", vim.log.levels.INFO)
-			end
-		end
-
-		vim.api.nvim_create_user_command(
-			"RunTestInClaude",
-			function()
-				local filename = vim.fn.expand('%:t:r')
-				local filepath = vim.fn.expand('%')
-				send_to_claude(string.format("!", filename))
-				send_to_claude(string.format(" ./test.sh %s", filename))
-				snacks.terminal.toggle("claude", claude_term_opts)
-			end,
-			{}
-		)
-
 		vim.keymap.set(
 			{ "n", "t" },
 			"<F2>",
