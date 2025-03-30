@@ -67,19 +67,6 @@ vim.api.nvim_create_user_command(
 -- remap c-j to enter in terminal insert mode
 vim.keymap.set("i", "<C-j>", "<CR>", keymap_opts)
 
--- Add keymap for Claude terminal
-vim.keymap.set(
-	{ "n", "t" },
-	"<F1>",
-	function()
-		local snacks = require("snacks")
-		-- close all other teminals
-		snacks.terminal.toggle("claude", claude_term_opts)
-		vim.cmd("checktime")
-	end,
-	keymap_opts
-)
-
 return {
 	send_to_claude = send_to_claude,
 	claude_term_opts = claude_term_opts,
