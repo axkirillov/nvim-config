@@ -30,24 +30,6 @@ local function send_to_claude(text)
 	end
 end
 
--- Create command to run tests in Claude
-vim.api.nvim_create_user_command(
-	"RunTestInClaude",
-	function()
-		local snacks = require("snacks")
-		local filename = vim.fn.expand('%:t:r')
-
-		snacks.terminal.toggle("claude", claude_term_opts)
-
-		send_to_claude(string.format("! %s", filename))
-		vim.defer_fn(function()
-			-- Just prepare the command in terminal for user to press Enter
-			send_to_claude(string.format("./test.sh %s", filename))
-		end, 100)
-	end,
-	{}
-)
-
 -- Create command to run make phpstan
 vim.api.nvim_create_user_command(
 	"RunMakePhpstan",
