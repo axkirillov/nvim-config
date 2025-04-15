@@ -68,6 +68,5 @@ return {
 	config = function()
 		setup_files()
 		setup_bracketed()
-		require('mini.diff').setup()
 	end
 }
