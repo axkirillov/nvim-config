@@ -17,3 +17,9 @@ vim.keymap.set('', '<C-c>', ':ccl<cr>')
 
 -- Give a new home to J
 vim.keymap.set('', 'M', 'J')
+
+-- set HJKL to noop
+vim.keymap.set('', 'H', '<nop>')
+vim.keymap.set('', 'J', '<nop>')
+vim.keymap.set('', 'K', '<nop>')
+vim.keymap.set('', 'L', '<nop>')
