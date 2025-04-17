@@ -15,11 +15,5 @@ vim.keymap.set('n', '<leader>df', vim.diagnostic.open_float)
 -- Close quickfix
 vim.keymap.set('', '<C-c>', ':ccl<cr>')
 
--- More comfortable movement
-vim.keymap.set('', 'H', '^')
-vim.keymap.set('', 'L', '$')
-vim.keymap.set('', 'J', '}')
-vim.keymap.set('', 'K', '{')
-
 -- Give a new home to J
 vim.keymap.set('', 'M', 'J')
