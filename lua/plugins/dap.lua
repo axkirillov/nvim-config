@@ -13,7 +13,8 @@ local setup = function()
 			name = 'Listen for Xdebug',
 			port = 9003,
 			pathMappings = {
-				["/myposter"] = "${workspaceFolder}"
+				["/myposter"] = "${workspaceFolder}",
+				["/shop-backend"] = "${workspaceFolder}"
 			}
 		}
 	}
