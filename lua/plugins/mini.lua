@@ -12,7 +12,7 @@ local setup_files = function()
 				reset       = '<BS>',
 				reveal_cwd  = '@',
 				show_help   = 'g?',
-				synchronize = '=',
+				synchronize = '<c-y>',
 				trim_left   = '<',
 				trim_right  = '>',
 			}
