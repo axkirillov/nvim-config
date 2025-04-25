@@ -3,7 +3,7 @@ return {
 	branch = "develop",
 	dependencies = {
 		'ibhagwan/fzf-lua',
-		"nvim-telescope/telescope.nvim",
+		--"nvim-telescope/telescope.nvim",
 	},
 	cmd = "Easypick",
 	config = function()
