@@ -23,3 +23,10 @@ vim.keymap.set('', 'H', '<nop>')
 vim.keymap.set('', 'J', '<nop>')
 vim.keymap.set('', 'K', '<nop>')
 vim.keymap.set('', 'L', '<nop>')
+
+-- open vscode in current directory
+vim.keymap.set('n', '<F8>', function()
+	local cwd = vim.fn.getcwd()
+	local cmd = string.format("code --goto %s", cwd)
+	vim.fn.system(cmd)
+end)
