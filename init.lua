@@ -13,7 +13,6 @@ require("lazy").setup(
 		},
 	}
 )
-require("claude")
 
 -- Set colorscheme
 vim.cmd('colorscheme catppuccin-macchiato')
