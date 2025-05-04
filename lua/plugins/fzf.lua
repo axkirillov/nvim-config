@@ -26,7 +26,7 @@ end
 
 return {
 	'ibhagwan/fzf-lua',
-	cmd = "FzfLua",
+	--cmd = "FzfLua",
 	config = function()
 		local fzf_lua = require("fzf-lua")
 
