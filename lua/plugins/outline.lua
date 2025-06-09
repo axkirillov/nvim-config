@@ -22,7 +22,7 @@ return {
 				show_symbol_details = false,
 			},
 			keymaps = {
-				goto_location = '<C-j>',
+				close = { "<c-w>h" },
 			},
 		}
 	end,
