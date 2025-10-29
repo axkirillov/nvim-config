@@ -28,10 +28,10 @@ local setup = function()
 		local bufopts = { noremap = true, silent = true, buffer = bufnr }
 		local fzflua = require('fzf-lua');
 		local fzflua_definitions = function()
-			fzflua.lsp_definitions({ jump_to_single_result = true })
+			fzflua.lsp_definitions({ jump1 = true })
 		end
 		local fzflua_references = function()
-			fzflua.lsp_references({ jump_to_single_result = true })
+			fzflua.lsp_references({ jump1 = true })
 		end
 		local fzflua_code_actions = function()
 			fzflua.lsp_code_actions({})
