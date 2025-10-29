@@ -2,7 +2,7 @@
   "blink.cmp": { "branch": "main", "commit": "5f442681df24fe705d1ee7ce5b4d435aa4b4dee4" },
   "catppuccin": { "branch": "main", "commit": "5b5e3aef9ad7af84f463d17b5479f06b87d5c429" },
   "easypick.nvim": { "branch": "develop", "commit": "33a40edc0172af607deafdae8fe75ff8034a0d8f" },
-  "fzf-lua": { "branch": "main", "commit": "7ada0850880ddd17709c90990697e30e0b27008c" },
+  "fzf-lua": { "branch": "main", "commit": "6bb2a266facf0d16e30371b6b433037d1828a674" },
   "lazy.nvim": { "branch": "main", "commit": "d8f26efd456190241afd1b0f5235fe6fdba13d4a" },
   "lazydev.nvim": { "branch": "main", "commit": "8620f82ee3f59ff2187647167b6b47387a13a018" },
   "live-rename.nvim": { "branch": "main", "commit": "c3187918c8a9a461ffeedf214814f228f2ee8bad" },

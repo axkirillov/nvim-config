@@ -33,6 +33,11 @@ return {
 		-- Configure FzfLua for git commits
 		fzf_lua.setup({
 			'telescope',
+			previewers = {
+				builtin = {
+					snacks_image = { enabled = false },
+				},
+			},
 			git = {
 				commits = {
 					cmd = "git log --oneline --color",
