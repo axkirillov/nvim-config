@@ -2,8 +2,7 @@
 
 return {
 	'saghen/blink.cmp',
-	-- use a release tag to download pre-built binaries
-	version = 'v0.8.2',
+	version = 'v1.8.0',
 	-- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
 	-- build = 'cargo build --release',
 	-- If you use nix, you can build from source using latest nightly rust with:
@@ -32,7 +31,7 @@ return {
 
 		completion = {
 			list = {
-				selection = 'manual',
+				selection = { preselect = false, auto_insert = false },
 			},
 		},
 
@@ -44,6 +43,10 @@ return {
 			-- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
 			-- Adjusts spacing to ensure icons are aligned
 			nerd_font_variant = 'mono'
+		},
+
+		fuzzy = {
+			implementation = 'rust',
 		},
 
 		-- Default list of enabled providers defined so that you can extend it

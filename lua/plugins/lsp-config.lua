@@ -1,6 +1,8 @@
 local setup = function()
 	require("mason").setup()
-	require("mason-lspconfig").setup()
+	require("mason-lspconfig").setup({
+		automatic_enable = false,
+	})
 
 	-- Mappings.
 	-- See `:help vim.diagnostic.*` for documentation on any of the below functions
