@@ -14,7 +14,13 @@ return {
 		{ "folke/snacks.nvim", opts = { input = {}, picker = {}, terminal = {} } },
 	},
 	config = function()
-		vim.g.opencode_opts = vim.g.opencode_opts or {}
+		local opts = vim.g.opencode_opts
+		if type(opts) ~= "table" then
+			opts = {}
+		end
+		opts.events = opts.events or {}
+		opts.events.permissions = { enabled = false }
+		vim.g.opencode_opts = opts
 		vim.o.autoread = true
 
 		vim.keymap.set({ "n", "t" }, "<F2>", function()
