@@ -1,21 +1,24 @@
 return {
-	"sudo-tee/opencode.nvim",
+	"NickvanDyke/opencode.nvim",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		{
 			"MeanderingProgrammer/render-markdown.nvim",
 			opts = {
 				anti_conceal = { enabled = false },
-				file_types = { "markdown", "opencode_output" },
+				file_types = { "markdown" },
 			},
-			ft = { "markdown", "Avante", "copilot-chat", "opencode_output" },
+			ft = { "markdown", "Avante", "copilot-chat" },
 		},
 		"saghen/blink.cmp",
-		"folke/snacks.nvim",
+		{ "folke/snacks.nvim", opts = { input = {}, picker = {}, terminal = {} } },
 	},
 	config = function()
-		require("opencode").setup({
-			preferred_completion = "vim_complete",
-		})
+		vim.g.opencode_opts = vim.g.opencode_opts or {}
+		vim.o.autoread = true
+
+		vim.keymap.set({ "n", "t" }, "<F2>", function()
+			require("opencode").toggle()
+		end)
 	end,
 }

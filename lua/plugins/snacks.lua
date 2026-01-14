@@ -86,7 +86,7 @@ vim.api.nvim_create_user_command(
 
 vim.keymap.set(
 	{ "n", "t" },
-	"<F2>",
+	"<F3>",
 	function()
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle("claude", term_opts)
@@ -95,8 +95,6 @@ vim.keymap.set(
 	end,
 	keymap_opts
 )
-
-
 
 return
 {
