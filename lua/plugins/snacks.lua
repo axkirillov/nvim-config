@@ -54,8 +54,7 @@ vim.keymap.set(
 	"<F1>",
 	function()
 		local snacks = require("snacks")
-		local win = snacks.terminal.toggle(nil, term_opts)
-		close_other_terminals(win)
+		snacks.terminal.toggle(nil, term_opts)
 		vim.cmd("checktime")
 	end,
 	keymap_opts
