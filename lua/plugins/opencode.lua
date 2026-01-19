@@ -20,6 +20,14 @@ return {
 		end
 		opts.events = opts.events or {}
 		opts.events.permissions = { enabled = false }
+		if opts.provider == nil then
+			opts.provider = {}
+		end
+		if type(opts.provider) == "table" and not (opts.provider.toggle or opts.provider.start or opts.provider.stop) then
+			opts.provider.snacks = opts.provider.snacks or {}
+			opts.provider.snacks.win = opts.provider.snacks.win or {}
+			opts.provider.snacks.win.enter = true
+		end
 		vim.g.opencode_opts = opts
 		vim.o.autoread = true
 
