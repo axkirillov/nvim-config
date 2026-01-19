@@ -40,17 +40,7 @@ local function close_other_terminals(win)
 	end
 end
 vim.keymap.set(
-	"n",
-	"<C-g>",
-	function()
-		local snacks = require("snacks")
-		snacks.lazygit()
-	end,
-	keymap_opts
-)
-
-vim.keymap.set(
-	"n",
+	{ "n", "t" },
 	"<C-g>",
 	function()
 		local snacks = require("snacks")
