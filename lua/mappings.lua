@@ -9,6 +9,12 @@ end, opts)
 -- Exit terminal mode
 vim.keymap.set('t', '<M-e>', '<C-\\><C-n>')
 
+vim.keymap.set('t', '<M-h>', '<C-\\><C-n><C-w>h', { silent = true, desc = 'Window left' })
+vim.keymap.set('t', '<M-j>', '<C-\\><C-n><C-w>j', { silent = true, desc = 'Window down' })
+vim.keymap.set('t', '<M-k>', '<C-\\><C-n><C-w>k', { silent = true, desc = 'Window up' })
+vim.keymap.set('t', '<M-l>', '<C-\\><C-n><C-w>l', { silent = true, desc = 'Window right' })
+vim.keymap.set('t', '<M-p>', '<C-\\><C-n><C-w>p', { silent = true, desc = 'Window previous' })
+
 -- Open diagnostic in a float window
 vim.keymap.set('n', '<leader>df', vim.diagnostic.open_float)
 
