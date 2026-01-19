@@ -1,6 +1,8 @@
 vim.keymap.set('n', ']h', function() require('unified.navigation').next_hunk() end)
 vim.keymap.set('n', '[h', function() require('unified.navigation').previous_hunk() end)
 
+vim.keymap.set('n', '<leader>u', '<cmd>DiffMergeBase<cr>', { silent = true, desc = 'Unified diff vs merge-base' })
+
 -- Add custom command to show diff between merge-base and HEAD
 vim.api.nvim_create_user_command(
 	'DiffMergeBase',
