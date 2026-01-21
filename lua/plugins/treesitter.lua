@@ -3,6 +3,14 @@ return {
 	'nvim-treesitter/nvim-treesitter',
 	build = ':TSUpdate',
 	config = function()
+		local install = require('nvim-treesitter.install')
+		if vim.fn.has('mac') == 1 and vim.loop.os_uname().machine == 'x86_64' then
+			local cc = vim.fn.stdpath('config') .. '/bin/cc-x86_64'
+			if vim.fn.executable(cc) == 1 then
+				install.compilers = { cc, 'cc', 'gcc', 'clang' }
+			end
+		end
+
 		require('nvim-treesitter.configs').setup {
 			-- A list of parser names, or "all"
 			ensure_installed = { "php", "lua", "go" },
