@@ -10,10 +10,34 @@ vim.keymap.set("n", "<leader>g", ":FzfLua git_status<CR>", keymap_opts)
 
 local default_branch
 
+local function trim(s)
+	if type(s) ~= "string" then
+		return ""
+	end
+	return (vim.trim and vim.trim(s)) or vim.fn.trim(s)
+end
+
+local function system_trim(cmd)
+	local ok, proc = pcall(vim.system, cmd, { text = true })
+	if not ok or not proc then
+		return nil
+	end
+	local res = proc:wait()
+	if res.code ~= 0 then
+		return nil
+	end
+	return trim(res.stdout or "")
+end
+
 local get_default_branch = function()
 	if not default_branch then
-		local command = "git remote show origin | grep 'HEAD branch' | cut -d' ' -f5"
-		default_branch = vim.fn.system(command) or "main"
+		-- Prefer origin/HEAD if available; fallback to origin/main.
+		local head = system_trim({ "git", "symbolic-ref", "--quiet", "--short", "refs/remotes/origin/HEAD" })
+		if head and head ~= "" then
+			default_branch = head
+		else
+			default_branch = "origin/main"
+		end
 	end
 	return default_branch
 end

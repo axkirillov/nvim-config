@@ -20,7 +20,8 @@ local function send_to_terminal(text)
 		local chan = vim.api.nvim_buf_get_var(term.buf, "terminal_job_id")
 		if chan then
 			text = text:gsub("\n", " ")
-			vim.api.nvim_chan_send(chan, text)
+			-- Ensure the command is executed.
+			vim.api.nvim_chan_send(chan, text .. "\n")
 		else
 			vim.notify("No terminal job found!", vim.log.levels.ERROR)
 		end

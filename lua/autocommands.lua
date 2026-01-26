@@ -15,14 +15,36 @@ vim.api.nvim_create_autocmd("CmdlineLeave", {
 	end
 })
 
--- General Settings Group
-local general_group = vim.api.nvim_create_augroup("GeneralSettings", { clear = true })
-vim.api.nvim_create_autocmd("BufModifiedSet", {
-	group = general_group,
-	callback = function()
-		vim.cmd("silent! w")
+-- Auto-save (safer than BufModifiedSet)
+local autosave_group = vim.api.nvim_create_augroup("AutoSave", { clear = true })
+vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave" }, {
+	group = autosave_group,
+	callback = function(args)
+		local buf = args.buf
+		-- Only for normal file buffers.
+		if vim.api.nvim_get_option_value("buftype", { buf = buf }) ~= "" then
+			return
+		end
+		if not vim.api.nvim_get_option_value("modifiable", { buf = buf }) then
+			return
+		end
+		if vim.api.nvim_get_option_value("readonly", { buf = buf }) then
+			return
+		end
+		if not vim.api.nvim_get_option_value("modified", { buf = buf }) then
+			return
+		end
+		if vim.api.nvim_buf_get_name(buf) == "" then
+			return
+		end
+
+		pcall(function()
+			vim.api.nvim_buf_call(buf, function()
+				vim.cmd("silent! update")
+			end)
+		end)
 	end,
-	desc = "Auto Save"
+	desc = "Auto-save on focus/leave",
 })
 
 -- Restore cursor to file position in previous editing session
@@ -34,15 +56,4 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 			vim.cmd('normal! g`"zz')
 		end
 	end,
-})
-
--- Source local .nvim.lua configuration files
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
-	callback = function()
-		local local_lua_file = vim.fn.getcwd() .. "/.nvim.lua"
-		if vim.fn.filereadable(local_lua_file) == 1 then
-			vim.cmd("source " .. local_lua_file)
-		end
-	end,
-	desc = "Source local .nvim.lua configuration files",
 })

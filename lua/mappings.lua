@@ -19,16 +19,16 @@ vim.keymap.set('t', '<M-p>', '<C-\\><C-n><C-w>p', { silent = true, desc = 'Windo
 vim.keymap.set('n', '<leader>df', vim.diagnostic.open_float)
 
 -- Close quickfix
-vim.keymap.set('', '<C-c>', ':ccl<cr>')
+vim.keymap.set('n', '<C-c>', ':ccl<cr>')
 
 -- Give a new home to J
-vim.keymap.set('', 'M', 'J')
+vim.keymap.set('n', 'M', 'J')
 
 -- set HJKL to noop
-vim.keymap.set('', 'H', '<nop>')
-vim.keymap.set('', 'J', '<nop>')
-vim.keymap.set('', 'K', '<nop>')
-vim.keymap.set('', 'L', '<nop>')
+vim.keymap.set('n', 'H', '<nop>')
+vim.keymap.set('n', 'J', '<nop>')
+vim.keymap.set('n', 'K', '<nop>')
+vim.keymap.set('n', 'L', '<nop>')
 
 -- open vscode in current directory
 vim.keymap.set('n', '<F8>', function()
