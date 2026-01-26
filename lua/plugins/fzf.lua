@@ -44,8 +44,16 @@ end
 
 -- Custom function to get files changed by a commit
 local function get_files_changed(commit_hash)
-	local command = string.format("git show --pretty='' --name-only %s", commit_hash)
-	return vim.fn.systemlist(command)
+	local proc = vim.system({ "git", "show", "--name-only", "--pretty=format:", commit_hash }, { text = true })
+	local res = proc:wait()
+	if res.code ~= 0 then
+		return {}
+	end
+	local out = vim.trim(res.stdout or "")
+	if out == "" then
+		return {}
+	end
+	return vim.split(out, "\n", { trimempty = true })
 end
 
 return {

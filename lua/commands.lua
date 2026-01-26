@@ -29,7 +29,13 @@ end, {})
 vim.api.nvim_create_user_command(
 	'PasteTimestamp',
 	function()
-		local timestamp = vim.fn.substitute(vim.fn.system('gdate +%s%3N'), '\\n\\+$', '', '')
+		local proc = vim.system({ 'gdate', '+%s%3N' }, { text = true })
+		local res = proc:wait()
+		if res.code ~= 0 then
+			vim.notify('PasteTimestamp: gdate failed', vim.log.levels.ERROR)
+			return
+		end
+		local timestamp = vim.trim(res.stdout or '')
 		vim.api.nvim_put({ timestamp }, 'c', true, true)
 	end,
 	{}

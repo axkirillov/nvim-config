@@ -33,6 +33,6 @@ vim.keymap.set('n', 'L', '<nop>')
 -- open vscode in current directory
 vim.keymap.set('n', '<F8>', function()
 	local cwd = vim.fn.getcwd()
-	local cmd = string.format("code --goto %s", cwd)
-	vim.fn.system(cmd)
+	-- Spawn VS Code without blocking Neovim.
+	vim.system({ "code", "--goto", cwd }, { detach = true })
 end)
