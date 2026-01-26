@@ -11,7 +11,7 @@ return {
 	--'hrsh7th/cmp-cmdline',
 	--'saadparwaiz1/cmp_luasnip',
 
-	'samoshkin/vim-mergetool',
+	-- vim-mergetool is configured in lua/plugins/mergetool.lua
 	'NoahTheDuke/vim-just',
 	'towolf/vim-helm',
 	-- 'github/copilot.vim',

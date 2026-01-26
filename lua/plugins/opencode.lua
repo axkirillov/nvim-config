@@ -11,7 +11,7 @@ return {
 			ft = { "markdown", "Avante", "copilot-chat" },
 		},
 		"saghen/blink.cmp",
-		{ "folke/snacks.nvim", opts = { input = {}, picker = {}, terminal = {} } },
+		"folke/snacks.nvim",
 	},
 	config = function()
 		local opts = vim.g.opencode_opts
