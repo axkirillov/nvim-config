@@ -101,7 +101,19 @@ return {
 		vim.api.nvim_create_user_command(
 			"BranchDiff",
 			function()
-				fzf_lua.files({ cmd = "git diff --name-only $(git merge-base HEAD " .. get_default_branch() .. " )" })
+				local base = get_default_branch()
+				local proc = vim.system({ "git", "merge-base", "HEAD", base }, { text = true })
+				local res = proc:wait()
+				if res.code ~= 0 then
+					vim.notify("BranchDiff: failed to compute merge-base vs " .. base, vim.log.levels.ERROR)
+					return
+				end
+				local merge_base = vim.trim(res.stdout or "")
+				if merge_base == "" then
+					vim.notify("BranchDiff: merge-base is empty", vim.log.levels.ERROR)
+					return
+				end
+				fzf_lua.files({ cmd = "git diff --name-only " .. merge_base })
 			end,
 			{}
 		)
