@@ -35,6 +35,26 @@ return {
 			},
 		},
 
+		cmdline = {
+			enabled = true,
+			keymap = {
+				preset = 'cmdline',
+				['<C-j>'] = { 'accept', 'fallback' },
+			},
+			sources = function()
+				local t = vim.fn.getcmdtype()
+				if t == '/' or t == '?' then return { 'buffer' } end
+				if t == ':' or t == '@' then return { 'cmdline', 'path', 'buffer' } end
+				return {}
+			end,
+			completion = {
+				menu = { auto_show = true },
+				list = {
+					selection = { preselect = true, auto_insert = false },
+				},
+			},
+		},
+
 		appearance = {
 			-- Sets the fallback highlight groups to nvim-cmp's highlight groups
 			-- Useful for when your theme doesn't support blink.cmp
