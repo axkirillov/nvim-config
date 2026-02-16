@@ -98,11 +98,7 @@ return {
 				view = {
 					-- The `view` bindings are active in the diff buffers, only when the current
 					-- tabpage is a Diffview.
-					{
-						"n",
-						"<tab>",
-						require("supermaven-nvim.completion_preview").on_accept_suggestion { desc = "Open the diff for the next file" },
-					},
+				{ "n", "<tab>",      actions.select_next_entry,             { desc = "Open the diff for the next file" } },
 					{ "n", "<s-tab>",    actions.select_prev_entry,             { desc = "Open the diff for the previous file" } },
 					{ "n", "[F",         actions.select_first_entry,            { desc = "Open the diff for the first file" } },
 					{ "n", "]F",         actions.select_last_entry,             { desc = "Open the diff for the last file" } },

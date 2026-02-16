@@ -1,29 +1,16 @@
 local setup = function()
 	require("mason").setup()
 
-	local ensure_installed
-	if vim.fn.has("nvim-0.11") == 1 then
-		ensure_installed = {
-			"lua_ls",
-			"intelephense",
-			"gopls",
-			"vue_ls",
-			"vtsls",
-			"nil_ls",
-			"rust_analyzer",
-			"bashls",
-		}
-	else
-		ensure_installed = {
-			"lua_ls",
-			"intelephense",
-			"gopls",
-			"volar",
-			"nil_ls",
-			"rust_analyzer",
-			"bashls",
-		}
-	end
+	local ensure_installed = {
+		"lua_ls",
+		"intelephense",
+		"gopls",
+		"vue_ls",
+		"vtsls",
+		"nil_ls",
+		"rust_analyzer",
+		"bashls",
+	}
 
 	require("mason-lspconfig").setup({
 		ensure_installed = ensure_installed,
@@ -83,189 +70,115 @@ local setup = function()
 		vim.keymap.set('n', '=', vim.lsp.buf.format, bufopts)
 	end
 
-	-- local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
-
-	if vim.fn.has("nvim-0.11") == 1 then
-		-- Nvim 0.11+ uses vim.lsp.config()/vim.lsp.enable().
-		-- nvim-lspconfig provides the default configs via runtime `lsp/<name>.lua`.
-		local function extend_config(name, cfg)
-			local base = vim.lsp.config[name] or {}
-			vim.lsp.config(name, vim.tbl_deep_extend("force", base, cfg))
-		end
-
-		extend_config("lua_ls", {
-			on_attach = on_attach,
-			settings = {
-				Lua = {
-					diagnostics = {
-						globals = { "vim" },
-					},
-					completion = {
-						callSnippet = "Replace",
-					},
-				},
-			},
-		})
-
-		extend_config("intelephense", {
-			on_attach = on_attach,
-			settings = {
-				intelephense = {
-					-- possible values: stubs.txt
-					stubs = {
-						"Core",
-						"Reflection",
-						"SPL",
-						"SimpleXML",
-						"ctype",
-						"date",
-						"exif",
-						"filter",
-						"hash",
-						"imagick",
-						"json",
-						"pcre",
-						"random",
-						"standard",
-						"dom",
-					},
-				},
-			},
-		})
-
-		extend_config("gopls", {
-			on_attach = on_attach,
-		})
-
-		extend_config("vue_ls", {
-			on_attach = on_attach,
-		})
-
-		-- Vue SFC TypeScript support for vue_ls (requires @vue/typescript-plugin from vue-language-server).
-		local vue_language_server_path = vim.fn.stdpath("data")
-			.. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
-		local vue_plugin = {
-			name = "@vue/typescript-plugin",
-			location = vue_language_server_path,
-			languages = { "vue" },
-			configNamespace = "typescript",
-		}
-
-		extend_config("vtsls", {
-			on_attach = on_attach,
-			-- Extend to include Vue SFC.
-			filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
-			settings = {
-				vtsls = {
-					tsserver = {
-						globalPlugins = {
-							vue_plugin,
-						},
-					},
-				},
-			},
-		})
-
-		extend_config("nil_ls", {
-			on_attach = on_attach,
-			settings = {
-				["nil"] = {
-					testSetting = 42,
-					formatting = {
-						command = { "nixfmt" },
-					},
-				},
-			},
-		})
-
-		extend_config("rust_analyzer", {
-			on_attach = on_attach,
-		})
-
-		extend_config("bashls", {
-			on_attach = on_attach,
-		})
-
-		vim.lsp.enable({
-			"lua_ls",
-			"intelephense",
-			"gopls",
-			"vue_ls",
-			"vtsls",
-			"nil_ls",
-			"rust_analyzer",
-			"bashls",
-		})
-	else
-		require('lspconfig').lua_ls.setup({
-			on_attach = on_attach,
-			settings = {
-				Lua = {
-					diagnostics = {
-						globals = { 'vim' },
-					},
-					completion = {
-						callSnippet = "Replace",
-					},
-				},
-			},
-		})
-
-		require('lspconfig').intelephense.setup({
-			on_attach = on_attach,
-			settings = {
-				intelephense = {
-					-- possible values: stubs.txt
-					stubs = {
-						'Core',
-						'Reflection',
-						'SPL',
-						'SimpleXML',
-						'ctype',
-						'date',
-						'exif',
-						'filter',
-						'hash',
-						'imagick',
-						'json',
-						'pcre',
-						'random',
-						'standard',
-						"dom",
-					},
-				},
-			},
-		})
-
-		require('lspconfig').gopls.setup({
-			on_attach = on_attach,
-		})
-
-		require('lspconfig').volar.setup({
-			filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json' },
-			on_attach = on_attach,
-		})
-
-		require('lspconfig').nil_ls.setup({
-			on_attach = on_attach,
-			settings = {
-				['nil'] = {
-					testSetting = 42,
-					formatting = {
-						command = { "nixfmt" },
-					},
-				},
-			},
-		})
-
-		require('lspconfig').rust_analyzer.setup({
-			on_attach = on_attach,
-		})
-
-		require('lspconfig').bashls.setup({
-			on_attach = on_attach,
-		})
+	-- Nvim 0.11+ uses vim.lsp.config()/vim.lsp.enable().
+	-- nvim-lspconfig provides the default configs via runtime `lsp/<name>.lua`.
+	local function extend_config(name, cfg)
+		local base = vim.lsp.config[name] or {}
+		vim.lsp.config(name, vim.tbl_deep_extend("force", base, cfg))
 	end
+
+	extend_config("lua_ls", {
+		on_attach = on_attach,
+		settings = {
+			Lua = {
+				diagnostics = {
+					globals = { "vim" },
+				},
+				completion = {
+					callSnippet = "Replace",
+				},
+			},
+		},
+	})
+
+	extend_config("intelephense", {
+		on_attach = on_attach,
+		settings = {
+			intelephense = {
+				-- possible values: stubs.txt
+				stubs = {
+					"Core",
+					"Reflection",
+					"SPL",
+					"SimpleXML",
+					"ctype",
+					"date",
+					"exif",
+					"filter",
+					"hash",
+					"imagick",
+					"json",
+					"pcre",
+					"random",
+					"standard",
+					"dom",
+				},
+			},
+		},
+	})
+
+	extend_config("gopls", {
+		on_attach = on_attach,
+	})
+
+	extend_config("vue_ls", {
+		on_attach = on_attach,
+	})
+
+	-- Vue SFC TypeScript support for vue_ls (requires @vue/typescript-plugin from vue-language-server).
+	local vue_language_server_path = vim.fn.stdpath("data")
+		.. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
+	local vue_plugin = {
+		name = "@vue/typescript-plugin",
+		location = vue_language_server_path,
+		languages = { "vue" },
+		configNamespace = "typescript",
+	}
+
+	extend_config("vtsls", {
+		on_attach = on_attach,
+		-- Extend to include Vue SFC.
+		filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
+		settings = {
+			vtsls = {
+				tsserver = {
+					globalPlugins = {
+						vue_plugin,
+					},
+				},
+			},
+		},
+	})
+
+	extend_config("nil_ls", {
+		on_attach = on_attach,
+		settings = {
+		["nil"] = {
+			formatting = {
+					command = { "nixfmt" },
+				},
+			},
+		},
+	})
+
+	extend_config("rust_analyzer", {
+		on_attach = on_attach,
+	})
+
+	extend_config("bashls", {
+		on_attach = on_attach,
+	})
+
+	vim.lsp.enable({
+		"lua_ls",
+		"intelephense",
+		"gopls",
+		"vue_ls",
+		"vtsls",
+		"nil_ls",
+		"rust_analyzer",
+		"bashls",
+	})
 end
 
 

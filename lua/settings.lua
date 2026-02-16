@@ -1,7 +1,3 @@
-if vim.o.shell:match('fish$') then
-	--vim.o.shell = 'sh'
-end
-
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 
@@ -18,7 +14,7 @@ vim.opt.background = 'dark'
 vim.opt.termguicolors = true
 vim.opt.clipboard = 'unnamedplus'
 
--- fold opitions
+-- fold options
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldenable = false

@@ -9,6 +9,9 @@ end, opts)
 -- Exit terminal mode
 vim.keymap.set('t', '<M-e>', '<C-\\><C-n>')
 
+-- Make <C-l> behave like normal mode (redraw) in terminal mode
+vim.keymap.set('t', '<C-l>', '<C-\\><C-n><C-l>i', { silent = true, desc = 'Redraw (terminal)' })
+
 vim.keymap.set('t', '<M-h>', '<C-\\><C-n><C-w>h', { silent = true, desc = 'Window left' })
 vim.keymap.set('t', '<M-j>', '<C-\\><C-n><C-w>j', { silent = true, desc = 'Window down' })
 vim.keymap.set('t', '<M-k>', '<C-\\><C-n><C-w>k', { silent = true, desc = 'Window up' })

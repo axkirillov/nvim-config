@@ -3,7 +3,7 @@ return {
 	name = "catppuccin",
 	opts = {
 		integrations = {
-			cmp = true,
+			blink_cmp = true,
 			treesitter = true,
 		},
 	}

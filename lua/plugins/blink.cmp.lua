@@ -40,6 +40,7 @@ return {
 			keymap = {
 				preset = 'cmdline',
 				['<C-j>'] = { 'accept', 'fallback' },
+				['<CR>'] = { 'accept', 'fallback' },
 			},
 			sources = function()
 				local t = vim.fn.getcmdtype()

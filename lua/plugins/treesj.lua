@@ -1,6 +1,6 @@
 return {
 	'Wansmer/treesj',
-	dependencies = { 'nvim-treesitter' },
+	dependencies = { 'nvim-treesitter/nvim-treesitter' },
 	event = "BufReadPre",
 	config = function()
 		require('treesj').setup({

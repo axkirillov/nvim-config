@@ -38,7 +38,7 @@ end
 
 local setup_bracketed = function()
 	require('mini.bracketed').setup()
-	-- needs to be remapped bacause otherwise the default diagnostic is going to be showed
+	-- needs to be remapped because otherwise the default diagnostic is going to be showed
 	-- and we are using tiny-inline-diagnostic
 	local opts = { noremap = true, silent = true }
 
@@ -46,7 +46,7 @@ local setup_bracketed = function()
 		'n',
 		'[d',
 		function()
-			vim.diagnostic.goto_prev({ float = false })
+			vim.diagnostic.jump({ count = -1, float = false })
 		end,
 		opts
 	)
@@ -55,7 +55,7 @@ local setup_bracketed = function()
 		'n',
 		']d',
 		function()
-			vim.diagnostic.goto_next({ float = false })
+			vim.diagnostic.jump({ count = 1, float = false })
 		end,
 		opts
 	)

@@ -1,7 +1,6 @@
 return {
 	"williamboman/mason.nvim",
 	"williamboman/mason-lspconfig.nvim",
-	'dag/vim-fish',
 	'tpope/vim-fugitive',
 
 	-- completion
