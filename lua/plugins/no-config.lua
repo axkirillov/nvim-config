@@ -11,7 +11,6 @@ return {
 	--'saadparwaiz1/cmp_luasnip',
 
 	-- vim-mergetool is configured in lua/plugins/mergetool.lua
-	'NoahTheDuke/vim-just',
 	'towolf/vim-helm',
 	-- 'github/copilot.vim',
 	--'Exafunction/codeium.vim',
