@@ -17,7 +17,7 @@ return {
 		keymap = {
 			preset = 'default',
 			['<C-j>'] = {
-				'accept',
+				'select_and_accept',
 				'fallback',
 			},
 			['<Tab>'] = {

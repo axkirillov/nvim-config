@@ -68,5 +68,8 @@ return {
 	config = function()
 		setup_files()
 		setup_bracketed()
+		require('mini.splitjoin').setup({
+			mappings = { toggle = 'gj' },
+		})
 	end
 }
