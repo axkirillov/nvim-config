@@ -20,9 +20,15 @@ vim.api.nvim_create_user_command('OpenLineInGithub', '.GBrowse', {})
 vim.api.nvim_create_user_command('ReTab', '%s/\\t/  /g', {})
 
 -- Copy file path
-vim.api.nvim_create_user_command('CopyFilePath', function()
+vim.api.nvim_create_user_command('CopyRelativePath', function()
 	local relative_path = vim.fn.expand('%:.')
 	vim.fn.setreg('*', relative_path)
+end, {})
+
+-- Copy absolute file path
+vim.api.nvim_create_user_command('CopyAbsolutePath', function()
+	local absolute_path = vim.fn.expand('%:p')
+	vim.fn.setreg('*', absolute_path)
 end, {})
 
 -- Paste unix timestamp
