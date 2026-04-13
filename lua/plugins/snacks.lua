@@ -79,7 +79,11 @@ vim.keymap.set(
 	"<F3>",
 	function()
 		local snacks = require("snacks")
-		local win = snacks.terminal.toggle("claude", term_opts)
+		local pi_opts = {
+			auto_close = false,
+			win = { position = "right" },
+		}
+		local win = snacks.terminal.toggle("pi", pi_opts)
 		close_other_terminals(win)
 		vim.cmd("checktime")
 	end,
