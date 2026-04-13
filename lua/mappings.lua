@@ -7,7 +7,7 @@ vim.keymap.set("n", "dd", function ()
 end, opts)
 
 -- Exit terminal mode
-vim.keymap.set('t', '<M-e>', '<C-\\><C-n>')
+vim.keymap.set('t', '<C-[>', '<C-\\><C-n>')
 
 -- Make <C-l> behave like normal mode (redraw) in terminal mode
 vim.keymap.set('t', '<C-l>', '<C-\\><C-n><C-l>i', { silent = true, desc = 'Redraw (terminal)' })
