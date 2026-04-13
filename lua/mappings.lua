@@ -18,8 +18,7 @@ vim.keymap.set('t', '<M-k>', '<C-\\><C-n><C-w>k', { silent = true, desc = 'Windo
 vim.keymap.set('t', '<M-l>', '<C-\\><C-n><C-w>l', { silent = true, desc = 'Window right' })
 vim.keymap.set('t', '<M-p>', '<C-\\><C-n><C-w>p', { silent = true, desc = 'Window previous' })
 
--- PageUp/PageDown in terminal mode: escape to normal, scroll buffer, return to terminal
-vim.keymap.set('t', '<PageUp>', '<C-\\><C-n><C-b>', { silent = true, desc = 'Scroll terminal buffer up' })
+-- PageDown in terminal mode: escape to normal, scroll buffer, return to terminal
 vim.keymap.set('t', '<PageDown>', '<C-\\><C-n><C-f>', { silent = true, desc = 'Scroll terminal buffer down' })
 
 -- Open diagnostic in a float window
