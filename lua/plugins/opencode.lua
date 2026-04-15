@@ -31,13 +31,6 @@ return {
 		vim.g.opencode_opts = opts
 		vim.o.autoread = true
 
-		vim.keymap.set({ "n", "t" }, "<F2>", function()
-			require("opencode").toggle()
-			vim.schedule(function()
-				if vim.bo.buftype == "terminal" then
-					vim.cmd("startinsert")
-				end
-			end)
-		end)
+
 	end,
 }

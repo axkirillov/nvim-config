@@ -5,7 +5,7 @@ local keymap_opts = {
 
 local term_opts = {
 	auto_close = false,
-	win = { position = "float" },
+	win = { position = "right" },
 }
 
 local function send_to_terminal(text)
@@ -55,6 +55,22 @@ vim.keymap.set(
 	"<F1>",
 	function()
 		local snacks = require("snacks")
+		local pi_opts = {
+			auto_close = false,
+			win = { position = "right" },
+		}
+		local win = snacks.terminal.toggle("pi", pi_opts)
+		close_other_terminals(win)
+		vim.cmd("checktime")
+	end,
+	keymap_opts
+)
+
+vim.keymap.set(
+	{ "n", "t" },
+	"<F2>",
+	function()
+		local snacks = require("snacks")
 		snacks.terminal.toggle(nil, term_opts)
 		vim.cmd("checktime")
 	end,
@@ -74,21 +90,7 @@ vim.api.nvim_create_user_command(
 	{}
 )
 
-vim.keymap.set(
-	{ "n", "t" },
-	"<F3>",
-	function()
-		local snacks = require("snacks")
-		local pi_opts = {
-			auto_close = false,
-			win = { position = "right" },
-		}
-		local win = snacks.terminal.toggle("pi", pi_opts)
-		close_other_terminals(win)
-		vim.cmd("checktime")
-	end,
-	keymap_opts
-)
+
 
 return
 {
