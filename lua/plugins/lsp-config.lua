@@ -64,6 +64,7 @@ local setup = function()
 		--  print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 		--end, bufopts)
 		--vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
+		vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
 		--vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, bufopts)
 		vim.keymap.set('n', 'ga', fzflua_code_actions, bufopts)
 		--vim.keymap.set('n', '<space>fm', vim.lsp.buf.format, bufopts)
@@ -75,6 +76,28 @@ local setup = function()
 	local function extend_config(name, cfg)
 		local base = vim.lsp.config[name] or {}
 		vim.lsp.config(name, vim.tbl_deep_extend("force", base, cfg))
+	end
+
+	local function load_intelephense_stubs()
+		local path = vim.fn.stdpath("config") .. "/lua/plugins/stubs.txt"
+		if vim.fn.filereadable(path) == 0 then
+			return nil
+		end
+
+		local chunk = "return {\n" .. table.concat(vim.fn.readfile(path), "\n") .. "\n}"
+		local loader, err = load(chunk, "@" .. path, "t", {})
+		if not loader then
+			vim.notify("Failed to parse intelephense stubs: " .. err, vim.log.levels.WARN)
+			return nil
+		end
+
+		local ok, stubs = pcall(loader)
+		if not ok or type(stubs) ~= "table" then
+			vim.notify("Failed to load intelephense stubs from " .. path, vim.log.levels.WARN)
+			return nil
+		end
+
+		return stubs
 	end
 
 	extend_config("lua_ls", {
@@ -91,29 +114,16 @@ local setup = function()
 		},
 	})
 
+	local intelephense_stubs = load_intelephense_stubs()
+	local intelephense_settings = {}
+	if intelephense_stubs then
+		intelephense_settings.stubs = intelephense_stubs
+	end
+
 	extend_config("intelephense", {
 		on_attach = on_attach,
 		settings = {
-			intelephense = {
-				-- possible values: stubs.txt
-				stubs = {
-					"Core",
-					"Reflection",
-					"SPL",
-					"SimpleXML",
-					"ctype",
-					"date",
-					"exif",
-					"filter",
-					"hash",
-					"imagick",
-					"json",
-					"pcre",
-					"random",
-					"standard",
-					"dom",
-				},
-			},
+			intelephense = intelephense_settings,
 		},
 	})
 

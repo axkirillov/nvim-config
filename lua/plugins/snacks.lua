@@ -30,12 +30,19 @@ local function send_to_terminal(text)
 	end
 end
 
+local function is_pi_terminal(term)
+	return term.cmd and type(term.cmd) == "string"
+		and (term.cmd == "pi" or term.cmd:match("^pi "))
+end
+
 ---@param win snacks.win
-local function close_other_terminals(win)
+---@param opts? { keep?: fun(term: snacks.win): boolean }
+local function close_other_terminals(win, opts)
+	opts = opts or {}
 	local snacks = require("snacks")
 	local terminals = snacks.terminal.list()
 	for _, term in pairs(terminals) do
-		if term.buf ~= win.buf then
+		if term.buf ~= win.buf and not (opts.keep and opts.keep(term)) then
 			term:hide()
 		end
 	end
@@ -43,8 +50,16 @@ end
 
 local function close_pi_terminals()
 	for _, term in pairs(require("snacks").terminal.list()) do
+		if is_pi_terminal(term) then
+			term:close()
+		end
+	end
+end
+
+local function close_claude_terminals()
+	for _, term in pairs(require("snacks").terminal.list()) do
 		if term.cmd and type(term.cmd) == "string"
-			and (term.cmd == "pi" or term.cmd:match("^pi ")) then
+			and (term.cmd == "claude" or term.cmd:match("^claude ")) then
 			term:close()
 		end
 	end
@@ -87,7 +102,7 @@ vim.keymap.set(
 	function()
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle(nil, term_opts)
-		close_other_terminals(win)
+		close_other_terminals(win, { keep = is_pi_terminal })
 		vim.cmd("checktime")
 	end,
 	keymap_opts
@@ -112,19 +127,33 @@ vim.api.nvim_create_user_command(
 local function pi_session_picker()
 	local fzf_lua = require("fzf-lua")
 
+	local cwd = vim.fn.getcwd()
+
 	local py = [=[
-import json, os, glob
+import json, os, glob, sys, subprocess
+
+def get_repo_root(cwd: str):
+    try:
+        out = subprocess.check_output(["git", "-C", cwd, "rev-parse", "--show-toplevel"], stderr=subprocess.STDOUT)
+        root = out.decode().strip()
+        return root if root else None
+    except Exception:
+        return None
+
 base = os.path.expanduser('~/.pi/agent/sessions')
+input_cwd = sys.argv[1] if len(sys.argv) > 1 else os.getcwd()
+repo_root = get_repo_root(input_cwd)
+
 results, seen = [], set()
 for path in glob.glob(os.path.join(base, '*', '*.jsonl')):
     ino = os.stat(path).st_ino
     if ino in seen: continue
     seen.add(ino)
-    ts, name, first_user, cwd = '', '', '', ''
+    ts, name, first_user, hcwd = '', '', '', ''
     try:
         with open(path) as f:
             h = json.loads(f.readline())
-            ts, cwd = h.get('timestamp', ''), h.get('cwd', '')
+            ts, hcwd = h.get('timestamp', ''), h.get('cwd', '')
             for line in f:
                 if '"session_info"' in line:
                     try:
@@ -139,14 +168,19 @@ for path in glob.glob(os.path.join(base, '*', '*.jsonl')):
                             c = m.get('content', '')
                             if isinstance(c, list):
                                 for i in c:
-                                    if i.get('type') == 'text':
-                                        first_user = i['text'][:80].replace('\n', ' ').replace('\t', ' ')
+                                    if isinstance(i, dict) and i.get('type') == 'text':
+                                        first_user = str(i.get('text', ''))[:80].replace('\n', ' ').replace('\t', ' ')
                                         break
-                            elif isinstance(c, str): first_user = c[:80].replace('\n', ' ').replace('\t', ' ')
+                            elif isinstance(c, str):
+                                first_user = c[:80].replace('\n', ' ').replace('\t', ' ')
                     except: pass
     except: continue
+    # Filter by repo root when available
+    if repo_root:
+        if not (hcwd == repo_root or (isinstance(hcwd, str) and hcwd.startswith(repo_root + os.sep))):
+            continue
     display = name or first_user or '(unnamed)'
-    project = os.path.basename(cwd) if cwd else '?'
+    project = os.path.basename(hcwd) if hcwd else '?'
     d = (ts[:10] + ' ' + ts[11:16]) if len(ts) > 16 else '?'
     results.append((ts, f'{display}\t{project}\t{d}\t{path}'))
 results.sort(reverse=True)
@@ -162,7 +196,7 @@ for r in results: print(r[1])
 	f:write(py)
 	f:close()
 
-	fzf_lua.fzf_exec("python3 " .. tmp, {
+	fzf_lua.fzf_exec("python3 " .. tmp .. " " .. vim.fn.shellescape(cwd), {
 		prompt = "Pi Sessions❯ ",
 		fzf_opts = {
 			["--delimiter"] = "\t",
@@ -192,6 +226,120 @@ for r in results: print(r[1])
 end
 
 vim.keymap.set({ "n", "t" }, "<C-s>", pi_session_picker, keymap_opts)
+
+local function claude_session_picker()
+	local fzf_lua = require("fzf-lua")
+
+	local cwd = vim.fn.getcwd()
+	local project_key = cwd:gsub("[^%w%-]", "-")
+	local project_dir = os.getenv("HOME") .. "/.claude/projects/" .. project_key
+
+	local py = string.format([=[
+import json, os, glob, sys
+
+project_dir = sys.argv[1]
+sessions_dir = os.path.expanduser('~/.claude/sessions')
+
+if not os.path.isdir(project_dir):
+    sys.exit(0)
+
+meta = {}
+for f in glob.glob(os.path.join(sessions_dir, '*.json')):
+    try:
+        with open(f) as fh:
+            d = json.load(fh)
+            meta[d['sessionId']] = d
+    except: pass
+
+results = []
+for jsonl in glob.glob(os.path.join(project_dir, '*.jsonl')):
+    sid = os.path.splitext(os.path.basename(jsonl))[0]
+    m = meta.get(sid, {})
+    started = m.get('startedAt', 0)
+    first_user = ''
+    summary = ''
+    ts = ''
+    try:
+        with open(jsonl) as fh:
+            for line in fh:
+                if not first_user and '"role":"user"' in line:
+                    try:
+                        e = json.loads(line)
+                        msg = e.get('message', {})
+                        if msg.get('role') == 'user':
+                            c = msg.get('content', '')
+                            if isinstance(c, list):
+                                for i in c:
+                                    if i.get('type') == 'text':
+                                        first_user = i['text'][:100].replace('\n', ' ').replace('\t', ' ')
+                                        break
+                            elif isinstance(c, str):
+                                first_user = c[:100].replace('\n', ' ').replace('\t', ' ')
+                            if not ts:
+                                ts = e.get('timestamp', '')
+                    except: pass
+                if not summary and '"type":"summary"' in line:
+                    try:
+                        e = json.loads(line)
+                        if e.get('type') == 'summary':
+                            summary = e.get('summary', '')[:100].replace('\n', ' ').replace('\t', ' ')
+                    except: pass
+                if first_user and summary: break
+    except: continue
+    display = summary or first_user or '(empty)'
+    if ts and len(ts) > 16:
+        d = ts[:10] + ' ' + ts[11:16]
+    elif started:
+        from datetime import datetime
+        dt = datetime.fromtimestamp(started / 1000)
+        d = dt.strftime('%%Y-%%m-%%d %%H:%%M')
+    else:
+        d = '?'
+    sort_key = ts or (str(started) if started else '')
+    results.append((sort_key, f'{display}\t{d}\t{sid}'))
+results.sort(reverse=True)
+for r in results: print(r[1])
+]=])
+
+	local tmp = "/tmp/_nvim_claude_sessions.py"
+	local f = io.open(tmp, "w")
+	if not f then
+		vim.notify("Failed to write session helper", vim.log.levels.ERROR)
+		return
+	end
+	f:write(py)
+	f:close()
+
+	fzf_lua.fzf_exec("python3 " .. tmp .. " " .. vim.fn.shellescape(project_dir), {
+		prompt = "Claude Sessions> ",
+		fzf_opts = {
+			["--delimiter"] = "\t",
+			["--with-nth"] = "1..2",
+			["--nth"] = "1",
+			["--no-sort"] = "",
+		},
+		actions = {
+			["default"] = function(selected)
+				if not selected or #selected == 0 then return end
+				local sid = vim.trim(vim.split(selected[1], "\t")[3])
+				close_claude_terminals()
+				local snacks = require("snacks")
+				local win = snacks.terminal.toggle(
+					"claude --resume " .. sid,
+					{ auto_close = false, win = { position = "right" } }
+				)
+				close_other_terminals(win)
+				vim.cmd("checktime")
+			end,
+		},
+		winopts = {
+			height = 0.6,
+			width = 0.8,
+		},
+	})
+end
+
+vim.keymap.set({ "n", "t" }, "<C-e>", claude_session_picker, keymap_opts)
 
 return
 {
