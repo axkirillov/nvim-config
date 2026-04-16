@@ -86,7 +86,8 @@ vim.keymap.set(
 	"<F2>",
 	function()
 		local snacks = require("snacks")
-		snacks.terminal.toggle(nil, term_opts)
+		local win = snacks.terminal.toggle(nil, term_opts)
+		close_other_terminals(win)
 		vim.cmd("checktime")
 	end,
 	keymap_opts
