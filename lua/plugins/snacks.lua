@@ -79,17 +79,17 @@ vim.keymap.set(
 	"<F1>",
 	function()
 		local snacks = require("snacks")
-		local pi_opts = {
+		local claude_opts = {
 			auto_close = false,
 			win = { position = "right" },
 		}
-		-- Close any pi session terminals before toggling default pi
+		-- Close any claude session terminals before toggling default claude
 		for _, term in pairs(snacks.terminal.list()) do
-			if term.cmd and type(term.cmd) == "string" and term.cmd:match("^pi ") then
+			if term.cmd and type(term.cmd) == "string" and term.cmd:match("^claude ") then
 				term:close()
 			end
 		end
-		local win = snacks.terminal.toggle("pi", pi_opts)
+		local win = snacks.terminal.toggle("claude", claude_opts)
 		close_other_terminals(win)
 		vim.cmd("checktime")
 	end,
@@ -225,8 +225,6 @@ for r in results: print(r[1])
 	})
 end
 
-vim.keymap.set({ "n", "t" }, "<C-s>", pi_session_picker, keymap_opts)
-
 local function claude_session_picker()
 	local fzf_lua = require("fzf-lua")
 
@@ -325,7 +323,7 @@ for r in results: print(r[1])
 				close_claude_terminals()
 				local snacks = require("snacks")
 				local win = snacks.terminal.toggle(
-					"claude --resume " .. sid,
+					"claude --effort max --resume " .. sid,
 					{ auto_close = false, win = { position = "right" } }
 				)
 				close_other_terminals(win)
@@ -339,7 +337,7 @@ for r in results: print(r[1])
 	})
 end
 
-vim.keymap.set({ "n", "t" }, "<C-e>", claude_session_picker, keymap_opts)
+vim.keymap.set({ "n", "t" }, "<C-s>", claude_session_picker, keymap_opts)
 
 return
 {
