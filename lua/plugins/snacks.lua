@@ -308,7 +308,9 @@ for r in results: print(r[1])
 	f:write(py)
 	f:close()
 
-	fzf_lua.fzf_exec("python3 " .. tmp .. " " .. vim.fn.shellescape(project_dir), {
+	local cmd = "{ printf '+ New session\\t\\tnew\\n'; python3 "
+		.. tmp .. " " .. vim.fn.shellescape(project_dir) .. "; }"
+	fzf_lua.fzf_exec(cmd, {
 		prompt = "Claude Sessions> ",
 		fzf_opts = {
 			["--delimiter"] = "\t",
@@ -322,8 +324,11 @@ for r in results: print(r[1])
 				local sid = vim.trim(vim.split(selected[1], "\t")[3])
 				close_claude_terminals()
 				local snacks = require("snacks")
+				local cmd_str = sid == "new"
+					and "claude --effort max"
+					or ("claude --effort max --resume " .. sid)
 				local win = snacks.terminal.toggle(
-					"claude --effort max --resume " .. sid,
+					cmd_str,
 					{ auto_close = false, win = { position = "right" } }
 				)
 				close_other_terminals(win)
