@@ -89,7 +89,7 @@ vim.keymap.set(
 				term:close()
 			end
 		end
-		local win = snacks.terminal.toggle("claude", claude_opts)
+		local win = snacks.terminal.toggle("claude --effort max", claude_opts)
 		close_other_terminals(win)
 		vim.cmd("checktime")
 	end,
