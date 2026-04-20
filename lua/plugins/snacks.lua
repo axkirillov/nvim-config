@@ -35,6 +35,11 @@ local function is_pi_terminal(term)
 		and (term.cmd == "pi" or term.cmd:match("^pi "))
 end
 
+local function is_claude_terminal(term)
+	return term.cmd and type(term.cmd) == "string"
+		and (term.cmd == "claude" or term.cmd:match("^claude "))
+end
+
 ---@param win snacks.win
 ---@param opts? { keep?: fun(term: snacks.win): boolean }
 local function close_other_terminals(win, opts)
@@ -58,8 +63,7 @@ end
 
 local function close_claude_terminals()
 	for _, term in pairs(require("snacks").terminal.list()) do
-		if term.cmd and type(term.cmd) == "string"
-			and (term.cmd == "claude" or term.cmd:match("^claude ")) then
+		if is_claude_terminal(term) then
 			term:close()
 		end
 	end
@@ -85,7 +89,7 @@ vim.keymap.set(
 		}
 		-- Close any claude session terminals before toggling default claude
 		for _, term in pairs(snacks.terminal.list()) do
-			if term.cmd and type(term.cmd) == "string" and term.cmd:match("^claude ") then
+			if is_claude_terminal(term) and term.cmd ~= "claude --effort max" then
 				term:close()
 			end
 		end
