@@ -258,6 +258,7 @@ for jsonl in glob.glob(os.path.join(project_dir, '*.jsonl')):
     sid = os.path.splitext(os.path.basename(jsonl))[0]
     m = meta.get(sid, {})
     started = m.get('startedAt', 0)
+    name = m.get('name', '') or ''
     first_user = ''
     summary = ''
     ts = ''
@@ -288,7 +289,7 @@ for jsonl in glob.glob(os.path.join(project_dir, '*.jsonl')):
                     except: pass
                 if first_user and summary: break
     except: continue
-    display = summary or first_user or '(empty)'
+    display = name or summary or first_user or '(empty)'
     if ts and len(ts) > 16:
         d = ts[:10] + ' ' + ts[11:16]
     elif started:
