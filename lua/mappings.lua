@@ -21,6 +21,29 @@ vim.keymap.set('t', '<M-p>', '<C-\\><C-n><C-w>p', { silent = true, desc = 'Windo
 -- PageDown in terminal mode: escape to normal, scroll buffer, return to terminal
 vim.keymap.set('t', '<PageDown>', '<C-\\><C-n><C-f>', { silent = true, desc = 'Scroll terminal buffer down' })
 
+-- Forward bracketed paste markers when pasting into a :terminal so TUIs
+-- (Claude Code, etc.) can detect multi-line pastes instead of treating every
+-- newline as a submit.
+do
+	local orig_paste = vim.paste
+	vim.paste = function(lines, phase)
+		if vim.bo.buftype == 'terminal' then
+			local ok, chan = pcall(vim.api.nvim_buf_get_var, 0, 'terminal_job_id')
+			if ok and chan then
+				if phase == -1 or phase == 1 then
+					vim.api.nvim_chan_send(chan, '\27[200~')
+				end
+				vim.api.nvim_chan_send(chan, table.concat(lines, '\n'))
+				if phase == -1 or phase == 3 then
+					vim.api.nvim_chan_send(chan, '\27[201~')
+				end
+				return true
+			end
+		end
+		return orig_paste(lines, phase)
+	end
+end
+
 -- Open diagnostic in a float window
 vim.keymap.set('n', '<leader>df', vim.diagnostic.open_float)
 
