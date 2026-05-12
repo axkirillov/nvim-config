@@ -40,6 +40,20 @@ local function is_claude_terminal(term)
 		and (term.cmd == "claude" or term.cmd:match("^claude "))
 end
 
+-- Returns the main checkout root so Claude can keep running even if the
+-- current worktree dir is deleted. Falls back to cwd outside a git repo.
+local function git_main_root()
+	local cwd = vim.fn.getcwd()
+	local out = vim.fn.systemlist({
+		"git", "-C", cwd, "rev-parse", "--path-format=absolute", "--git-common-dir",
+	})
+	if vim.v.shell_error ~= 0 or #out == 0 or out[1] == "" then
+		return cwd
+	end
+	local root = out[1]:gsub("/%.git/?$", "")
+	return root ~= "" and root or cwd
+end
+
 ---@param win snacks.win
 ---@param opts? { keep?: fun(term: snacks.win): boolean }
 local function close_other_terminals(win, opts)
@@ -84,6 +98,7 @@ vim.keymap.set(
 	function()
 		local snacks = require("snacks")
 		local claude_opts = {
+			cwd = git_main_root(),
 			auto_close = false,
 			win = { position = "right" },
 		}
@@ -232,8 +247,8 @@ end
 local function claude_session_picker()
 	local fzf_lua = require("fzf-lua")
 
-	local cwd = vim.fn.getcwd()
-	local project_key = cwd:gsub("[^%w%-]", "-")
+	local main_root = git_main_root()
+	local project_key = main_root:gsub("[^%w%-]", "-")
 	local project_dir = os.getenv("HOME") .. "/.claude/projects/" .. project_key
 
 	local py = string.format([=[
@@ -349,7 +364,7 @@ for r in results: print(r[1])
 					or ("claude --effort max --resume " .. sid)
 				local win = snacks.terminal.toggle(
 					cmd_str,
-					{ auto_close = false, win = { position = "right" } }
+					{ cwd = main_root, auto_close = false, win = { position = "right" } }
 				)
 				close_other_terminals(win)
 				vim.cmd("checktime")
@@ -363,6 +378,25 @@ for r in results: print(r[1])
 end
 
 vim.keymap.set({ "n", "t" }, "<C-s>", claude_session_picker, keymap_opts)
+
+-- Resume a specific Claude session by ID. Invoked via `nvim '+ClaudeResume <sid>'`
+-- for cross-pane session handoff. Defers so snacks is loaded before toggle.
+vim.api.nvim_create_user_command("ClaudeResume", function(opts)
+	local sid = opts.args
+	if sid == "" then
+		vim.notify("ClaudeResume: missing session id", vim.log.levels.ERROR)
+		return
+	end
+	vim.defer_fn(function()
+		local snacks = require("snacks")
+		local win = snacks.terminal.toggle("claude --effort max --resume " .. sid, {
+			cwd = git_main_root(),
+			auto_close = false,
+			win = { position = "right" },
+		})
+		close_other_terminals(win)
+	end, 100)
+end, { nargs = 1 })
 
 return
 {
