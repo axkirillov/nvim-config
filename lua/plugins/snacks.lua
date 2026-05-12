@@ -258,13 +258,29 @@ for jsonl in glob.glob(os.path.join(project_dir, '*.jsonl')):
     sid = os.path.splitext(os.path.basename(jsonl))[0]
     m = meta.get(sid, {})
     started = m.get('startedAt', 0)
-    name = m.get('name', '') or ''
+    live_name = m.get('name', '') or ''
+    agent_name = ''
+    ai_title = ''
     first_user = ''
     summary = ''
     ts = ''
     try:
         with open(jsonl) as fh:
             for line in fh:
+                if '"type":"agent-name"' in line:
+                    try:
+                        e = json.loads(line)
+                        if e.get('type') == 'agent-name':
+                            v = e.get('agentName', '') or ''
+                            if v: agent_name = v
+                    except: pass
+                if '"type":"ai-title"' in line:
+                    try:
+                        e = json.loads(line)
+                        if e.get('type') == 'ai-title':
+                            v = e.get('aiTitle', '') or ''
+                            if v: ai_title = v
+                    except: pass
                 if not first_user and '"role":"user"' in line:
                     try:
                         e = json.loads(line)
@@ -287,9 +303,8 @@ for jsonl in glob.glob(os.path.join(project_dir, '*.jsonl')):
                         if e.get('type') == 'summary':
                             summary = e.get('summary', '')[:100].replace('\n', ' ').replace('\t', ' ')
                     except: pass
-                if first_user and summary: break
     except: continue
-    display = name or summary or first_user or '(empty)'
+    display = agent_name or live_name or ai_title or summary or first_user or '(empty)'
     if ts and len(ts) > 16:
         d = ts[:10] + ' ' + ts[11:16]
     elif started:
