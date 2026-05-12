@@ -40,8 +40,11 @@ local function is_claude_terminal(term)
 		and (term.cmd == "claude" or term.cmd:match("^claude "))
 end
 
--- Returns the main checkout root so Claude can keep running even if the
--- current worktree dir is deleted. Falls back to cwd outside a git repo.
+-- Returns the main checkout root. Used to key Claude session metadata under
+-- ~/.claude/projects/<main-root>. Claude's own cwd is *not* pinned here —
+-- it inherits nvim's cwd so worktree edits land in the worktree, not the
+-- main tree. Use worktree-teardown.sh to close the session cleanly before
+-- `git worktree remove` so claude's cwd never dangles.
 local function git_main_root()
 	local cwd = vim.fn.getcwd()
 	local out = vim.fn.systemlist({
@@ -95,7 +98,6 @@ vim.keymap.set(
 local function open_claude()
 	local snacks = require("snacks")
 	local claude_opts = {
-		cwd = git_main_root(),
 		auto_close = false,
 		win = { position = "right" },
 	}
@@ -366,7 +368,7 @@ for r in results: print(r[1])
 					or ("claude --effort max --resume " .. sid)
 				local win = snacks.terminal.toggle(
 					cmd_str,
-					{ cwd = main_root, auto_close = false, win = { position = "right" } }
+					{ auto_close = false, win = { position = "right" } }
 				)
 				close_other_terminals(win)
 				vim.cmd("checktime")
@@ -392,7 +394,6 @@ vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 	vim.defer_fn(function()
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle("claude --effort max --resume " .. sid, {
-			cwd = git_main_root(),
 			auto_close = false,
 			win = { position = "right" },
 		})
