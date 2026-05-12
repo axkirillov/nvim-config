@@ -92,28 +92,30 @@ vim.keymap.set(
 	keymap_opts
 )
 
-vim.keymap.set(
-	{ "n", "t" },
-	"<F1>",
-	function()
-		local snacks = require("snacks")
-		local claude_opts = {
-			cwd = git_main_root(),
-			auto_close = false,
-			win = { position = "right" },
-		}
-		-- Close any claude session terminals before toggling default claude
-		for _, term in pairs(snacks.terminal.list()) do
-			if is_claude_terminal(term) and term.cmd ~= "claude --effort max" then
-				term:close()
-			end
+local function open_claude()
+	local snacks = require("snacks")
+	local claude_opts = {
+		cwd = git_main_root(),
+		auto_close = false,
+		win = { position = "right" },
+	}
+	-- Close any claude session terminals before toggling default claude
+	for _, term in pairs(snacks.terminal.list()) do
+		if is_claude_terminal(term) and term.cmd ~= "claude --effort max" then
+			term:close()
 		end
-		local win = snacks.terminal.toggle("claude --effort max", claude_opts)
-		close_other_terminals(win)
-		vim.cmd("checktime")
-	end,
-	keymap_opts
-)
+	end
+	local win = snacks.terminal.toggle("claude --effort max", claude_opts)
+	close_other_terminals(win)
+	vim.cmd("checktime")
+end
+
+vim.keymap.set({ "n", "t" }, "<F1>", open_claude, keymap_opts)
+
+-- Invoked via `nvim +Claude` for launching a window straight into claude.
+vim.api.nvim_create_user_command("Claude", function()
+	vim.defer_fn(open_claude, 100)
+end, {})
 
 vim.keymap.set(
 	{ "n", "t" },
