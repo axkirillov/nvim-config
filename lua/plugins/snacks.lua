@@ -97,17 +97,33 @@ vim.keymap.set(
 
 local function open_claude()
 	local snacks = require("snacks")
-	local claude_opts = {
-		auto_close = false,
-		win = { position = "right", width = 0.5 },
-	}
-	-- Close any claude session terminals before toggling default claude
+	-- Find the default claude terminal by cmd (cwd-agnostic). snacks.terminal
+	-- keys terminals by cmd+cwd+opts, so toggling after a :cd would otherwise
+	-- spawn a duplicate. Close any --resume session terminals.
+	local existing
 	for _, term in pairs(snacks.terminal.list()) do
-		if is_claude_terminal(term) and term.cmd ~= "claude --effort max" then
-			term:close()
+		if is_claude_terminal(term) then
+			if term.cmd == "claude --effort max" then
+				existing = existing or term
+			else
+				term:close()
+			end
 		end
 	end
-	local win = snacks.terminal.toggle("claude --effort max", claude_opts)
+	local win
+	if existing then
+		if existing.win and vim.api.nvim_win_is_valid(existing.win) then
+			existing:hide()
+		else
+			existing:show()
+		end
+		win = existing
+	else
+		win = snacks.terminal.toggle("claude --effort max", {
+			auto_close = false,
+			win = { position = "right", width = 0.5 },
+		})
+	end
 	close_other_terminals(win)
 	vim.cmd("checktime")
 end
