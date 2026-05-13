@@ -99,7 +99,7 @@ local function open_claude()
 	local snacks = require("snacks")
 	local claude_opts = {
 		auto_close = false,
-		win = { position = "right", width = 0.99 },
+		win = { position = "right", width = 0.5 },
 	}
 	-- Close any claude session terminals before toggling default claude
 	for _, term in pairs(snacks.terminal.list()) do
@@ -368,7 +368,7 @@ for r in results: print(r[1])
 					or ("claude --effort max --resume " .. sid)
 				local win = snacks.terminal.toggle(
 					cmd_str,
-					{ auto_close = false, win = { position = "right", width = 0.99 } }
+					{ auto_close = false, win = { position = "right", width = 0.5 } }
 				)
 				close_other_terminals(win)
 				vim.cmd("checktime")
@@ -395,7 +395,7 @@ vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle("claude --effort max --resume " .. sid, {
 			auto_close = false,
-			win = { position = "right", width = 0.99 },
+			win = { position = "right", width = 0.5 },
 		})
 		close_other_terminals(win)
 	end, 100)
