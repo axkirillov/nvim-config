@@ -5,7 +5,7 @@ local keymap_opts = {
 
 local term_opts = {
 	auto_close = false,
-	win = { position = "right" },
+	win = { position = "right", width = 0.5 },
 }
 
 local function send_to_terminal(text)
