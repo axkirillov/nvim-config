@@ -97,14 +97,14 @@ vim.keymap.set(
 
 local function open_claude()
 	local snacks = require("snacks")
-	-- Find the default claude terminal by cmd (cwd-agnostic). snacks.terminal
-	-- keys terminals by cmd+cwd+opts, so toggling after a :cd would otherwise
-	-- spawn a duplicate. Close any --resume session terminals.
+	-- Find any existing claude terminal (default or picker-resumed) so F1
+	-- toggles it instead of spawning a duplicate. snacks.terminal keys
+	-- terminals by cmd+cwd+opts, so the cmd-agnostic scan also survives :cd.
 	local existing
 	for _, term in pairs(snacks.terminal.list()) do
 		if is_claude_terminal(term) then
-			if term.cmd == "claude --effort max" then
-				existing = existing or term
+			if not existing then
+				existing = term
 			else
 				term:close()
 			end
