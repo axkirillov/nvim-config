@@ -1,6 +1,5 @@
 return {
-	--sindrets/diffview.nvim',
-	dir = '~/repo/diffview.nvim',
+	'sindrets/diffview.nvim',
 	dependencies = 'nvim-lua/plenary.nvim',
 	config = function()
 		local actions = require("diffview.actions")
