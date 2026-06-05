@@ -57,5 +57,9 @@ vim.api.nvim_create_user_command(
 
 return {
 	dir = '~/repo/unified.nvim',
-	opts = {},
+	opts = {
+		file_tree = {
+			auto_open_first_file = false,
+		},
+	},
 }
