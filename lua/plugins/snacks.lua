@@ -95,6 +95,23 @@ vim.keymap.set(
 	keymap_opts
 )
 
+-- TNTCS wake-up prompt. The tntcs skill's open.sh spawns this window with
+-- $TNTCS_MESSAGE set to a success announcement (worktree ready, ticket context,
+-- resumed-vs-fresh). We feed it to claude as its initial prompt so the new
+-- session wakes up oriented instead of at a blank prompt. snacks runs the
+-- terminal cmd string through &shell (zsh), so shellescape() quotes it
+-- correctly. Consumed once and cleared, so a later <F1> toggle in this same
+-- nvim doesn't resend it. Returns a leading-space suffix to concatenate onto
+-- the claude command, or "" when no message was set (the normal case).
+local function tntcs_prompt_suffix()
+	local msg = vim.env.TNTCS_MESSAGE
+	if not msg or msg == "" then
+		return ""
+	end
+	vim.env.TNTCS_MESSAGE = nil
+	return " " .. vim.fn.shellescape(msg)
+end
+
 local function open_claude()
 	local snacks = require("snacks")
 	-- Find any existing claude terminal (default or picker-resumed) so F1
@@ -119,7 +136,7 @@ local function open_claude()
 		end
 		win = existing
 	else
-		win = snacks.terminal.toggle("claude --effort max", {
+		win = snacks.terminal.toggle("claude --effort max" .. tntcs_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
@@ -409,7 +426,7 @@ vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 	end
 	vim.defer_fn(function()
 		local snacks = require("snacks")
-		local win = snacks.terminal.toggle("claude --effort max --resume " .. sid, {
+		local win = snacks.terminal.toggle("claude --effort max --resume " .. sid .. tntcs_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
