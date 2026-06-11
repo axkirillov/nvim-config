@@ -434,6 +434,51 @@ vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 	end, 100)
 end, { nargs = 1 })
 
+-- Receive a prompt from another Claude session and inject it into this nvim's
+-- claude terminal. The claude-send skill's send.sh writes the message to a temp
+-- file and invokes `:ClaudeSend <file>` over tmux; we read + flatten it,
+-- chansend it into the claude terminal job, then submit with a carriage return.
+-- This wakes claude even when it is sitting fully idle at the prompt. The temp
+-- file (created by send.sh) is removed here once read.
+vim.api.nvim_create_user_command("ClaudeSend", function(opts)
+	local path = opts.args
+	if path == "" then
+		vim.notify("ClaudeSend: missing message file path", vim.log.levels.ERROR)
+		return
+	end
+	local ok, lines = pcall(vim.fn.readfile, path)
+	vim.fn.delete(path)
+	if not ok or type(lines) ~= "table" or #lines == 0 then
+		vim.notify("ClaudeSend: empty or unreadable message file", vim.log.levels.ERROR)
+		return
+	end
+	local message = table.concat(lines, " ")
+	local target
+	for _, term in pairs(require("snacks").terminal.list()) do
+		if is_claude_terminal(term) and term.buf and vim.api.nvim_buf_is_valid(term.buf) then
+			target = term
+			break
+		end
+	end
+	if not target then
+		vim.notify("ClaudeSend: no claude terminal in this nvim", vim.log.levels.ERROR)
+		return
+	end
+	local chan = vim.api.nvim_buf_get_var(target.buf, "terminal_job_id")
+	if chan then
+		vim.api.nvim_chan_send(chan, message)
+		-- Submit as a *separate* keystroke. Claude's TUI treats the message and
+		-- a trailing CR arriving together as one fast burst (a paste) and keeps
+		-- the CR as literal input instead of submitting; a deferred CR lands in
+		-- its own read and is taken as a discrete Enter, which submits.
+		vim.defer_fn(function()
+			vim.api.nvim_chan_send(chan, "\r")
+		end, 200)
+	else
+		vim.notify("ClaudeSend: claude terminal has no job channel", vim.log.levels.ERROR)
+	end
+end, { nargs = 1 })
+
 return
 {
 	"folke/snacks.nvim",
