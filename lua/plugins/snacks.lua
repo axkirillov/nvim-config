@@ -100,8 +100,10 @@ vim.keymap.set(
 -- resumed-vs-fresh). We feed it to claude as its initial prompt so the new
 -- session wakes up oriented instead of at a blank prompt. snacks runs the
 -- terminal cmd string through &shell (zsh), so shellescape() quotes it
--- correctly. Consumed once and cleared, so a later <F1> toggle in this same
--- nvim doesn't resend it. Returns a leading-space suffix to concatenate onto
+-- correctly. Consumed once and cleared from both vim.env and the tmux session
+-- env, so neither a later <F1> toggle in this nvim nor a later nvim +Claude
+-- window in the same session resends it. Returns a leading-space suffix to
+-- concatenate onto
 -- the claude command, or "" when no message was set (the normal case).
 local function tntcs_prompt_suffix()
 	local msg = vim.env.TNTCS_MESSAGE
@@ -109,6 +111,14 @@ local function tntcs_prompt_suffix()
 		return ""
 	end
 	vim.env.TNTCS_MESSAGE = nil
+	-- Also scrub the tmux *session* environment. tntcs seeds a brand-new session
+	-- with `tmux new-session -e TNTCS_MESSAGE=…`, which persists session-wide
+	-- (unlike `new-window -e`, which is pane-scoped). Clearing only vim.env would
+	-- leave that copy live, so every later `nvim +Claude` window in the session
+	-- (e.g. the leader+a binding) would re-inject this same prompt.
+	if vim.env.TMUX then
+		vim.fn.system({ "tmux", "set-environment", "-u", "TNTCS_MESSAGE" })
+	end
 	return " " .. vim.fn.shellescape(msg)
 end
 
