@@ -4,7 +4,7 @@ local setup_files = function()
 			mappings = {
 				close       = 'q',
 				go_in       = '',
-				go_in_plus  = '<c-l>',
+				go_in_plus  = '<c-j>',
 				go_out      = '<c-h>',
 				go_out_plus = '<H>',
 				mark_goto   = "'",
@@ -20,18 +20,20 @@ local setup_files = function()
 	)
 	vim.keymap.set(
 		'n',
-		'<c-n>',
+		'<c-m>',
 		function()
-			MiniFiles.open(vim.api.nvim_buf_get_name(0))
-			MiniFiles.reveal_cwd()
+			if not MiniFiles.close() then
+				MiniFiles.open(vim.api.nvim_buf_get_name(0))
+				MiniFiles.reveal_cwd()
+			end
 		end
 	)
 	vim.api.nvim_create_autocmd('User', {
 		pattern = 'MiniFilesBufferCreate',
 		callback = function(args)
 			local buf_id = args.data.buf_id
-			vim.keymap.set('n', '<c-j>', 'j', { buffer = buf_id })
-			vim.keymap.set('n', '<c-k>', 'k', { buffer = buf_id })
+			vim.keymap.set('n', '<c-n>', 'j', { buffer = buf_id })
+			vim.keymap.set('n', '<c-p>', 'k', { buffer = buf_id })
 		end,
 	})
 end
