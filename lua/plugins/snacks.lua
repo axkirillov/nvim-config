@@ -122,6 +122,74 @@ local function tntcs_prompt_suffix()
 	return " " .. vim.fn.shellescape(msg)
 end
 
+-- ── Per-window claude session tracking ──────────────────────────────────────
+-- resurrect can restore the nvim pane but not the claude session running inside
+-- its terminal, and "most recent for the cwd" is wrong when several windows or
+-- sessions share a repo. So nvim records which session id is live in each tmux
+-- window (keyed by session:window_index, which resurrect preserves) and resumes
+-- that exact id on restore. Every launch path pins a known id: fresh launches
+-- via `--session-id <uuid>`, resumes via the id they already carry.
+local claude_sessions_dir = vim.fn.stdpath("state") .. "/claude-windows"
+
+-- The tmux window this nvim lives in, e.g. "frontends:1"; nil outside tmux.
+local function claude_window_key()
+	local pane = vim.env.TMUX_PANE
+	if not pane or pane == "" then
+		return nil
+	end
+	local out = vim.fn.systemlist({
+		"tmux", "display-message", "-p", "-t", pane, "#{session_name}:#{window_index}",
+	})
+	if vim.v.shell_error ~= 0 or #out == 0 or out[1] == "" then
+		return nil
+	end
+	return out[1]
+end
+
+local function claude_session_file(key)
+	return claude_sessions_dir .. "/" .. key:gsub("[^%w%-]", "_")
+end
+
+-- Remember that `sid` is the session live in this nvim's tmux window.
+local function record_window_session(sid)
+	if not sid or sid == "" then
+		return
+	end
+	local key = claude_window_key()
+	if not key then
+		return
+	end
+	vim.fn.mkdir(claude_sessions_dir, "p")
+	local f = io.open(claude_session_file(key), "w")
+	if f then
+		f:write(sid)
+		f:close()
+	end
+end
+
+-- The session id last recorded for this nvim's tmux window, or nil.
+local function lookup_window_session()
+	local key = claude_window_key()
+	if not key then
+		return nil
+	end
+	local f = io.open(claude_session_file(key), "r")
+	if not f then
+		return nil
+	end
+	local sid = vim.trim(f:read("*a") or "")
+	f:close()
+	return sid ~= "" and sid or nil
+end
+
+local function new_session_id()
+	local out = vim.fn.systemlist({ "uuidgen" })
+	if vim.v.shell_error ~= 0 or #out == 0 then
+		return nil
+	end
+	return vim.trim(out[1]):lower()
+end
+
 local function open_claude()
 	local snacks = require("snacks")
 	-- Find any existing claude terminal (default or picker-resumed) so F1
@@ -146,7 +214,10 @@ local function open_claude()
 		end
 		win = existing
 	else
-		win = snacks.terminal.toggle("claude --effort max" .. tntcs_prompt_suffix(), {
+		local sid = new_session_id()
+		record_window_session(sid)
+		local id_arg = sid and (" --session-id " .. sid) or ""
+		win = snacks.terminal.toggle("claude --effort max" .. id_arg .. tntcs_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
@@ -161,6 +232,39 @@ vim.keymap.set({ "n", "t" }, "<F1>", open_claude, keymap_opts)
 vim.api.nvim_create_user_command("Claude", function()
 	vim.defer_fn(open_claude, 100)
 end, {})
+
+-- On tmux-resurrect restore, reopen the *exact* claude session that was live in
+-- this nvim's terminal. resurrect restores the nvim pane but can't see the
+-- claude process inside it, so we resume the session id recorded for this tmux
+-- window (see record_window_session). Gated on RESURRECT_RESTORING, which
+-- resurrect's pre/post-restore hooks set only while a restore is in flight — so
+-- manually launched nvims are unaffected and `nvim +Claude` still starts fresh.
+-- Resumes only when that session's transcript still exists for the cwd;
+-- otherwise the window comes back plain (no guessing at a different session).
+vim.api.nvim_create_autocmd("VimEnter", {
+	callback = function()
+		if vim.env.RESURRECT_RESTORING ~= "1" then
+			return
+		end
+		local sid = lookup_window_session()
+		if not sid then
+			return
+		end
+		local project_key = vim.fn.getcwd():gsub("[^%w%-]", "-")
+		local transcript = os.getenv("HOME") .. "/.claude/projects/" .. project_key .. "/" .. sid .. ".jsonl"
+		if vim.fn.filereadable(transcript) == 0 then
+			return
+		end
+		vim.defer_fn(function()
+			local snacks = require("snacks")
+			local win = snacks.terminal.toggle("claude --effort max --resume " .. sid, {
+				auto_close = false,
+				win = { position = "right", width = 0.5 },
+			})
+			close_other_terminals(win)
+		end, 100)
+	end,
+})
 
 vim.keymap.set(
 	{ "n", "t" },
@@ -406,9 +510,15 @@ for r in results: print(r[1])
 				local sid = vim.trim(vim.split(selected[1], "\t")[3])
 				close_claude_terminals()
 				local snacks = require("snacks")
-				local cmd_str = sid == "new"
-					and "claude --effort max"
-					or ("claude --effort max --resume " .. sid)
+				local cmd_str
+				if sid == "new" then
+					local newid = new_session_id()
+					record_window_session(newid)
+					cmd_str = "claude --effort max" .. (newid and (" --session-id " .. newid) or "")
+				else
+					record_window_session(sid)
+					cmd_str = "claude --effort max --resume " .. sid
+				end
 				local win = snacks.terminal.toggle(
 					cmd_str,
 					{ auto_close = false, win = { position = "right", width = 0.5 } }
@@ -434,6 +544,7 @@ vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 		vim.notify("ClaudeResume: missing session id", vim.log.levels.ERROR)
 		return
 	end
+	record_window_session(sid)
 	vim.defer_fn(function()
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle("claude --effort max --resume " .. sid .. tntcs_prompt_suffix(), {
