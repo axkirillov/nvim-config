@@ -34,6 +34,10 @@ local setup_files = function()
 			local buf_id = args.data.buf_id
 			vim.keymap.set('n', '<c-n>', 'j', { buffer = buf_id })
 			vim.keymap.set('n', '<c-p>', 'k', { buffer = buf_id })
+			-- <CR> (your C-j sends Enter) as "enter/open" -- mirrors go_in_plus
+			vim.keymap.set('n', '<cr>', function()
+				MiniFiles.go_in({ close_on_file = true })
+			end, { buffer = buf_id })
 		end,
 	})
 end
