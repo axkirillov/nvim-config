@@ -317,6 +317,51 @@ vim.keymap.set(
 	keymap_opts
 )
 
+-- Launch all-in-quiz (the spaced-repetition CLI) in a centered floating
+-- terminal. Unlike a tmux display-popup, a float is a real terminal buffer, so
+-- the session scrolls (terminal-normal mode / <PageDown>). While the quiz is
+-- running, <F3> toggles the float's visibility; once it has exited, <F3> starts
+-- a fresh run rather than re-showing the finished buffer. auto_close=false keeps
+-- the end-of-session summary on screen to scroll back through.
+-- Point the CLI at the repo's deck directory. It has no built-in decks, so
+-- without --decks (or $ALL_IN_QUIZ_DECKS) it exits with "no deck directory".
+local quiz_cmd = vim.fn.expand("~/go/bin/all-in-quiz")
+	.. " --decks "
+	.. vim.fn.expand("~/repos/axkirillov/all-in-quiz/decks")
+local quiz_opts = {
+	auto_close = false,
+	win = { position = "float", width = 0.8, height = 0.8, border = "rounded" },
+}
+
+local function quiz_running(term)
+	if not (term and term:buf_valid()) then
+		return false
+	end
+	local ok, chan = pcall(vim.api.nvim_buf_get_var, term.buf, "terminal_job_id")
+	return ok and type(chan) == "number" and vim.fn.jobwait({ chan }, 0)[1] == -1
+end
+
+local function open_quiz()
+	local snacks_term = require("snacks").terminal
+	local existing
+	for _, term in pairs(snacks_term.list()) do
+		if term.cmd == quiz_cmd then
+			existing = term
+			break
+		end
+	end
+	if quiz_running(existing) then
+		existing:toggle()
+	else
+		if existing then
+			existing:close()
+		end
+		snacks_term.open(quiz_cmd, quiz_opts)
+	end
+end
+
+vim.keymap.set({ "n", "t" }, "<F3>", open_quiz, keymap_opts)
+
 vim.api.nvim_create_user_command(
 	"RunTestInTerminal",
 	function()
