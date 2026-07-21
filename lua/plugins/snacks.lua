@@ -233,6 +233,45 @@ vim.api.nvim_create_user_command("Claude", function()
 	vim.defer_fn(open_claude, 100)
 end, {})
 
+-- Pi counterpart of open_claude: find an existing pi terminal and toggle it,
+-- else launch a fresh `pi`. Unlike claude we don't pin a --session-id here (pi
+-- has no resurrect-resume tracking yet), but we still pass the TNTCS wake-up
+-- prompt so a `nvim +Pi` window spawned by the tntcs skill starts oriented.
+local function open_pi()
+	local snacks = require("snacks")
+	local existing
+	for _, term in pairs(snacks.terminal.list()) do
+		if is_pi_terminal(term) then
+			if not existing then
+				existing = term
+			else
+				term:close()
+			end
+		end
+	end
+	local win
+	if existing then
+		if existing.win and vim.api.nvim_win_is_valid(existing.win) then
+			existing:hide()
+		else
+			existing:show()
+		end
+		win = existing
+	else
+		win = snacks.terminal.toggle("pi" .. tntcs_prompt_suffix(), {
+			auto_close = false,
+			win = { position = "right", width = 0.5 },
+		})
+	end
+	close_other_terminals(win)
+	vim.cmd("checktime")
+end
+
+-- Invoked via `nvim +Pi` for launching a window straight into pi.
+vim.api.nvim_create_user_command("Pi", function()
+	vim.defer_fn(open_pi, 100)
+end, {})
+
 -- On tmux-resurrect restore, reopen the *exact* claude session that was live in
 -- this nvim's terminal. resurrect restores the nvim pane but can't see the
 -- claude process inside it, so we resume the session id recorded for this tmux
