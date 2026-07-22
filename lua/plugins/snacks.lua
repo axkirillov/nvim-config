@@ -272,6 +272,33 @@ vim.api.nvim_create_user_command("Pi", function()
 	vim.defer_fn(open_pi, 100)
 end, {})
 
+-- Resume a specific pi session. Invoked via `nvim '+PiResume <session>'` for
+-- cross-pane session handoff (the pi tntcs skill's move / open --resume paths),
+-- mirroring :ClaudeResume. <session> is a pi session-file PATH (what tntcs
+-- passes) or a full session id: `pi --session <arg>` opens that exact transcript
+-- regardless of cwd. We deliberately do NOT use `--session-id`, which is
+-- cwd-scoped and CREATES a fresh empty session when the id isn't already in the
+-- current directory's project — resuming in a worktree would lose all history.
+-- No record_window_session — pi has no resurrect-resume tracking yet (see
+-- open_pi). Passes the TNTCS wake-up prompt so the resumed session wakes
+-- oriented. Defers so snacks is loaded before toggle.
+vim.api.nvim_create_user_command("PiResume", function(opts)
+	local session = opts.args
+	if session == "" then
+		vim.notify("PiResume: missing session (path or id)", vim.log.levels.ERROR)
+		return
+	end
+	vim.defer_fn(function()
+		local snacks = require("snacks")
+		local win = snacks.terminal.toggle(
+			"pi --session " .. vim.fn.shellescape(session) .. tntcs_prompt_suffix(), {
+				auto_close = false,
+				win = { position = "right", width = 0.5 },
+			})
+		close_other_terminals(win)
+	end, 100)
+end, { nargs = 1 })
+
 -- On tmux-resurrect restore, reopen the *exact* claude session that was live in
 -- this nvim's terminal. resurrect restores the nvim pane but can't see the
 -- claude process inside it, so we resume the session id recorded for this tmux
