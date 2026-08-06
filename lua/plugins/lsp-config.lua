@@ -120,8 +120,20 @@ local setup = function()
 		intelephense_settings.stubs = intelephense_stubs
 	end
 
+	-- Intelephense reads no environment variable of its own: the paid licence has
+	-- to be handed over as an init option, after which the server caches its
+	-- activation under ~/.config/intelephense/global. The key itself lives in the
+	-- gitignored dotfiles shell/secret.sh, exported from .zshenv -- so a GUI-
+	-- launched nvim that never sourced zsh will silently fall back to free mode.
+	local intelephense_init_options = {}
+	local intelephense_licence = os.getenv("INTELEPHENSE_LICENCE_KEY")
+	if intelephense_licence and intelephense_licence ~= "" then
+		intelephense_init_options.licenceKey = intelephense_licence
+	end
+
 	extend_config("intelephense", {
 		on_attach = on_attach,
+		init_options = intelephense_init_options,
 		settings = {
 			intelephense = intelephense_settings,
 		},
