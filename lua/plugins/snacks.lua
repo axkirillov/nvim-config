@@ -323,10 +323,11 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		end
 		vim.defer_fn(function()
 			local snacks = require("snacks")
-			local win = snacks.terminal.toggle("claude --effort max --resume " .. sid, {
-				auto_close = false,
-				win = { position = "right", width = 0.5 },
-			})
+			local win = snacks.terminal.toggle(
+				"claude --effort max --resume " .. vim.fn.shellescape(sid), {
+					auto_close = false,
+					win = { position = "right", width = 0.5 },
+				})
 			close_other_terminals(win)
 		end, 100)
 	end,
@@ -628,7 +629,7 @@ for r in results: print(r[1])
 					cmd_str = "claude --effort max" .. (newid and (" --session-id " .. newid) or "")
 				else
 					record_window_session(sid)
-					cmd_str = "claude --effort max --resume " .. sid
+					cmd_str = "claude --effort max --resume " .. vim.fn.shellescape(sid)
 				end
 				local win = snacks.terminal.toggle(
 					cmd_str,
@@ -658,10 +659,11 @@ vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 	record_window_session(sid)
 	vim.defer_fn(function()
 		local snacks = require("snacks")
-		local win = snacks.terminal.toggle("claude --effort max --resume " .. sid .. tntcs_prompt_suffix(), {
-			auto_close = false,
-			win = { position = "right", width = 0.5 },
-		})
+		local win = snacks.terminal.toggle(
+			"claude --effort max --resume " .. vim.fn.shellescape(sid) .. tntcs_prompt_suffix(), {
+				auto_close = false,
+				win = { position = "right", width = 0.5 },
+			})
 		close_other_terminals(win)
 	end, 100)
 end, { nargs = 1 })
