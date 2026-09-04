@@ -122,6 +122,48 @@ local function tntcs_prompt_suffix()
 	return " " .. vim.fn.shellescape(msg)
 end
 
+-- Launch flags the handing-off session chose for itself, carried forward.
+-- composer's row menu relaunches a pane as `claude --resume <sid> --effort max`;
+-- tntcs reads that back off the dying process's command line and seeds the new
+-- session with $TNTCS_CLAUDE_FLAGS, so the choice survives the handoff. Consumed
+-- and scrubbed exactly like $TNTCS_MESSAGE. Not shellescaped as one string —
+-- that would collapse `--effort max` into a single argv token — so only the
+-- `--effort <level>` / `--model <alias>` shape is accepted and anything else is
+-- dropped rather than passed through to the shell. Each VALUE is then quoted on
+-- its own, because snacks runs the command string through &shell (zsh) and a real
+-- model alias like `opus[1m]` reads there as a glob — unquoted it kills the launch
+-- with "no matches found" and no claude starts at all.
+local tntcs_allowed_flags = { effort = true, model = true }
+
+local function tntcs_flags_suffix()
+	local raw = vim.env.TNTCS_CLAUDE_FLAGS
+	if not raw or raw == "" then
+		return ""
+	end
+	vim.env.TNTCS_CLAUDE_FLAGS = nil
+	if vim.env.TMUX then
+		vim.fn.system({ "tmux", "set-environment", "-u", "TNTCS_CLAUDE_FLAGS" })
+	end
+	local words = vim.split(vim.trim(raw), "%s+")
+	local kept = {}
+	local i = 1
+	while i < #words do
+		local name = words[i]:match("^%-%-([a-z]+)$")
+		local value = words[i + 1]
+		if name and tntcs_allowed_flags[name] and value and value:match("^[%w%-%.%[%]]+$") then
+			kept[#kept + 1] = words[i]
+			kept[#kept + 1] = vim.fn.shellescape(value)
+			i = i + 2
+		else
+			i = i + 1
+		end
+	end
+	if #kept == 0 then
+		return ""
+	end
+	return " " .. table.concat(kept, " ")
+end
+
 -- ── Per-window claude session tracking ──────────────────────────────────────
 -- resurrect can restore the nvim pane but not the claude session running inside
 -- its terminal, and "most recent for the cwd" is wrong when several windows or
@@ -217,7 +259,7 @@ local function open_claude()
 		local sid = new_session_id()
 		record_window_session(sid)
 		local id_arg = sid and (" --session-id " .. sid) or ""
-		win = snacks.terminal.toggle("claude --effort max" .. id_arg .. tntcs_prompt_suffix(), {
+		win = snacks.terminal.toggle("claude" .. id_arg .. tntcs_flags_suffix() .. tntcs_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
@@ -324,7 +366,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		vim.defer_fn(function()
 			local snacks = require("snacks")
 			local win = snacks.terminal.toggle(
-				"claude --effort max --resume " .. vim.fn.shellescape(sid), {
+				"claude --resume " .. vim.fn.shellescape(sid), {
 					auto_close = false,
 					win = { position = "right", width = 0.5 },
 				})
@@ -626,10 +668,10 @@ for r in results: print(r[1])
 				if sid == "new" then
 					local newid = new_session_id()
 					record_window_session(newid)
-					cmd_str = "claude --effort max" .. (newid and (" --session-id " .. newid) or "")
+					cmd_str = "claude" .. (newid and (" --session-id " .. newid) or "")
 				else
 					record_window_session(sid)
-					cmd_str = "claude --effort max --resume " .. vim.fn.shellescape(sid)
+					cmd_str = "claude --resume " .. vim.fn.shellescape(sid)
 				end
 				local win = snacks.terminal.toggle(
 					cmd_str,
@@ -650,23 +692,36 @@ vim.keymap.set({ "n", "t" }, "<C-s>", claude_session_picker, keymap_opts)
 
 -- Resume a specific Claude session by ID. Invoked via `nvim '+ClaudeResume <sid>'`
 -- for cross-pane session handoff. Defers so snacks is loaded before toggle.
+-- Extra words after the sid are launch flags appended to the resume command, so
+-- composer's row menu can restart a session at a chosen effort or model with
+-- `:ClaudeResume <sid> --effort max`. Each word is quoted for &shell (zsh), which
+-- would otherwise read a bracketed alias like `opus[1m]` as a glob and refuse the
+-- whole line. The old claude is closed, not hidden:
+-- close_other_terminals only calls hide(), which keeps the buffer and leaves the
+-- old process running against the same session id.
 vim.api.nvim_create_user_command("ClaudeResume", function(opts)
-	local sid = opts.args
-	if sid == "" then
+	local sid = opts.fargs[1]
+	if not sid or sid == "" then
 		vim.notify("ClaudeResume: missing session id", vim.log.levels.ERROR)
 		return
 	end
+	local flags = ""
+	for i = 2, #opts.fargs do
+		flags = flags .. " " .. vim.fn.shellescape(opts.fargs[i])
+	end
 	record_window_session(sid)
+	close_claude_terminals()
 	vim.defer_fn(function()
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle(
-			"claude --effort max --resume " .. vim.fn.shellescape(sid) .. tntcs_prompt_suffix(), {
+			"claude --resume " .. vim.fn.shellescape(sid) .. flags
+			.. tntcs_flags_suffix() .. tntcs_prompt_suffix(), {
 				auto_close = false,
 				win = { position = "right", width = 0.5 },
 			})
 		close_other_terminals(win)
 	end, 100)
-end, { nargs = 1 })
+end, { nargs = "+" })
 
 -- Receive a prompt from another Claude session and inject it into this nvim's
 -- claude terminal. The claude-send skill's send.sh writes the message to a temp
