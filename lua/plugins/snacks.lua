@@ -135,14 +135,26 @@ end
 -- with "no matches found" and no claude starts at all.
 local tntcs_allowed_flags = { effort = true, model = true }
 
-local function tntcs_flags_suffix()
-	local raw = vim.env.TNTCS_CLAUDE_FLAGS
+-- A pi model is "<provider>/<model>", so the slash has to be allowed through —
+-- and a path must not follow it in. One slash, none at either end, no "..".
+local function tntcs_flag_value_ok(value)
+	if not value or not value:match("^[%w%-%.%[%]/]+$") then
+		return false
+	end
+	if value:find("%.%.") or value:sub(1, 1) == "/" or value:sub(-1) == "/" then
+		return false
+	end
+	return select(2, value:gsub("/", "")) <= 1
+end
+
+local function tntcs_flags_suffix(var)
+	local raw = vim.env[var]
 	if not raw or raw == "" then
 		return ""
 	end
-	vim.env.TNTCS_CLAUDE_FLAGS = nil
+	vim.env[var] = nil
 	if vim.env.TMUX then
-		vim.fn.system({ "tmux", "set-environment", "-u", "TNTCS_CLAUDE_FLAGS" })
+		vim.fn.system({ "tmux", "set-environment", "-u", var })
 	end
 	local words = vim.split(vim.trim(raw), "%s+")
 	local kept = {}
@@ -150,7 +162,7 @@ local function tntcs_flags_suffix()
 	while i < #words do
 		local name = words[i]:match("^%-%-([a-z]+)$")
 		local value = words[i + 1]
-		if name and tntcs_allowed_flags[name] and value and value:match("^[%w%-%.%[%]]+$") then
+		if name and tntcs_allowed_flags[name] and tntcs_flag_value_ok(value) then
 			kept[#kept + 1] = words[i]
 			kept[#kept + 1] = vim.fn.shellescape(value)
 			i = i + 2
@@ -259,7 +271,7 @@ local function open_claude()
 		local sid = new_session_id()
 		record_window_session(sid)
 		local id_arg = sid and (" --session-id " .. sid) or ""
-		win = snacks.terminal.toggle("claude" .. id_arg .. tntcs_flags_suffix() .. tntcs_prompt_suffix(), {
+		win = snacks.terminal.toggle("claude" .. id_arg .. tntcs_flags_suffix("TNTCS_CLAUDE_FLAGS") .. tntcs_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
@@ -300,7 +312,7 @@ local function open_pi()
 		end
 		win = existing
 	else
-		win = snacks.terminal.toggle("pi" .. tntcs_prompt_suffix(), {
+		win = snacks.terminal.toggle("pi" .. tntcs_flags_suffix("TNTCS_PI_FLAGS") .. tntcs_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
@@ -333,7 +345,7 @@ vim.api.nvim_create_user_command("PiResume", function(opts)
 	vim.defer_fn(function()
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle(
-			"pi --session " .. vim.fn.shellescape(session) .. tntcs_prompt_suffix(), {
+			"pi --session " .. vim.fn.shellescape(session) .. tntcs_flags_suffix("TNTCS_PI_FLAGS") .. tntcs_prompt_suffix(), {
 				auto_close = false,
 				win = { position = "right", width = 0.5 },
 			})
@@ -715,7 +727,7 @@ vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle(
 			"claude --resume " .. vim.fn.shellescape(sid) .. flags
-			.. tntcs_flags_suffix() .. tntcs_prompt_suffix(), {
+			.. tntcs_flags_suffix("TNTCS_CLAUDE_FLAGS") .. tntcs_prompt_suffix(), {
 				auto_close = false,
 				win = { position = "right", width = 0.5 },
 			})
