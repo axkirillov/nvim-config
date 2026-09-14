@@ -20,7 +20,6 @@ local function send_to_terminal(text)
 		local chan = vim.api.nvim_buf_get_var(term.buf, "terminal_job_id")
 		if chan then
 			text = text:gsub("\n", " ")
-			-- Ensure the command is executed.
 			vim.api.nvim_chan_send(chan, text .. "\n")
 		else
 			vim.notify("No terminal job found!", vim.log.levels.ERROR)
@@ -40,11 +39,6 @@ local function is_claude_terminal(term)
 		and (term.cmd == "claude" or term.cmd:match("^claude "))
 end
 
--- Returns the main checkout root. Used to key Claude session metadata under
--- ~/.claude/projects/<main-root>. Claude's own cwd is *not* pinned here —
--- it inherits nvim's cwd so worktree edits land in the worktree, not the
--- main tree. Use worktree-teardown.sh to close the session cleanly before
--- `git worktree remove` so claude's cwd never dangles.
 local function git_main_root()
 	local cwd = vim.fn.getcwd()
 	local out = vim.fn.systemlist({
@@ -57,8 +51,6 @@ local function git_main_root()
 	return root ~= "" and root or cwd
 end
 
----@param win snacks.win
----@param opts? { keep?: fun(term: snacks.win): boolean }
 local function close_other_terminals(win, opts)
 	opts = opts or {}
 	local snacks = require("snacks")
@@ -95,51 +87,22 @@ vim.keymap.set(
 	keymap_opts
 )
 
--- TNTCS wake-up prompt. The tntcs skill's open.sh spawns this window with
--- $TNTCS_MESSAGE set to a success announcement (worktree ready, ticket context,
--- resumed-vs-fresh). We feed it to claude as its initial prompt so the new
--- session wakes up oriented instead of at a blank prompt. snacks runs the
--- terminal cmd string through &shell (zsh), so shellescape() quotes it
--- correctly. Consumed once and cleared from both vim.env and the tmux session
--- env, so neither a later <F1> toggle in this nvim nor a later nvim +Claude
--- window in the same session resends it. Returns a leading-space suffix to
--- concatenate onto
--- the claude command, or "" when no message was set (the normal case).
-local function tntcs_prompt_suffix()
-	local msg = vim.env.TNTCS_MESSAGE
+local function composer_prompt_suffix()
+	local msg = vim.env.COMPOSER_MESSAGE
 	if not msg or msg == "" then
 		return ""
 	end
-	vim.env.TNTCS_MESSAGE = nil
-	-- Also scrub the tmux *session* environment. tntcs seeds a brand-new session
-	-- with `tmux new-session -e TNTCS_MESSAGE=…`, which persists session-wide
-	-- (unlike `new-window -e`, which is pane-scoped). Clearing only vim.env would
-	-- leave that copy live, so every later `nvim +Claude` window in the session
-	-- (e.g. the leader+a binding) would re-inject this same prompt.
+	vim.env.COMPOSER_MESSAGE = nil
 	if vim.env.TMUX then
-		vim.fn.system({ "tmux", "set-environment", "-u", "TNTCS_MESSAGE" })
+		vim.fn.system({ "tmux", "set-environment", "-u", "COMPOSER_MESSAGE" })
 	end
 	return " " .. vim.fn.shellescape(msg)
 end
 
--- Launch flags the handing-off session chose for itself, carried forward.
--- composer's row menu relaunches a pane as `claude --resume <sid> --effort max`;
--- tntcs reads that back off the dying process's command line and seeds the new
--- session with $TNTCS_CLAUDE_FLAGS, so the choice survives the handoff. Consumed
--- and scrubbed exactly like $TNTCS_MESSAGE. Not shellescaped as one string —
--- that would collapse `--effort max` into a single argv token — so only the
--- `--effort <level>` / `--model <alias>` shape is accepted and anything else is
--- dropped rather than passed through to the shell. Each VALUE is then quoted on
--- its own, because snacks runs the command string through &shell (zsh) and a real
--- model alias like `opus[1m]` reads there as a glob — unquoted it kills the launch
--- with "no matches found" and no claude starts at all. `thinking` is pi's name for
--- the same choice `effort` is under claude; each opener is handed only its own.
-local tntcs_allowed_flags = { effort = true, model = true, thinking = true }
+local composer_allowed_flags = { effort = true, model = true, thinking = true, provider = true }
 
--- A pi model is "<provider>/<model>", so the slash has to be allowed through —
--- and a path must not follow it in. One slash, none at either end, no "..".
-local function tntcs_flag_value_ok(value)
-	if not value or not value:match("^[%w%-%.%[%]/]+$") then
+local function composer_flag_value_ok(value)
+	if not value or not value:match("^[%w_:%-%.%[%]/]+$") then
 		return false
 	end
 	if value:find("%.%.") or value:sub(1, 1) == "/" or value:sub(-1) == "/" then
@@ -148,7 +111,7 @@ local function tntcs_flag_value_ok(value)
 	return select(2, value:gsub("/", "")) <= 1
 end
 
-local function tntcs_flags_suffix(var)
+local function composer_flags_suffix(var)
 	local raw = vim.env[var]
 	if not raw or raw == "" then
 		return ""
@@ -163,7 +126,7 @@ local function tntcs_flags_suffix(var)
 	while i < #words do
 		local name = words[i]:match("^%-%-([a-z]+)$")
 		local value = words[i + 1]
-		if name and tntcs_allowed_flags[name] and tntcs_flag_value_ok(value) then
+		if name and composer_allowed_flags[name] and composer_flag_value_ok(value) then
 			kept[#kept + 1] = words[i]
 			kept[#kept + 1] = vim.fn.shellescape(value)
 			i = i + 2
@@ -177,16 +140,8 @@ local function tntcs_flags_suffix(var)
 	return " " .. table.concat(kept, " ")
 end
 
--- ── Per-window claude session tracking ──────────────────────────────────────
--- resurrect can restore the nvim pane but not the claude session running inside
--- its terminal, and "most recent for the cwd" is wrong when several windows or
--- sessions share a repo. So nvim records which session id is live in each tmux
--- window (keyed by session:window_index, which resurrect preserves) and resumes
--- that exact id on restore. Every launch path pins a known id: fresh launches
--- via `--session-id <uuid>`, resumes via the id they already carry.
 local claude_sessions_dir = vim.fn.stdpath("state") .. "/claude-windows"
 
--- The tmux window this nvim lives in, e.g. "frontends:1"; nil outside tmux.
 local function claude_window_key()
 	local pane = vim.env.TMUX_PANE
 	if not pane or pane == "" then
@@ -205,7 +160,6 @@ local function claude_session_file(key)
 	return claude_sessions_dir .. "/" .. key:gsub("[^%w%-]", "_")
 end
 
--- Remember that `sid` is the session live in this nvim's tmux window.
 local function record_window_session(sid)
 	if not sid or sid == "" then
 		return
@@ -222,7 +176,6 @@ local function record_window_session(sid)
 	end
 end
 
--- The session id last recorded for this nvim's tmux window, or nil.
 local function lookup_window_session()
 	local key = claude_window_key()
 	if not key then
@@ -247,9 +200,6 @@ end
 
 local function open_claude()
 	local snacks = require("snacks")
-	-- Find any existing claude terminal (default or picker-resumed) so F1
-	-- toggles it instead of spawning a duplicate. snacks.terminal keys
-	-- terminals by cmd+cwd+opts, so the cmd-agnostic scan also survives :cd.
 	local existing
 	for _, term in pairs(snacks.terminal.list()) do
 		if is_claude_terminal(term) then
@@ -272,7 +222,7 @@ local function open_claude()
 		local sid = new_session_id()
 		record_window_session(sid)
 		local id_arg = sid and (" --session-id " .. sid) or ""
-		win = snacks.terminal.toggle("claude" .. id_arg .. tntcs_flags_suffix("TNTCS_CLAUDE_FLAGS") .. tntcs_prompt_suffix(), {
+		win = snacks.terminal.toggle("claude" .. id_arg .. composer_flags_suffix("COMPOSER_CLAUDE_FLAGS") .. composer_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
@@ -283,15 +233,10 @@ end
 
 vim.keymap.set({ "n", "t" }, "<F1>", open_claude, keymap_opts)
 
--- Invoked via `nvim +Claude` for launching a window straight into claude.
 vim.api.nvim_create_user_command("Claude", function()
 	vim.defer_fn(open_claude, 100)
 end, {})
 
--- Pi counterpart of open_claude: find an existing pi terminal and toggle it,
--- else launch a fresh `pi`. Unlike claude we don't pin a --session-id here (pi
--- has no resurrect-resume tracking yet), but we still pass the TNTCS wake-up
--- prompt so a `nvim +Pi` window spawned by the tntcs skill starts oriented.
 local function open_pi()
 	local snacks = require("snacks")
 	local existing
@@ -313,7 +258,7 @@ local function open_pi()
 		end
 		win = existing
 	else
-		win = snacks.terminal.toggle("pi" .. tntcs_flags_suffix("TNTCS_PI_FLAGS") .. tntcs_prompt_suffix(), {
+		win = snacks.terminal.toggle("pi" .. composer_flags_suffix("COMPOSER_PI_FLAGS") .. composer_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
@@ -322,21 +267,10 @@ local function open_pi()
 	vim.cmd("checktime")
 end
 
--- Invoked via `nvim +Pi` for launching a window straight into pi.
 vim.api.nvim_create_user_command("Pi", function()
 	vim.defer_fn(open_pi, 100)
 end, {})
 
--- Resume a specific pi session. Invoked via `nvim '+PiResume <session>'` for
--- cross-pane session handoff (the pi tntcs skill's move / open --resume paths),
--- mirroring :ClaudeResume. <session> is a pi session-file PATH (what tntcs
--- passes) or a full session id: `pi --session <arg>` opens that exact transcript
--- regardless of cwd. We deliberately do NOT use `--session-id`, which is
--- cwd-scoped and CREATES a fresh empty session when the id isn't already in the
--- current directory's project — resuming in a worktree would lose all history.
--- No record_window_session — pi has no resurrect-resume tracking yet (see
--- open_pi). Passes the TNTCS wake-up prompt so the resumed session wakes
--- oriented. Defers so snacks is loaded before toggle.
 vim.api.nvim_create_user_command("PiResume", function(opts)
 	local session = opts.args
 	if session == "" then
@@ -346,7 +280,7 @@ vim.api.nvim_create_user_command("PiResume", function(opts)
 	vim.defer_fn(function()
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle(
-			"pi --session " .. vim.fn.shellescape(session) .. tntcs_flags_suffix("TNTCS_PI_FLAGS") .. tntcs_prompt_suffix(), {
+			"pi --session " .. vim.fn.shellescape(session) .. composer_flags_suffix("COMPOSER_PI_FLAGS") .. composer_prompt_suffix(), {
 				auto_close = false,
 				win = { position = "right", width = 0.5 },
 			})
@@ -354,14 +288,6 @@ vim.api.nvim_create_user_command("PiResume", function(opts)
 	end, 100)
 end, { nargs = 1 })
 
--- On tmux-resurrect restore, reopen the *exact* claude session that was live in
--- this nvim's terminal. resurrect restores the nvim pane but can't see the
--- claude process inside it, so we resume the session id recorded for this tmux
--- window (see record_window_session). Gated on RESURRECT_RESTORING, which
--- resurrect's pre/post-restore hooks set only while a restore is in flight — so
--- manually launched nvims are unaffected and `nvim +Claude` still starts fresh.
--- Resumes only when that session's transcript still exists for the cwd;
--- otherwise the window comes back plain (no guessing at a different session).
 vim.api.nvim_create_autocmd("VimEnter", {
 	callback = function()
 		if vim.env.RESURRECT_RESTORING ~= "1" then
@@ -400,14 +326,6 @@ vim.keymap.set(
 	keymap_opts
 )
 
--- Launch all-in-quiz (the spaced-repetition CLI) in a centered floating
--- terminal. Unlike a tmux display-popup, a float is a real terminal buffer, so
--- the session scrolls (terminal-normal mode / <PageDown>). While the quiz is
--- running, <F3> toggles the float's visibility; once it has exited, <F3> starts
--- a fresh run rather than re-showing the finished buffer. auto_close=false keeps
--- the end-of-session summary on screen to scroll back through.
--- Point the CLI at the repo's deck directory. It has no built-in decks, so
--- without --decks (or $ALL_IN_QUIZ_DECKS) it exits with "no deck directory".
 local quiz_cmd = vim.fn.expand("~/go/bin/all-in-quiz")
 	.. " --decks "
 	.. vim.fn.expand("~/repos/axkirillov/all-in-quiz/decks")
@@ -460,7 +378,6 @@ vim.api.nvim_create_user_command(
 
 
 
--- Pi session picker
 local function pi_session_picker()
 	local fzf_lua = require("fzf-lua")
 
@@ -703,15 +620,6 @@ end
 
 vim.keymap.set({ "n", "t" }, "<C-s>", claude_session_picker, keymap_opts)
 
--- Resume a specific Claude session by ID. Invoked via `nvim '+ClaudeResume <sid>'`
--- for cross-pane session handoff. Defers so snacks is loaded before toggle.
--- Extra words after the sid are launch flags appended to the resume command, so
--- composer's row menu can restart a session at a chosen effort or model with
--- `:ClaudeResume <sid> --effort max`. Each word is quoted for &shell (zsh), which
--- would otherwise read a bracketed alias like `opus[1m]` as a glob and refuse the
--- whole line. The old claude is closed, not hidden:
--- close_other_terminals only calls hide(), which keeps the buffer and leaves the
--- old process running against the same session id.
 vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 	local sid = opts.fargs[1]
 	if not sid or sid == "" then
@@ -728,7 +636,7 @@ vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle(
 			"claude --resume " .. vim.fn.shellescape(sid) .. flags
-			.. tntcs_flags_suffix("TNTCS_CLAUDE_FLAGS") .. tntcs_prompt_suffix(), {
+			.. composer_flags_suffix("COMPOSER_CLAUDE_FLAGS") .. composer_prompt_suffix(), {
 				auto_close = false,
 				win = { position = "right", width = 0.5 },
 			})
@@ -736,12 +644,6 @@ vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 	end, 100)
 end, { nargs = "+" })
 
--- Receive a prompt from another Claude session and inject it into this nvim's
--- claude terminal. The claude-send skill's send.sh writes the message to a temp
--- file and invokes `:ClaudeSend <file>` over tmux; we read + flatten it,
--- chansend it into the claude terminal job, then submit with a carriage return.
--- This wakes claude even when it is sitting fully idle at the prompt. The temp
--- file (created by send.sh) is removed here once read.
 vim.api.nvim_create_user_command("ClaudeSend", function(opts)
 	local path = opts.args
 	if path == "" then
@@ -769,10 +671,6 @@ vim.api.nvim_create_user_command("ClaudeSend", function(opts)
 	local chan = vim.api.nvim_buf_get_var(target.buf, "terminal_job_id")
 	if chan then
 		vim.api.nvim_chan_send(chan, message)
-		-- Submit as a *separate* keystroke. Claude's TUI treats the message and
-		-- a trailing CR arriving together as one fast burst (a paste) and keeps
-		-- the CR as literal input instead of submitting; a deferred CR lands in
-		-- its own read and is taken as a discrete Enter, which submits.
 		vim.defer_fn(function()
 			vim.api.nvim_chan_send(chan, "\r")
 		end, 200)
