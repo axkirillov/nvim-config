@@ -132,8 +132,9 @@ end
 -- dropped rather than passed through to the shell. Each VALUE is then quoted on
 -- its own, because snacks runs the command string through &shell (zsh) and a real
 -- model alias like `opus[1m]` reads there as a glob — unquoted it kills the launch
--- with "no matches found" and no claude starts at all.
-local tntcs_allowed_flags = { effort = true, model = true }
+-- with "no matches found" and no claude starts at all. `thinking` is pi's name for
+-- the same choice `effort` is under claude; each opener is handed only its own.
+local tntcs_allowed_flags = { effort = true, model = true, thinking = true }
 
 -- A pi model is "<provider>/<model>", so the slash has to be allowed through —
 -- and a path must not follow it in. One slash, none at either end, no "..".
