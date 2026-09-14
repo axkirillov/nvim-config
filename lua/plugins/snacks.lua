@@ -231,7 +231,15 @@ local function open_claude()
 	vim.cmd("checktime")
 end
 
-vim.keymap.set({ "n", "t" }, "<F1>", open_claude, keymap_opts)
+local function open_terminal()
+	local snacks = require("snacks")
+	snacks.terminal.toggle(nil, {
+		auto_close = false,
+		win = { position = "right", width = 0.5 },
+	})
+end
+
+vim.keymap.set({ "n", "t" }, "<F1>", open_terminal, keymap_opts)
 
 vim.api.nvim_create_user_command("Claude", function()
 	vim.defer_fn(open_claude, 100)
