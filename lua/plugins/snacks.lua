@@ -285,6 +285,7 @@ vim.api.nvim_create_user_command("PiResume", function(opts)
 		vim.notify("PiResume: missing session (path or id)", vim.log.levels.ERROR)
 		return
 	end
+	close_pi_terminals()
 	vim.defer_fn(function()
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle(
