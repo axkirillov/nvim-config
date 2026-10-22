@@ -17,7 +17,7 @@ vim.api.nvim_create_autocmd("CmdlineLeave", {
 
 -- Auto-save (safer than BufModifiedSet)
 local autosave_group = vim.api.nvim_create_augroup("AutoSave", { clear = true })
-vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave" }, {
+vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave", "InsertLeave", "TextChanged" }, {
 	group = autosave_group,
 	callback = function(args)
 		local buf = args.buf
@@ -44,7 +44,7 @@ vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave" }, {
 			end)
 		end)
 	end,
-	desc = "Auto-save on focus/leave",
+	desc = "Auto-save on focus, leave and edit",
 })
 
 -- Restore cursor to file position in previous editing session
