@@ -76,19 +76,13 @@ vim.keymap.set(
 )
 
 local function podium_env(name)
-	local value = vim.env["PODIUM_" .. name]
-	if value and value ~= "" then
-		return value
-	end
-	return vim.env["CONDUCTOR_" .. name]
+	return vim.env["PODIUM_" .. name]
 end
 
 local function podium_unset(name)
-	for _, prefix in ipairs({ "PODIUM_", "CONDUCTOR_" }) do
-		vim.env[prefix .. name] = nil
-		if vim.env.TMUX then
-			vim.fn.system({ "tmux", "set-environment", "-u", prefix .. name })
-		end
+	vim.env["PODIUM_" .. name] = nil
+	if vim.env.TMUX then
+		vim.fn.system({ "tmux", "set-environment", "-u", "PODIUM_" .. name })
 	end
 end
 
