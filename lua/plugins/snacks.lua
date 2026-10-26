@@ -87,6 +87,17 @@ local function conductor_prompt_suffix()
 	return " " .. vim.fn.shellescape(msg)
 end
 
+local function conductor_relay_suffix(harness)
+	local dir = vim.env.CONDUCTOR_AGENT_DIR
+	if not dir or dir == "" then
+		return ""
+	end
+	if harness == "claude" then
+		return " --settings " .. vim.fn.shellescape(dir .. "/claude-settings.json")
+	end
+	return " --append-system-prompt " .. vim.fn.shellescape(dir .. "/pi-system.md")
+end
+
 local conductor_allowed_flags = { effort = true, model = true, thinking = true, provider = true }
 
 local function conductor_flag_value_ok(value)
@@ -210,7 +221,7 @@ local function open_claude()
 		local sid = new_session_id()
 		record_window_session(sid)
 		local id_arg = sid and (" --session-id " .. sid) or ""
-		win = snacks.terminal.toggle("claude" .. id_arg .. conductor_flags_suffix("CONDUCTOR_CLAUDE_FLAGS") .. conductor_prompt_suffix(), {
+		win = snacks.terminal.toggle("claude" .. id_arg .. conductor_relay_suffix("claude") .. conductor_flags_suffix("CONDUCTOR_CLAUDE_FLAGS") .. conductor_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
@@ -254,7 +265,7 @@ local function open_pi()
 		end
 		win = existing
 	else
-		win = snacks.terminal.toggle("pi" .. conductor_flags_suffix("CONDUCTOR_PI_FLAGS") .. conductor_prompt_suffix(), {
+		win = snacks.terminal.toggle("pi" .. conductor_relay_suffix("pi") .. conductor_flags_suffix("CONDUCTOR_PI_FLAGS") .. conductor_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
@@ -277,7 +288,7 @@ vim.api.nvim_create_user_command("PiResume", function(opts)
 	vim.defer_fn(function()
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle(
-			"pi --session " .. vim.fn.shellescape(session) .. conductor_flags_suffix("CONDUCTOR_PI_FLAGS") .. conductor_prompt_suffix(), {
+			"pi --session " .. vim.fn.shellescape(session) .. conductor_relay_suffix("pi") .. conductor_flags_suffix("CONDUCTOR_PI_FLAGS") .. conductor_prompt_suffix(), {
 				auto_close = false,
 				win = { position = "right", width = 0.5 },
 			})
@@ -302,7 +313,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		vim.defer_fn(function()
 			local snacks = require("snacks")
 			local win = snacks.terminal.toggle(
-				"claude --resume " .. vim.fn.shellescape(sid), {
+				"claude --resume " .. vim.fn.shellescape(sid) .. conductor_relay_suffix("claude"), {
 					auto_close = false,
 					win = { position = "right", width = 0.5 },
 				})
@@ -462,7 +473,7 @@ for r in results: print(r[1])
 				close_pi_terminals()
 				local snacks = require("snacks")
 				local win = snacks.terminal.toggle(
-					"pi --session " .. vim.fn.shellescape(session_path),
+					"pi --session " .. vim.fn.shellescape(session_path) .. conductor_relay_suffix("pi"),
 					{ auto_close = false, win = { position = "right" } }
 				)
 				close_other_terminals(win)
@@ -491,7 +502,7 @@ vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 	vim.defer_fn(function()
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle(
-			"claude --resume " .. vim.fn.shellescape(sid) .. flags
+			"claude --resume " .. vim.fn.shellescape(sid) .. flags .. conductor_relay_suffix("claude")
 			.. conductor_flags_suffix("CONDUCTOR_CLAUDE_FLAGS") .. conductor_prompt_suffix(), {
 				auto_close = false,
 				win = { position = "right", width = 0.5 },
