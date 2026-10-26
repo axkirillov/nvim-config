@@ -75,20 +75,34 @@ vim.keymap.set(
 	keymap_opts
 )
 
-local function conductor_prompt_suffix()
-	local msg = vim.env.CONDUCTOR_MESSAGE
+local function podium_env(name)
+	local value = vim.env["PODIUM_" .. name]
+	if value and value ~= "" then
+		return value
+	end
+	return vim.env["CONDUCTOR_" .. name]
+end
+
+local function podium_unset(name)
+	for _, prefix in ipairs({ "PODIUM_", "CONDUCTOR_" }) do
+		vim.env[prefix .. name] = nil
+		if vim.env.TMUX then
+			vim.fn.system({ "tmux", "set-environment", "-u", prefix .. name })
+		end
+	end
+end
+
+local function podium_prompt_suffix()
+	local msg = podium_env("MESSAGE")
 	if not msg or msg == "" then
 		return ""
 	end
-	vim.env.CONDUCTOR_MESSAGE = nil
-	if vim.env.TMUX then
-		vim.fn.system({ "tmux", "set-environment", "-u", "CONDUCTOR_MESSAGE" })
-	end
+	podium_unset("MESSAGE")
 	return " " .. vim.fn.shellescape(msg)
 end
 
-local function conductor_relay_suffix(harness)
-	local dir = vim.env.CONDUCTOR_AGENT_DIR
+local function podium_relay_suffix(harness)
+	local dir = podium_env("AGENT_DIR")
 	if not dir or dir == "" then
 		return ""
 	end
@@ -98,9 +112,9 @@ local function conductor_relay_suffix(harness)
 	return " --append-system-prompt " .. vim.fn.shellescape(dir .. "/pi-system.md")
 end
 
-local conductor_allowed_flags = { effort = true, model = true, thinking = true, provider = true }
+local podium_allowed_flags = { effort = true, model = true, thinking = true, provider = true }
 
-local function conductor_flag_value_ok(value)
+local function podium_flag_value_ok(value)
 	if not value or not value:match("^[%w_:%-%.%[%]/]+$") then
 		return false
 	end
@@ -110,22 +124,19 @@ local function conductor_flag_value_ok(value)
 	return select(2, value:gsub("/", "")) <= 1
 end
 
-local function conductor_flags_suffix(var)
-	local raw = vim.env[var]
+local function podium_flags_suffix(name)
+	local raw = podium_env(name)
 	if not raw or raw == "" then
 		return ""
 	end
-	vim.env[var] = nil
-	if vim.env.TMUX then
-		vim.fn.system({ "tmux", "set-environment", "-u", var })
-	end
+	podium_unset(name)
 	local words = vim.split(vim.trim(raw), "%s+")
 	local kept = {}
 	local i = 1
 	while i < #words do
 		local name = words[i]:match("^%-%-([a-z]+)$")
 		local value = words[i + 1]
-		if name and conductor_allowed_flags[name] and conductor_flag_value_ok(value) then
+		if name and podium_allowed_flags[name] and podium_flag_value_ok(value) then
 			kept[#kept + 1] = words[i]
 			kept[#kept + 1] = vim.fn.shellescape(value)
 			i = i + 2
@@ -221,7 +232,7 @@ local function open_claude()
 		local sid = new_session_id()
 		record_window_session(sid)
 		local id_arg = sid and (" --session-id " .. sid) or ""
-		win = snacks.terminal.toggle("claude" .. id_arg .. conductor_relay_suffix("claude") .. conductor_flags_suffix("CONDUCTOR_CLAUDE_FLAGS") .. conductor_prompt_suffix(), {
+		win = snacks.terminal.toggle("claude" .. id_arg .. podium_relay_suffix("claude") .. podium_flags_suffix("CLAUDE_FLAGS") .. podium_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
@@ -265,7 +276,7 @@ local function open_pi()
 		end
 		win = existing
 	else
-		win = snacks.terminal.toggle("pi" .. conductor_relay_suffix("pi") .. conductor_flags_suffix("CONDUCTOR_PI_FLAGS") .. conductor_prompt_suffix(), {
+		win = snacks.terminal.toggle("pi" .. podium_relay_suffix("pi") .. podium_flags_suffix("PI_FLAGS") .. podium_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
@@ -288,7 +299,7 @@ vim.api.nvim_create_user_command("PiResume", function(opts)
 	vim.defer_fn(function()
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle(
-			"pi --session " .. vim.fn.shellescape(session) .. conductor_relay_suffix("pi") .. conductor_flags_suffix("CONDUCTOR_PI_FLAGS") .. conductor_prompt_suffix(), {
+			"pi --session " .. vim.fn.shellescape(session) .. podium_relay_suffix("pi") .. podium_flags_suffix("PI_FLAGS") .. podium_prompt_suffix(), {
 				auto_close = false,
 				win = { position = "right", width = 0.5 },
 			})
@@ -313,7 +324,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		vim.defer_fn(function()
 			local snacks = require("snacks")
 			local win = snacks.terminal.toggle(
-				"claude --resume " .. vim.fn.shellescape(sid) .. conductor_relay_suffix("claude"), {
+				"claude --resume " .. vim.fn.shellescape(sid) .. podium_relay_suffix("claude"), {
 					auto_close = false,
 					win = { position = "right", width = 0.5 },
 				})
@@ -473,7 +484,7 @@ for r in results: print(r[1])
 				close_pi_terminals()
 				local snacks = require("snacks")
 				local win = snacks.terminal.toggle(
-					"pi --session " .. vim.fn.shellescape(session_path) .. conductor_relay_suffix("pi"),
+					"pi --session " .. vim.fn.shellescape(session_path) .. podium_relay_suffix("pi"),
 					{ auto_close = false, win = { position = "right" } }
 				)
 				close_other_terminals(win)
@@ -502,49 +513,14 @@ vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 	vim.defer_fn(function()
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle(
-			"claude --resume " .. vim.fn.shellescape(sid) .. flags .. conductor_relay_suffix("claude")
-			.. conductor_flags_suffix("CONDUCTOR_CLAUDE_FLAGS") .. conductor_prompt_suffix(), {
+			"claude --resume " .. vim.fn.shellescape(sid) .. flags .. podium_relay_suffix("claude")
+			.. podium_flags_suffix("CLAUDE_FLAGS") .. podium_prompt_suffix(), {
 				auto_close = false,
 				win = { position = "right", width = 0.5 },
 			})
 		close_other_terminals(win)
 	end, 100)
 end, { nargs = "+" })
-
-vim.api.nvim_create_user_command("ClaudeSend", function(opts)
-	local path = opts.args
-	if path == "" then
-		vim.notify("ClaudeSend: missing message file path", vim.log.levels.ERROR)
-		return
-	end
-	local ok, lines = pcall(vim.fn.readfile, path)
-	vim.fn.delete(path)
-	if not ok or type(lines) ~= "table" or #lines == 0 then
-		vim.notify("ClaudeSend: empty or unreadable message file", vim.log.levels.ERROR)
-		return
-	end
-	local message = table.concat(lines, " ")
-	local target
-	for _, term in pairs(require("snacks").terminal.list()) do
-		if is_claude_terminal(term) and term.buf and vim.api.nvim_buf_is_valid(term.buf) then
-			target = term
-			break
-		end
-	end
-	if not target then
-		vim.notify("ClaudeSend: no claude terminal in this nvim", vim.log.levels.ERROR)
-		return
-	end
-	local chan = vim.api.nvim_buf_get_var(target.buf, "terminal_job_id")
-	if chan then
-		vim.api.nvim_chan_send(chan, message)
-		vim.defer_fn(function()
-			vim.api.nvim_chan_send(chan, "\r")
-		end, 200)
-	else
-		vim.notify("ClaudeSend: claude terminal has no job channel", vim.log.levels.ERROR)
-	end
-end, { nargs = 1 })
 
 return
 {
