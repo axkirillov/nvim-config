@@ -164,8 +164,8 @@ local function claude_session_file(key)
 	return claude_sessions_dir .. "/" .. key:gsub("[^%w%-]", "_")
 end
 
-local function record_window_session(sid)
-	if not sid or sid == "" then
+local function record_window_session(harness, session)
+	if not session or session == "" then
 		return
 	end
 	local key = claude_window_key()
@@ -175,7 +175,7 @@ local function record_window_session(sid)
 	vim.fn.mkdir(claude_sessions_dir, "p")
 	local f = io.open(claude_session_file(key), "w")
 	if f then
-		f:write(sid)
+		f:write(harness .. " " .. session)
 		f:close()
 	end
 end
@@ -189,9 +189,16 @@ local function lookup_window_session()
 	if not f then
 		return nil
 	end
-	local sid = vim.trim(f:read("*a") or "")
+	local content = vim.trim(f:read("*a") or "")
 	f:close()
-	return sid ~= "" and sid or nil
+	if content == "" then
+		return nil
+	end
+	local harness, session = content:match("^(%S+) (.+)$")
+	if not harness then
+		return "claude", content
+	end
+	return harness, session
 end
 
 local function new_session_id()
@@ -224,7 +231,7 @@ local function open_claude()
 		win = existing
 	else
 		local sid = new_session_id()
-		record_window_session(sid)
+		record_window_session("claude", sid)
 		local id_arg = sid and (" --session-id " .. sid) or ""
 		win = snacks.terminal.toggle("claude" .. id_arg .. podium_relay_suffix("claude") .. podium_flags_suffix("CLAUDE_FLAGS") .. podium_prompt_suffix(), {
 			auto_close = false,
@@ -270,7 +277,10 @@ local function open_pi()
 		end
 		win = existing
 	else
-		win = snacks.terminal.toggle("pi" .. podium_relay_suffix("pi") .. podium_flags_suffix("PI_FLAGS") .. podium_prompt_suffix(), {
+		local sid = new_session_id()
+		record_window_session("pi", sid)
+		local id_arg = sid and (" --session-id " .. sid) or ""
+		win = snacks.terminal.toggle("pi" .. id_arg .. podium_relay_suffix("pi") .. podium_flags_suffix("PI_FLAGS") .. podium_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
@@ -289,6 +299,7 @@ vim.api.nvim_create_user_command("PiResume", function(opts)
 		vim.notify("PiResume: missing session (path or id)", vim.log.levels.ERROR)
 		return
 	end
+	record_window_session("pi", session)
 	close_pi_terminals()
 	vim.defer_fn(function()
 		local snacks = require("snacks")
@@ -306,19 +317,27 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		if vim.env.RESURRECT_RESTORING ~= "1" then
 			return
 		end
-		local sid = lookup_window_session()
-		if not sid then
+		local harness, session = lookup_window_session()
+		if not harness then
 			return
 		end
-		local project_key = vim.fn.getcwd():gsub("[^%w%-]", "-")
-		local transcript = os.getenv("HOME") .. "/.claude/projects/" .. project_key .. "/" .. sid .. ".jsonl"
-		if vim.fn.filereadable(transcript) == 0 then
-			return
+		local cmd
+		if harness == "pi" then
+			local is_full_uuid = session:match("^%x+%-%x+%-%x+%-%x+%-%x+$") ~= nil
+			local session_flag = is_full_uuid and " --session-id " or " --session "
+			cmd = "pi" .. session_flag .. vim.fn.shellescape(session) .. podium_relay_suffix("pi")
+		else
+			local project_key = vim.fn.getcwd():gsub("[^%w%-]", "-")
+			local transcript = os.getenv("HOME") .. "/.claude/projects/" .. project_key .. "/" .. session .. ".jsonl"
+			if vim.fn.filereadable(transcript) == 0 then
+				return
+			end
+			cmd = "claude --resume " .. vim.fn.shellescape(session) .. podium_relay_suffix("claude")
 		end
 		vim.defer_fn(function()
 			local snacks = require("snacks")
 			local win = snacks.terminal.toggle(
-				"claude --resume " .. vim.fn.shellescape(sid) .. podium_relay_suffix("claude"), {
+				cmd, {
 					auto_close = false,
 					win = { position = "right", width = 0.5 },
 				})
@@ -475,6 +494,7 @@ for r in results: print(r[1])
 			["default"] = function(selected)
 				if not selected or #selected == 0 then return end
 				local session_path = vim.trim(vim.split(selected[1], "\t")[4])
+				record_window_session("pi", session_path)
 				close_pi_terminals()
 				local snacks = require("snacks")
 				local win = snacks.terminal.toggle(
@@ -502,7 +522,7 @@ vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 	for i = 2, #opts.fargs do
 		flags = flags .. " " .. vim.fn.shellescape(opts.fargs[i])
 	end
-	record_window_session(sid)
+	record_window_session("claude", sid)
 	close_claude_terminals()
 	vim.defer_fn(function()
 		local snacks = require("snacks")
