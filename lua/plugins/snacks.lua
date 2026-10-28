@@ -144,56 +144,6 @@ local function podium_flags_suffix(name)
 	return " " .. table.concat(kept, " ")
 end
 
-local claude_sessions_dir = vim.fn.stdpath("state") .. "/claude-windows"
-
-local function claude_window_key()
-	local pane = vim.env.TMUX_PANE
-	if not pane or pane == "" then
-		return nil
-	end
-	local out = vim.fn.systemlist({
-		"tmux", "display-message", "-p", "-t", pane, "#{session_name}:#{window_index}",
-	})
-	if vim.v.shell_error ~= 0 or #out == 0 or out[1] == "" then
-		return nil
-	end
-	return out[1]
-end
-
-local function claude_session_file(key)
-	return claude_sessions_dir .. "/" .. key:gsub("[^%w%-]", "_")
-end
-
-local function record_window_session(sid)
-	if not sid or sid == "" then
-		return
-	end
-	local key = claude_window_key()
-	if not key then
-		return
-	end
-	vim.fn.mkdir(claude_sessions_dir, "p")
-	local f = io.open(claude_session_file(key), "w")
-	if f then
-		f:write(sid)
-		f:close()
-	end
-end
-
-local function lookup_window_session()
-	local key = claude_window_key()
-	if not key then
-		return nil
-	end
-	local f = io.open(claude_session_file(key), "r")
-	if not f then
-		return nil
-	end
-	local sid = vim.trim(f:read("*a") or "")
-	f:close()
-	return sid ~= "" and sid or nil
-end
-
 local function new_session_id()
 	local out = vim.fn.systemlist({ "uuidgen" })
 	if vim.v.shell_error ~= 0 or #out == 0 then
@@ -224,7 +174,6 @@ local function open_claude()
 		win = existing
 	else
 		local sid = new_session_id()
-		record_window_session(sid)
 		local id_arg = sid and (" --session-id " .. sid) or ""
 		win = snacks.terminal.toggle("claude" .. id_arg .. podium_relay_suffix("claude") .. podium_flags_suffix("CLAUDE_FLAGS") .. podium_prompt_suffix(), {
 			auto_close = false,
@@ -300,32 +249,6 @@ vim.api.nvim_create_user_command("PiResume", function(opts)
 		close_other_terminals(win)
 	end, 100)
 end, { nargs = 1 })
-
-vim.api.nvim_create_autocmd("VimEnter", {
-	callback = function()
-		if vim.env.RESURRECT_RESTORING ~= "1" then
-			return
-		end
-		local sid = lookup_window_session()
-		if not sid then
-			return
-		end
-		local project_key = vim.fn.getcwd():gsub("[^%w%-]", "-")
-		local transcript = os.getenv("HOME") .. "/.claude/projects/" .. project_key .. "/" .. sid .. ".jsonl"
-		if vim.fn.filereadable(transcript) == 0 then
-			return
-		end
-		vim.defer_fn(function()
-			local snacks = require("snacks")
-			local win = snacks.terminal.toggle(
-				"claude --resume " .. vim.fn.shellescape(sid) .. podium_relay_suffix("claude"), {
-					auto_close = false,
-					win = { position = "right", width = 0.5 },
-				})
-			close_other_terminals(win)
-		end, 100)
-	end,
-})
 
 vim.keymap.set(
 	{ "n", "t" },
@@ -502,7 +425,6 @@ vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 	for i = 2, #opts.fargs do
 		flags = flags .. " " .. vim.fn.shellescape(opts.fargs[i])
 	end
-	record_window_session(sid)
 	close_claude_terminals()
 	vim.defer_fn(function()
 		local snacks = require("snacks")
