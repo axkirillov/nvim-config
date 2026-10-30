@@ -75,28 +75,37 @@ vim.keymap.set(
 	keymap_opts
 )
 
-local function podium_env(name)
-	return vim.env["PODIUM_" .. name]
-end
+local thepass_prefixes = { "THEPASS_", "PODIUM_" }
 
-local function podium_unset(name)
-	vim.env["PODIUM_" .. name] = nil
-	if vim.env.TMUX then
-		vim.fn.system({ "tmux", "set-environment", "-u", "PODIUM_" .. name })
+local function thepass_env(name)
+	for _, prefix in ipairs(thepass_prefixes) do
+		local value = vim.env[prefix .. name]
+		if value and value ~= "" then
+			return value
+		end
 	end
 end
 
-local function podium_prompt_suffix()
-	local msg = podium_env("MESSAGE")
+local function thepass_unset(name)
+	for _, prefix in ipairs(thepass_prefixes) do
+		vim.env[prefix .. name] = nil
+		if vim.env.TMUX then
+			vim.fn.system({ "tmux", "set-environment", "-u", prefix .. name })
+		end
+	end
+end
+
+local function thepass_prompt_suffix()
+	local msg = thepass_env("MESSAGE")
 	if not msg or msg == "" then
 		return ""
 	end
-	podium_unset("MESSAGE")
+	thepass_unset("MESSAGE")
 	return " " .. vim.fn.shellescape(msg)
 end
 
-local function podium_relay_suffix(harness)
-	local dir = podium_env("AGENT_DIR")
+local function thepass_relay_suffix(harness)
+	local dir = thepass_env("AGENT_DIR")
 	if not dir or dir == "" then
 		return ""
 	end
@@ -106,9 +115,9 @@ local function podium_relay_suffix(harness)
 	return " --append-system-prompt " .. vim.fn.shellescape(dir .. "/pi-system.md")
 end
 
-local podium_allowed_flags = { effort = true, model = true, thinking = true, provider = true }
+local thepass_allowed_flags = { effort = true, model = true, thinking = true, provider = true }
 
-local function podium_flag_value_ok(value)
+local function thepass_flag_value_ok(value)
 	if not value or not value:match("^[%w_:%-%.%[%]/]+$") then
 		return false
 	end
@@ -118,19 +127,19 @@ local function podium_flag_value_ok(value)
 	return select(2, value:gsub("/", "")) <= 1
 end
 
-local function podium_flags_suffix(name)
-	local raw = podium_env(name)
+local function thepass_flags_suffix(name)
+	local raw = thepass_env(name)
 	if not raw or raw == "" then
 		return ""
 	end
-	podium_unset(name)
+	thepass_unset(name)
 	local words = vim.split(vim.trim(raw), "%s+")
 	local kept = {}
 	local i = 1
 	while i < #words do
 		local name = words[i]:match("^%-%-([a-z]+)$")
 		local value = words[i + 1]
-		if name and podium_allowed_flags[name] and podium_flag_value_ok(value) then
+		if name and thepass_allowed_flags[name] and thepass_flag_value_ok(value) then
 			kept[#kept + 1] = words[i]
 			kept[#kept + 1] = vim.fn.shellescape(value)
 			i = i + 2
@@ -175,7 +184,7 @@ local function open_claude()
 	else
 		local sid = new_session_id()
 		local id_arg = sid and (" --session-id " .. sid) or ""
-		win = snacks.terminal.toggle("claude" .. id_arg .. podium_relay_suffix("claude") .. podium_flags_suffix("CLAUDE_FLAGS") .. podium_prompt_suffix(), {
+		win = snacks.terminal.toggle("claude" .. id_arg .. thepass_relay_suffix("claude") .. thepass_flags_suffix("CLAUDE_FLAGS") .. thepass_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
@@ -219,7 +228,7 @@ local function open_pi()
 		end
 		win = existing
 	else
-		win = snacks.terminal.toggle("pi" .. podium_relay_suffix("pi") .. podium_flags_suffix("PI_FLAGS") .. podium_prompt_suffix(), {
+		win = snacks.terminal.toggle("pi" .. thepass_relay_suffix("pi") .. thepass_flags_suffix("PI_FLAGS") .. thepass_prompt_suffix(), {
 			auto_close = false,
 			win = { position = "right", width = 0.5 },
 		})
@@ -242,7 +251,7 @@ vim.api.nvim_create_user_command("PiResume", function(opts)
 	vim.defer_fn(function()
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle(
-			"pi --session " .. vim.fn.shellescape(session) .. podium_relay_suffix("pi") .. podium_flags_suffix("PI_FLAGS") .. podium_prompt_suffix(), {
+			"pi --session " .. vim.fn.shellescape(session) .. thepass_relay_suffix("pi") .. thepass_flags_suffix("PI_FLAGS") .. thepass_prompt_suffix(), {
 				auto_close = false,
 				win = { position = "right", width = 0.5 },
 			})
@@ -401,7 +410,7 @@ for r in results: print(r[1])
 				close_pi_terminals()
 				local snacks = require("snacks")
 				local win = snacks.terminal.toggle(
-					"pi --session " .. vim.fn.shellescape(session_path) .. podium_relay_suffix("pi"),
+					"pi --session " .. vim.fn.shellescape(session_path) .. thepass_relay_suffix("pi"),
 					{ auto_close = false, win = { position = "right" } }
 				)
 				close_other_terminals(win)
@@ -429,8 +438,8 @@ vim.api.nvim_create_user_command("ClaudeResume", function(opts)
 	vim.defer_fn(function()
 		local snacks = require("snacks")
 		local win = snacks.terminal.toggle(
-			"claude --resume " .. vim.fn.shellescape(sid) .. flags .. podium_relay_suffix("claude")
-			.. podium_flags_suffix("CLAUDE_FLAGS") .. podium_prompt_suffix(), {
+			"claude --resume " .. vim.fn.shellescape(sid) .. flags .. thepass_relay_suffix("claude")
+			.. thepass_flags_suffix("CLAUDE_FLAGS") .. thepass_prompt_suffix(), {
 				auto_close = false,
 				win = { position = "right", width = 0.5 },
 			})
