@@ -105,14 +105,18 @@ local function passe_prompt_suffix()
 end
 
 local function passe_relay_suffix(harness)
-	local dir = passe_env("AGENT_DIR")
-	if not dir or dir == "" then
-		return ""
+	local suffix = ""
+	for _, name in ipairs({ "RELAY_DIR", "AGENT_DIR" }) do
+		local dir = passe_env(name)
+		if dir and dir ~= "" then
+			if harness == "claude" then
+				suffix = suffix .. " --plugin-dir " .. vim.fn.shellescape(dir)
+			else
+				suffix = suffix .. " -e " .. vim.fn.shellescape(dir .. "/pi/index.ts")
+			end
+		end
 	end
-	if harness == "claude" then
-		return " --settings " .. vim.fn.shellescape(dir .. "/claude-settings.json")
-	end
-	return " --append-system-prompt " .. vim.fn.shellescape(dir .. "/pi-system.md")
+	return suffix
 end
 
 local passe_allowed_flags = { effort = true, model = true, thinking = true, provider = true }
