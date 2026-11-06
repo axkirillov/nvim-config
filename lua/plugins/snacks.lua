@@ -111,6 +111,10 @@ local function passe_relay_suffix(harness)
 		if dir and dir ~= "" then
 			if harness == "claude" then
 				suffix = suffix .. " --plugin-dir " .. vim.fn.shellescape(dir)
+				local session_settings = dir .. "/session-settings.json"
+				if vim.fn.filereadable(session_settings) == 1 then
+					suffix = suffix .. " --settings " .. vim.fn.shellescape(session_settings)
+				end
 			else
 				suffix = suffix .. " -e " .. vim.fn.shellescape(dir .. "/pi/index.ts")
 			end
