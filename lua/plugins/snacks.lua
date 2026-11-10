@@ -75,23 +75,17 @@ vim.keymap.set(
 	keymap_opts
 )
 
-local passe_prefixes = { "PASSE_", "THEPASS_" }
-
 local function passe_env(name)
-	for _, prefix in ipairs(passe_prefixes) do
-		local value = vim.env[prefix .. name]
-		if value and value ~= "" then
-			return value
-		end
+	local value = vim.env["PASSE_" .. name]
+	if value and value ~= "" then
+		return value
 	end
 end
 
 local function passe_unset(name)
-	for _, prefix in ipairs(passe_prefixes) do
-		vim.env[prefix .. name] = nil
-		if vim.env.TMUX then
-			vim.fn.system({ "tmux", "set-environment", "-u", prefix .. name })
-		end
+	vim.env["PASSE_" .. name] = nil
+	if vim.env.TMUX then
+		vim.fn.system({ "tmux", "set-environment", "-u", "PASSE_" .. name })
 	end
 end
 
