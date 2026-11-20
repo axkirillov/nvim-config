@@ -6,8 +6,8 @@ vim.keymap.set("n", "dd", function ()
 	return "dd"
 end, opts)
 
--- Exit terminal mode
-vim.keymap.set('t', '<C-[>', '<C-\\><C-n>')
+vim.keymap.set('t', '<C-[>', '<C-\\><C-n>', { desc = 'Leave terminal mode' })
+vim.keymap.set('t', '<Esc>', '<Esc>', { desc = 'Send Esc to the terminal job' })
 
 -- Make <C-l> behave like normal mode (redraw) in terminal mode
 vim.keymap.set('t', '<C-l>', '<C-\\><C-n><C-l>i', { silent = true, desc = 'Redraw (terminal)' })

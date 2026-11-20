@@ -138,6 +138,7 @@ return
 			}
 		},
 		terminal = {
+			win = { keys = { term_normal = false } },
 		},
 		input = {
 		},
