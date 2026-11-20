@@ -3,6 +3,7 @@ require("settings")
 require("mappings")
 require("commands")
 require("autocommands")
+require("lazygit")
 require("lazy_bootstrap")
 require("lazy").setup(
 	"plugins",
