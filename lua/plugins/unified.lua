@@ -56,7 +56,7 @@ vim.api.nvim_create_user_command(
 )
 
 return {
-	dir = '~/repos/axkirillov/unified.nvim',
+	dir = '~/development/repos/axkirillov/unified.nvim',
 	opts = {
 		tab = true,
 		file_tree = {
